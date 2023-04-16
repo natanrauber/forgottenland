@@ -1,14 +1,20 @@
 class Online {
-  Online({
-    this.list = const <OnlineEntry>[],
-  });
+  Online({this.list = const <OnlineEntry>[]});
 
-  Online.fromJson(Map<String, dynamic> json) {
+  Online.fromJsonTibiaDataAPI(Map<String, dynamic> json) {
     if (json['worlds'] is! Map<String, dynamic>) return;
     if (json['worlds']['world'] is! Map<String, dynamic>) return;
     if (json['worlds']['world']['online_players'] is! List<dynamic>) return;
 
     for (final dynamic e in json['worlds']['world']['online_players']) {
+      if (e is Map<String, dynamic>) list.add(OnlineEntry.fromJson(e));
+    }
+  }
+
+  Online.fromJson(Map<String, dynamic> json) {
+    if (json['online_players'] is! List<dynamic>) return;
+
+    for (final dynamic e in json['online_players']) {
       if (e is Map<String, dynamic>) list.add(OnlineEntry.fromJson(e));
     }
   }

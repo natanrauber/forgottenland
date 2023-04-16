@@ -72,11 +72,7 @@ class HighscoresController extends Controller {
       );
 
       if (response?.statusCode == 200) {
-        Map<String, dynamic>? data;
-        List<dynamic>? auxList;
-
-        data = response?.data as Map<String, dynamic>?;
-        auxList = data?['data']['highscores']['highscore_list'] as List<dynamic>?;
+        final Record aux = Record.fromJson((response?.data as Map<String, dynamic>?) ?? <String, dynamic>{});
 
         _onlineCtrl.onlineTimes = <HighscoresEntry>[].obs;
         if (category.value == 'Experience gained') {
@@ -84,8 +80,8 @@ class HighscoresController extends Controller {
           if (period.value == 'Yesterday') await _onlineCtrl.getOnlineTimes(MyDateTime.yesterday());
         }
 
-        if (auxList?.isEmpty == true) loadedAll = true.obs;
-        if (auxList != null) _populateList(auxList);
+        if (aux.list.isEmpty == true) loadedAll = true.obs;
+        _populateList(aux.list);
       } else {
         pageCtrl = pageCtrl--;
         return loadHighscores(newPage: newPage, resetTimer: false);
