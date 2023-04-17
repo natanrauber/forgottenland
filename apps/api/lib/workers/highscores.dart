@@ -18,7 +18,7 @@ class Highscores {
     if (category != null && category.contains('onlinetime')) return _getOnlineTime(category, page);
 
     try {
-      response = await MyHttpClient().get('${PATH.tibiaDataApi}/$world/$category/$vocation/$page');
+      response = await MyHttpClient().get('${PATH.tibiaDataApi}/highscores/$world/$category/$vocation/$page');
       record = Record.fromJson((response.dataAsMap['highscores'] as Map<String, dynamic>?) ?? <String, dynamic>{});
     } catch (e) {
       return ApiResponseError(e);
