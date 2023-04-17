@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/apps/client/melos_forgottenland.iml" filepath="$PROJECT_DIR$/apps/client/melos_forgottenland.iml" />
       <module fileurl="file://$PROJECT_DIR$/apps/api/melos_forgottenlandapi.iml" filepath="$PROJECT_DIR$/apps/api/melos_forgottenlandapi.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/models/melos_models.iml" filepath="$PROJECT_DIR$/packages/models/melos_models.iml" />
+      <module fileurl="file://$PROJECT_DIR$/packages/utils/melos_utils.iml" filepath="$PROJECT_DIR$/packages/utils/melos_utils.iml" />
       <module fileurl="file://$PROJECT_DIR$/melos_flutter_skeleton.iml" filepath="$PROJECT_DIR$/melos_flutter_skeleton.iml" />
     </modules>
   </component>

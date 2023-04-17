@@ -1,3 +1,5 @@
+import 'package:utils/utils.dart';
+
 class Online {
   Online({this.list = const <OnlineEntry>[]});
 
@@ -12,6 +14,7 @@ class Online {
   }
 
   Online.fromJson(Map<String, dynamic> json) {
+    json.clean();
     if (json['online_players'] is! List<dynamic>) return;
 
     for (final dynamic e in json['online_players']) {
@@ -24,7 +27,7 @@ class Online {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['online_players'] = list.map((OnlineEntry e) => e.toJson()).toList();
-    return data;
+    return data.clean();
   }
 }
 
@@ -38,6 +41,7 @@ class OnlineEntry {
   });
 
   OnlineEntry.fromJson(Map<String, dynamic> json) {
+    json.clean();
     if (json['name'] is String) name = json['name'] as String;
     if (json['level'] is int) level = json['level'] as int;
     if (json['vocation'] is String) vocation = json['vocation'] as String;
@@ -57,6 +61,6 @@ class OnlineEntry {
     data['level'] = level;
     data['world'] = world;
     data['time'] = time;
-    return data;
+    return data.clean();
   }
 }

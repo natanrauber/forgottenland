@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:forgottenland/theme/colors.dart';
-import 'package:forgottenland/utils/utils.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:utils/utils.dart';
 
 class CardAppInfo extends StatefulWidget {
   const CardAppInfo({super.key});
@@ -12,7 +12,7 @@ class CardAppInfo extends StatefulWidget {
 }
 
 class _CardAppInfoState extends State<CardAppInfo> {
-  String appVersion = '23.04.17+3';
+  String appVersion = '23.04.17+4';
 
   @override
   Widget build(BuildContext context) => Container(

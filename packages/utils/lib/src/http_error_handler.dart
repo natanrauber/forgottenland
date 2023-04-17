@@ -1,12 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:utils/utils.dart';
 
-import 'http.dart';
-
-class HandleError {
+class MyErrorHandler {
   /// [DioError] handler for [http] request
-  static CustomResponse? dio(
+  static MyHttpResponse? dio(
     DioError e, {
     Map<String, dynamic>? headers,
     dynamic body,
@@ -21,7 +20,7 @@ class HandleError {
       );
     }
 
-    return CustomResponse.fromResponse(e.response);
+    return MyHttpResponse.fromResponse(e.response);
   }
 
   /// [SocketException] handler for [http] request

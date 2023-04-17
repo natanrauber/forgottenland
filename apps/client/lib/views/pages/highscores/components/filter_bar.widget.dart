@@ -8,6 +8,7 @@ import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
+import 'package:utils/utils.dart';
 
 class HighscoresFilterBar extends StatefulWidget {
   @override
@@ -371,7 +372,7 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
               borderRadius: BorderRadius.circular(11),
             ),
             child: const Text(
-              'Characters that were connected at server save time can have the experience gained (before server save) counted for the next day (after server save).',
+              'Characters that were connected at server save time might have the experience gained (before server save) counted for the next day (after server save).',
               style: TextStyle(
                 fontSize: 14,
                 height: 1.2,

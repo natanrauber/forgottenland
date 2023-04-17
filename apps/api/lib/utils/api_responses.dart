@@ -1,11 +1,10 @@
 import 'dart:convert';
 
 import 'package:shelf/shelf.dart';
+import 'package:utils/utils.dart';
 
-import 'datetime.dart';
-
-class ResponseSuccess extends Response {
-  ResponseSuccess({dynamic data})
+class ApiResponseSuccess extends Response {
+  ApiResponseSuccess({dynamic data})
       : super.ok(
           jsonEncode(
             {
@@ -22,8 +21,8 @@ class ResponseSuccess extends Response {
   }
 }
 
-class ResponseError extends Response {
-  ResponseError(dynamic e)
+class ApiResponseError extends Response {
+  ApiResponseError(dynamic e)
       : super.internalServerError(
           body: jsonEncode(
             {

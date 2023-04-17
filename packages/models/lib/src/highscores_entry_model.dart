@@ -1,4 +1,5 @@
 import 'package:models/models.dart';
+import 'package:utils/utils.dart';
 
 class HighscoresEntry {
   HighscoresEntry({
@@ -13,6 +14,7 @@ class HighscoresEntry {
   });
 
   HighscoresEntry.fromJson(Map<String, dynamic> json) {
+    json.clean();
     if (json['rank'] is int) rank = json['rank'] as int;
     if (json['name'] is String) name = json['name'] as String;
     if (json['level'] is int) level = json['level'] as int;
@@ -56,6 +58,6 @@ class HighscoresEntry {
     data['world'] = world?.toJson();
     data['level'] = level;
     data['value'] = value;
-    return data;
+    return data.clean();
   }
 }

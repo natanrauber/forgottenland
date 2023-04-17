@@ -8,6 +8,7 @@ import 'package:forgottenland/views/widgets/src/other/better_text.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:models/models.dart';
+import 'package:utils/utils.dart';
 
 class HighscoresItemCard extends StatefulWidget {
   const HighscoresItemCard(this.index, this.item);
@@ -201,11 +202,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
   Future<void> _loadCharacter(BuildContext context) async {
     if (widget.item.name == null) return;
-
-    await Http.handleRequest(
-      context,
-      request: () => characterCtrl.get(widget.item.name!),
-      onSuccess: (_) => Get.toNamed(Routes.character.name),
-    );
+    await characterCtrl.get(widget.item.name!);
+    Get.toNamed(Routes.character.name);
   }
 }

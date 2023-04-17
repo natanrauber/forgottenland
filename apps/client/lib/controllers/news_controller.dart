@@ -1,20 +1,19 @@
-import 'package:dio/dio.dart';
 import 'package:forgottenland/controllers/controller.dart';
-import 'package:forgottenland/utils/src/http.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:models/models.dart';
+import 'package:utils/utils.dart';
 
 class NewsController extends Controller {
   RxList<News> list = <News>[].obs;
 
-  Future<Response<dynamic>?> getNews() async {
-    Response<dynamic>? response;
+  Future<MyHttpResponse> getNews() async {
+    MyHttpResponse response;
 
     isLoading.value = true;
-    response = await Http().get('/news/latest');
+    response = await MyHttpClient().get('${PATH.tibiaDataApi}/news/latest');
 
-    if (response?.data is Map<String, dynamic>) {
-      for (final dynamic item in response?.data['news'] as List<dynamic>) {
+    if (response.success) {
+      for (final dynamic item in response.dataAsMap['news'] as List<dynamic>) {
         list.add(News.fromJson(item as Map<String, dynamic>));
       }
     }

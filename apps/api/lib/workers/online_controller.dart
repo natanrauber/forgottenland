@@ -1,11 +1,8 @@
+import 'package:forgottenlandapi/utils/api_responses.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
-
-import '../utils/datetime.dart';
-import '../utils/http.dart';
-import '../utils/responses.dart';
-import 'supabase_client.dart';
+import 'package:utils/utils.dart';
 
 abstract class IOnlineController {
   Future<Response> getOnlineNow(Request request);
@@ -27,9 +24,9 @@ class OnlineController implements IOnlineController {
       response = await MySupabaseClient().client.from('online').select().single();
       online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess(data: online.toJson());
+    return ApiResponseSuccess(data: online.toJson());
   }
 
   @override
@@ -42,9 +39,9 @@ class OnlineController implements IOnlineController {
       response = await MySupabaseClient().client.from('online-time').select().eq('day', day).single();
       online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess(data: online.toJson());
+    return ApiResponseSuccess(data: online.toJson());
   }
 
   @override
@@ -59,9 +56,9 @@ class OnlineController implements IOnlineController {
       Online onlineTime = await _getOnlineTime(onlineNow);
       await _saveOnlineTime(onlineTime);
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess();
+    return ApiResponseSuccess();
   }
 
   Future<Online> _getOnlineNow() async {
@@ -70,10 +67,10 @@ class OnlineController implements IOnlineController {
 
     for (World world in worlds) {
       int i = 1;
-      CustomResponse? response;
+      MyHttpResponse? response;
 
       do {
-        response = await Http().get('/world/$world');
+        response = await MyHttpClient().get('${PATH.tibiaDataApi}/world/$world');
 
         if (response.success) {
           Online? aux = Online.fromJsonTibiaDataAPI(response.dataAsMap);
@@ -92,7 +89,7 @@ class OnlineController implements IOnlineController {
   }
 
   Future<List<World>> _getWorlds() async {
-    final CustomResponse response = await Http().get('/worlds');
+    final MyHttpResponse response = await MyHttpClient().get('${PATH.tibiaDataApi}/worlds');
     final Map<String, dynamic>? data = response.data as Map<String, dynamic>?;
     List<World> worlds = [];
 

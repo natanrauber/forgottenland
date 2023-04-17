@@ -1,12 +1,11 @@
-import 'package:dio/dio.dart';
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/rxmodels/world_rxmodel.dart';
-import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/instance_manager.dart';
 import 'package:models/models.dart';
+import 'package:utils/utils.dart';
 
 class OnlineController extends Controller {
   WorldsController worldsCtrl = Get.find<WorldsController>();
@@ -33,16 +32,16 @@ class OnlineController extends Controller {
 
     if (worldsCtrl.list.isEmpty) await worldsCtrl.load();
 
-    final Response<dynamic>? response = await Http().get('/online', baseUrl: PATH.forgottenLandApi);
-    if (response?.statusCode == 200) _populateList(rawList, response);
+    final MyHttpResponse response = await MyHttpClient().get('${PATH.forgottenLandApi}/online');
+    if (response.success) _populateList(rawList, response);
 
     isLoading.value = false;
     return filterList();
   }
 
-  void _populateList(RxList<HighscoresEntry> list, Response<dynamic>? response) {
+  void _populateList(RxList<HighscoresEntry> list, MyHttpResponse response) {
     final Online online = Online.fromJson(
-      (response?.data['data'] as Map<String, dynamic>?) ?? <String, dynamic>{},
+      (response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{},
     );
 
     for (final OnlineEntry e in online.list) {
@@ -98,8 +97,8 @@ class OnlineController extends Controller {
 
     if (worldsCtrl.list.isEmpty) await worldsCtrl.load();
 
-    final Response<dynamic>? response = await Http().get('/onlinetime/$day', baseUrl: PATH.forgottenLandApi);
-    if (response?.statusCode == 200) _populateList(onlineTimes, response);
+    final MyHttpResponse response = await MyHttpClient().get('${PATH.forgottenLandApi}/onlinetime/$day');
+    if (response.success) _populateList(onlineTimes, response);
 
     isLoading.value = false;
   }

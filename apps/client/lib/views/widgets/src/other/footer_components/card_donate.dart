@@ -98,9 +98,8 @@ class _CardDonateState extends State<CardDonate> {
         ],
       );
 
-  Future<void>? _pushCharacterPage() => Http.handleRequest(
-        context,
-        request: () => characterCtrl.get('Awkn'),
-        onSuccess: (_) => Get.toNamed(Routes.character.name),
-      );
+  Future<void> _pushCharacterPage() async {
+    await characterCtrl.get('Awkn');
+    Get.toNamed(Routes.character.name);
+  }
 }

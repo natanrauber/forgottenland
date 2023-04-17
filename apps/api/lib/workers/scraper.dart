@@ -1,10 +1,7 @@
+import 'package:forgottenlandapi/utils/api_responses.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
-
-import '../utils/datetime.dart';
-import '../utils/http.dart';
-import '../utils/responses.dart';
-import 'supabase_client.dart';
+import 'package:utils/utils.dart';
 
 abstract class IScraper {
   Future<Response> getExpRecord(Request request);
@@ -41,9 +38,9 @@ class Scraper implements IScraper {
       Record record = await _loadCurrentExp();
       await _saveCurrentExp(record, table, operation);
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess();
+    return ApiResponseSuccess();
   }
 
   Future<Record> _loadCurrentExp() async {
@@ -56,7 +53,9 @@ class Scraper implements IScraper {
 
       do {
         aux = null;
-        CustomResponse? response = await Http().get('/highscores/$world/experience/none/$page');
+        MyHttpResponse? response = await MyHttpClient().get(
+          '${PATH.tibiaDataApi}/highscores/$world/experience/none/$page',
+        );
 
         if (response.success) {
           aux = Record.fromJson((response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
@@ -70,7 +69,7 @@ class Scraper implements IScraper {
   }
 
   Future<List<World>> _getWorlds() async {
-    final CustomResponse response = await Http().get('/worlds');
+    final MyHttpResponse response = await MyHttpClient().get('${PATH.tibiaDataApi}/worlds');
     final Map<String, dynamic>? data = response.data as Map<String, dynamic>?;
     List<World> worlds = [];
 
@@ -120,9 +119,9 @@ class Scraper implements IScraper {
       Record result = await _calcExpGainToday();
       await _saveExpGainToday(result);
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess();
+    return ApiResponseSuccess();
   }
 
   Future<Record> _calcExpGainToday() async {
@@ -160,9 +159,9 @@ class Scraper implements IScraper {
       Record result = await _calcExpGainLastDay();
       await _saveExpGainLastDay(result);
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess();
+    return ApiResponseSuccess();
   }
 
   Future<Record> _calcExpGainLastDay() async {
@@ -231,9 +230,9 @@ class Scraper implements IScraper {
       Record result = await _calcExpGainLast7Days();
       await _saveExpGainLast7Days(result);
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess();
+    return ApiResponseSuccess();
   }
 
   Future<Record> _calcExpGainLast7Days() async {
@@ -270,9 +269,9 @@ class Scraper implements IScraper {
       Record result = await _calcExpGainLast30Days();
       await _saveExpGainLast30Days(result);
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess();
+    return ApiResponseSuccess();
   }
 
   Future<Record> _calcExpGainLast30Days() async {
