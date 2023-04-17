@@ -45,4 +45,24 @@ class World {
 
   @override
   String toString() => '$name';
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['status'] = status;
+    data['players_online'] = playersOnline;
+    data['location'] = location;
+    data['pvp_type'] = pvpType;
+    data['premium_only'] = premiumOnly;
+    data['transfer_type'] = transferType;
+    data['battleye_protected'] = battleyeProtected;
+    data['battleye_date'] = battleyeProtected == true
+        ? battleyeType == 'Green'
+            ? 'Release'
+            : ''
+        : 'None';
+    data['game_world_type'] = worldType;
+    data['tournament_world_type'] = tournamentWorldType;
+    return data;
+  }
 }

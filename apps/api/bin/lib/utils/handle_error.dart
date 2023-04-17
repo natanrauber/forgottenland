@@ -21,7 +21,7 @@ class HandleError {
       );
     }
 
-    return CustomResponse(e.response);
+    return CustomResponse.fromResponse(e.response);
   }
 
   /// [SocketException] handler for [http] request

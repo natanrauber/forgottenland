@@ -1,7 +1,6 @@
+import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
 
-import '../models/record_model.dart';
-import '../models/world_model.dart';
 import '../utils/datetime.dart';
 import '../utils/http.dart';
 import '../utils/responses.dart';
@@ -49,7 +48,7 @@ class Scraper implements IScraper {
 
   Future<Record> _loadCurrentExp() async {
     List<World> worlds = await _getWorlds();
-    Record currentExp = Record(highscoreList: <HighscoreEntry>[]);
+    Record currentExp = Record(list: <HighscoresEntry>[]);
 
     for (World world in worlds) {
       int page = 1;
@@ -59,22 +58,20 @@ class Scraper implements IScraper {
         aux = null;
         CustomResponse? response = await Http().get('/highscores/$world/experience/none/$page');
 
-        if (response?.statusCode == 200) {
-          Map<String, dynamic> json =
-              (response?.dataAsMap['highscores'] as Map<String, dynamic>?) ?? <String, dynamic>{};
-          aux = Record.fromJson(json);
-          currentExp.highscoreList.addAll(aux.highscoreList);
+        if (response.success) {
+          aux = Record.fromJson((response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
+          currentExp.list.addAll(aux.list);
           page++;
         }
-      } while ((aux?.highscoreList.last.level ?? 0) > 30);
+      } while ((aux?.list.last.level ?? 0) > 30);
     }
 
     return currentExp;
   }
 
   Future<List<World>> _getWorlds() async {
-    final CustomResponse? response = await Http().get('/worlds');
-    final Map<String, dynamic>? data = response?.data as Map<String, dynamic>?;
+    final CustomResponse response = await Http().get('/worlds');
+    final Map<String, dynamic>? data = response.data as Map<String, dynamic>?;
     List<World> worlds = [];
 
     if (data?['worlds']['regular_worlds'] is List<dynamic>) {
@@ -93,7 +90,7 @@ class Scraper implements IScraper {
       if (operation == 'update') {
         return MySupabaseClient().client.from(table).update(
           <String, dynamic>{
-            'highscores': record.toJson(),
+            'data': record.toJson(),
             'timestamp': MyDateTime.timeStamp(),
           },
         ).match(
@@ -105,7 +102,7 @@ class Scraper implements IScraper {
         <String, dynamic>{
           'date': MyDateTime.today(),
           'world': 'All',
-          'highscores': record.toJson(),
+          'data': record.toJson(),
         },
       );
     } catch (e) {
@@ -129,19 +126,17 @@ class Scraper implements IScraper {
   }
 
   Future<Record> _calcExpGainToday() async {
-    Map<String, dynamic> json = await _getWhere('exp-record', MyDateTime.today());
-    Record start = Record.fromJson(json);
+    dynamic response = await _getWhere('exp-record', MyDateTime.today());
+    Record start = Record.fromJson(response['data']);
 
-    dynamic response;
     response = await MySupabaseClient().client.from('current-exp').select().single();
-    json = (response['highscores'] as Map<String, dynamic>?) ?? <String, dynamic>{};
+    Record end = Record.fromJson(response['data']);
 
-    Record end = Record.fromJson(json);
-    Record result = Record(highscoreList: <HighscoreEntry>[]);
+    Record result = Record(list: <HighscoresEntry>[]);
 
-    result.highscoreList.clear();
-    result.highscoreList.addAll(_getExpDiff(start, end));
-    _sortList(result.highscoreList);
+    result.list.clear();
+    result.list.addAll(_getExpDiff(start, end));
+    _sortList(result.list);
 
     return result;
   }
@@ -150,7 +145,7 @@ class Scraper implements IScraper {
         <String, dynamic>{
           'date': MyDateTime.today(),
           'world': 'All',
-          'highscores': data.toJson(),
+          'data': data.toJson(),
           'timestamp': MyDateTime.timeStamp(),
         },
       );
@@ -177,29 +172,27 @@ class Scraper implements IScraper {
     json = await _getWhere('exp-record', MyDateTime.today());
     Record today = Record.fromJson(json);
 
-    Record result = Record(highscoreList: <HighscoreEntry>[]);
+    Record result = Record(list: <HighscoresEntry>[]);
 
-    result.highscoreList.clear();
-    result.highscoreList.addAll(_getExpDiff(yesterday, today));
-    _sortList(result.highscoreList);
+    result.list.clear();
+    result.list.addAll(_getExpDiff(yesterday, today));
+    _sortList(result.list);
 
     return result;
   }
 
-  Future<Map<String, dynamic>> _getWhere(String table, String date) async {
-    dynamic response;
-    response = await MySupabaseClient().client.from(table).select().eq('date', date).single();
-    return (response['highscores'] as Map<String, dynamic>?) ?? <String, dynamic>{};
+  Future<dynamic> _getWhere(String table, String date) async {
+    return await MySupabaseClient().client.from(table).select().eq('date', date).single();
   }
 
-  List<HighscoreEntry> _getExpDiff(Record yesterday, Record today) {
-    List<HighscoreEntry> newList;
-    newList = <HighscoreEntry>[];
+  List<HighscoresEntry> _getExpDiff(Record yesterday, Record today) {
+    List<HighscoresEntry> newList;
+    newList = <HighscoresEntry>[];
 
-    for (final HighscoreEntry t in today.highscoreList) {
+    for (final HighscoresEntry t in today.list) {
       if (_isValidEntry(t, yesterday)) {
-        HighscoreEntry y;
-        y = yesterday.highscoreList.firstWhere((HighscoreEntry v) => v.name == t.name);
+        HighscoresEntry y;
+        y = yesterday.list.firstWhere((HighscoresEntry v) => v.name == t.name);
 
         t.value = t.value! - y.value!;
 
@@ -210,21 +203,21 @@ class Scraper implements IScraper {
     return newList;
   }
 
-  bool _isValidEntry(HighscoreEntry t, Record record) {
+  bool _isValidEntry(HighscoresEntry t, Record record) {
     if (t.value is! int) return false;
-    if (!record.highscoreList.any((HighscoreEntry y) => y.name == t.name)) return false;
-    return record.highscoreList.firstWhere((HighscoreEntry y) => y.name == t.name).value is int;
+    if (!record.list.any((HighscoresEntry y) => y.name == t.name)) return false;
+    return record.list.firstWhere((HighscoresEntry y) => y.name == t.name).value is int;
   }
 
-  void _sortList(List<HighscoreEntry> list) => list.sort(
-        (HighscoreEntry a, HighscoreEntry b) => b.value!.compareTo(a.value!),
+  void _sortList(List<HighscoresEntry> list) => list.sort(
+        (HighscoresEntry a, HighscoresEntry b) => b.value!.compareTo(a.value!),
       );
 
   Future<dynamic> _saveExpGainLastDay(Record data) => MySupabaseClient().client.from('exp-gain-last-day').insert(
         <String, dynamic>{
           'date': MyDateTime.yesterday(),
           'world': 'All',
-          'highscores': data.toJson(),
+          'data': data.toJson(),
         },
       );
 
@@ -244,17 +237,17 @@ class Scraper implements IScraper {
   }
 
   Future<Record> _calcExpGainLast7Days() async {
-    Map<String, dynamic> json = await _getWhere('exp-record', MyDateTime.aWeekAgo());
-    Record start = Record.fromJson(json);
+    dynamic response = await _getWhere('exp-record', MyDateTime.aWeekAgo());
+    Record start = Record.fromJson(response['data']);
 
-    json = await _getWhere('exp-record', MyDateTime.today());
-    Record end = Record.fromJson(json);
+    response = await _getWhere('exp-record', MyDateTime.today());
+    Record end = Record.fromJson(response['data']);
 
-    Record result = Record(highscoreList: <HighscoreEntry>[]);
+    Record result = Record(list: <HighscoresEntry>[]);
 
-    result.highscoreList.clear();
-    result.highscoreList.addAll(_getExpDiff(start, end));
-    _sortList(result.highscoreList);
+    result.list.clear();
+    result.list.addAll(_getExpDiff(start, end));
+    _sortList(result.list);
 
     return result;
   }
@@ -263,7 +256,7 @@ class Scraper implements IScraper {
         <String, dynamic>{
           'date': MyDateTime.yesterday(),
           'world': 'All',
-          'highscores': data.toJson(),
+          'data': data.toJson(),
         },
       );
 
@@ -289,11 +282,11 @@ class Scraper implements IScraper {
     json = await _getWhere('exp-record', MyDateTime.today());
     Record end = Record.fromJson(json);
 
-    Record result = Record(highscoreList: <HighscoreEntry>[]);
+    Record result = Record(list: <HighscoresEntry>[]);
 
-    result.highscoreList.clear();
-    result.highscoreList.addAll(_getExpDiff(start, end));
-    _sortList(result.highscoreList);
+    result.list.clear();
+    result.list.addAll(_getExpDiff(start, end));
+    _sortList(result.list);
 
     return result;
   }
@@ -302,7 +295,7 @@ class Scraper implements IScraper {
         <String, dynamic>{
           'date': MyDateTime.yesterday(),
           'world': 'All',
-          'highscores': data.toJson(),
+          'data': data.toJson(),
         },
       );
 }

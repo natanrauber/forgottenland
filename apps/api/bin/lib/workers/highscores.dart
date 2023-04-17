@@ -1,3 +1,4 @@
+import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
@@ -12,59 +13,65 @@ class Highscores {
     String? category = request.params['category'];
     String? vocation = request.params['vocation'];
     int page = int.tryParse(request.params['page'] ?? '') ?? 1;
+
     CustomResponse? response;
+    Record record;
 
     if (category != null && category.contains('experiencegained')) return _getExpGain(category, page);
     if (category != null && category.contains('onlinetime')) return _getOnlineTime(category, page);
 
     try {
       response = await Http().get('https://api.tibiadata.com/v3/highscores/$world/$category/$vocation/$page');
+      record = Record.fromJson((response.dataAsMap['highscores'] as Map<String, dynamic>?) ?? <String, dynamic>{});
     } catch (e) {
       return ResponseError(e);
     }
-    return ResponseSuccess(data: response?.data);
+    return ResponseSuccess(data: record.toJson());
   }
 
   Future<Response> _getExpGain(String category, int page) async {
     dynamic response;
+    Record record;
 
-    Map<String, String> table = <String, String>{
+    Map<String, String> tables = <String, String>{
       'experiencegained+today': 'exp-gain-today',
       'experiencegained+yesterday': 'exp-gain-last-day',
       'experiencegained+last7days': 'exp-gain-last-7-days',
       'experiencegained+last30days': 'exp-gain-last-30-days',
     };
 
-    Map<String, String> date = <String, String>{
+    Map<String, String> dates = <String, String>{
       'experiencegained+today': MyDateTime.today(),
       'experiencegained+yesterday': MyDateTime.yesterday(),
       'experiencegained+last7days': MyDateTime.yesterday(),
       'experiencegained+last30days': MyDateTime.yesterday(),
     };
 
+    String table = tables[category] ?? '';
+    String date = dates[category] ?? '';
+
     try {
-      response = await MySupabaseClient().client.from(table[category]!).select().eq('date', date[category]).single();
+      response = await MySupabaseClient().client.from(table).select().eq('date', date).single();
+      record = Record.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
 
-      List data = (response['highscores']['highscore_list'] as List<dynamic>?) ?? <dynamic>[];
-
-      if ((page - 1) * 50 > data.length) {
-        response['highscores']['highscore_list'] = [];
+      if ((page - 1) * 50 > record.list.length) {
+        record.list = [];
       } else {
         int start = (page - 1) * 50;
         int end = page * 50;
         if (start < 0) start = 0;
-        if (end > data.length + 1) end = data.length;
-        response['highscores']['highscore_list'] = data.getRange(start, end).toList();
+        if (end > record.list.length + 1) end = record.list.length;
+        record.list = record.list.getRange(start, end).toList();
       }
     } catch (e) {
       return ResponseError(e);
     }
-    return ResponseSuccess(data: response);
+    return ResponseSuccess(data: record.toJson());
   }
 
   Future<Response> _getOnlineTime(String category, int page) async {
     dynamic response;
-    dynamic data;
+    Online online;
 
     Map<String, String> date = <String, String>{
       'onlinetime+today': MyDateTime.today(),
@@ -73,22 +80,20 @@ class Highscores {
 
     try {
       response = await MySupabaseClient().client.from('online-time').select().eq('day', date[category]).single();
-      List list = (response['players']['online_players'] as List<dynamic>?) ?? <dynamic>[];
-      data = <String, dynamic>{};
-      data['highscores'] = <String, dynamic>{};
+      online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
 
-      if ((page - 1) * 50 > list.length) {
-        data['highscores']['highscore_list'] = [];
+      if ((page - 1) * 50 > online.list.length) {
+        online.list = [];
       } else {
         int start = (page - 1) * 50;
         int end = page * 50;
         if (start < 0) start = 0;
-        if (end > list.length + 1) end = list.length;
-        data['highscores']['highscore_list'] = list.getRange(start, end).toList();
+        if (end > online.list.length + 1) end = online.list.length;
+        online.list = online.list.getRange(start, end).toList();
       }
     } catch (e) {
       return ResponseError(e);
     }
-    return ResponseSuccess(data: data);
+    return ResponseSuccess(data: online.toJson());
   }
 }

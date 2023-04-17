@@ -1,4 +1,4 @@
-import 'package:models/src/world_model.dart';
+import 'package:models/models.dart';
 
 class HighscoresEntry {
   HighscoresEntry({
@@ -25,6 +25,13 @@ class HighscoresEntry {
     }
   }
 
+  HighscoresEntry.fromOnlineEntry(OnlineEntry online) {
+    name = online.name;
+    level = online.level;
+    vocation = online.vocation;
+    value = online.time;
+  }
+
   int? rank;
   String? name;
   String? vocation;
@@ -39,7 +46,7 @@ class HighscoresEntry {
     data['rank'] = rank;
     data['name'] = name;
     data['vocation'] = vocation;
-    data['world'] = world;
+    data['world'] = world?.toJson();
     data['level'] = level;
     data['value'] = value;
     return data;

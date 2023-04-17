@@ -41,18 +41,15 @@ class OnlineController extends Controller {
   }
 
   void _populateList(RxList<HighscoresEntry> list, Response<dynamic>? response) {
-    if (response?.data is! Map<String, dynamic>) return;
-    if (response?.data['data'] is! Map<String, dynamic>) return;
-    if (response?.data['data']['players'] is! Map<String, dynamic>) return;
-    if (response?.data['data']['players']['online_players'] is! List<dynamic>) return;
+    final Online online = Online.fromJson(
+      (response?.data['data'] as Map<String, dynamic>?) ?? <String, dynamic>{},
+    );
 
-    for (final dynamic e in response?.data['data']['players']['online_players'] as List<dynamic>) {
-      if (e is Map<String, dynamic>) {
-        final HighscoresEntry entry = HighscoresEntry.fromJson(e);
-        final World? world = worldsCtrl.list.getByName(entry.world?.name);
-        if (world != null) entry.world = world;
-        list.add(entry);
-      }
+    for (final OnlineEntry e in online.list) {
+      final HighscoresEntry entry = HighscoresEntry.fromOnlineEntry(e);
+      final World? world = worldsCtrl.list.getByName(e.world);
+      if (world != null) entry.world = world;
+      list.add(entry);
     }
   }
 

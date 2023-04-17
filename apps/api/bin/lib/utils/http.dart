@@ -6,24 +6,41 @@ import 'handle_error.dart';
 import 'paths.dart';
 
 class CustomResponse {
-  CustomResponse(this._response);
+  CustomResponse({
+    this.response,
+    this.statusCode,
+    this.statusMessage,
+    this.data,
+  });
 
-  final Response<dynamic>? _response;
+  CustomResponse.fromResponse(this.response)
+      : data = response?.data,
+        statusCode = response?.statusCode,
+        statusMessage = response?.statusMessage;
 
-  int? get statusCode => _response?.statusCode;
+  final Response<dynamic>? response;
+  final int? statusCode;
+  final String? statusMessage;
+  final dynamic data;
 
-  String? get statusMessage => _response?.statusMessage;
+  bool get success => <int>[200, 201, 204].contains(statusCode);
 
-  dynamic get data => _response?.data;
+  bool get hasData {
+    if (data is Map<String, dynamic> || data is List<dynamic>) return true;
+    return false;
+  }
 
-  RequestOptions? get requestOptions => _response?.requestOptions;
+  Map<String, dynamic> get dataAsMap {
+    if (data is Map<String, dynamic>) return data as Map<String, dynamic>;
+    return <String, dynamic>{};
+  }
 
-  Map<String, dynamic> get dataAsMap => _response?.data is Map<String, dynamic>
-      ? _response?.data as Map<String, dynamic>
-      : <String, dynamic>{};
+  List<dynamic> get dataAsList {
+    if (data is List<dynamic>) return data as List<dynamic>;
+    return <dynamic>[];
+  }
 
-  List<dynamic> get dataAsList =>
-      _response?.data is List<dynamic> ? _response?.data as List<dynamic> : <dynamic>[];
+  RequestOptions? get requestOptions => response?.requestOptions;
 }
 
 class Http {
@@ -37,10 +54,7 @@ class Http {
 
   Dio _dio = Dio();
 
-  BaseOptions getOptions() => BaseOptions(
-        // connectTimeout: 10000,
-        baseUrl: PATH.api,
-      );
+  BaseOptions getOptions() => BaseOptions(baseUrl: PATH.api);
 
   /// print request properties
   static void printRequest(
@@ -53,13 +67,14 @@ class Http {
       );
 
   /// Handy method to make http [GET] request
-  Future<CustomResponse?> get(String path) async {
+  Future<CustomResponse> get(String path) async {
     CustomResponse? response;
 
     try {
-      response = CustomResponse(await _dio.get(path));
+      response = CustomResponse.fromResponse(await _dio.get(path));
     } on DioError catch (e) {
-      return HandleError.dio(e);
+      HandleError.dio(e);
+      return CustomResponse(statusCode: 500);
     } on SocketException catch (e) {
       HandleError.socket(e);
     } catch (e) {
@@ -68,7 +83,6 @@ class Http {
       printRequest(response);
     }
 
-    return response ??
-        CustomResponse(Response<dynamic>(requestOptions: RequestOptions(path: path)));
+    return response ?? CustomResponse.fromResponse(Response<dynamic>(requestOptions: RequestOptions(path: path)));
   }
 }
