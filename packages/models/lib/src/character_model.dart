@@ -1,3 +1,5 @@
+import 'package:utils/utils.dart';
+
 class Character {
   Character({
     this.data,
@@ -8,6 +10,7 @@ class Character {
   });
 
   Character.fromJson(Map<String, dynamic> json) {
+    json.clean();
     data = json['character'] != null ? CharacterData.fromJson(json['character'] as Map<String, dynamic>) : null;
     if (json['achievements'] != null && (json['achievements'] as List<dynamic>).isNotEmpty) {
       achievements = <Achievements>[];
@@ -55,6 +58,7 @@ class CharacterData {
   });
 
   CharacterData.fromJson(Map<String, dynamic> json) {
+    json.clean();
     name = json['name'] as String?;
     formerNames = json['former_names'] as List<dynamic>?;
     title = json['title'] as String?;
@@ -94,6 +98,7 @@ class CharacterGuild {
   CharacterGuild();
 
   CharacterGuild.fromJson(Map<String, dynamic> json) {
+    json.clean();
     name = json['name'] as String?;
     rank = json['rank'] as String?;
   }
@@ -106,6 +111,7 @@ class Achievements {
   Achievements({this.grade, this.name});
 
   Achievements.fromJson(Map<String, dynamic> json) {
+    json.clean();
     grade = json['grade'] as int?;
     name = json['name'] as String?;
   }
@@ -118,6 +124,7 @@ class Deaths {
   Deaths({this.date, this.level, this.reason, this.involved});
 
   Deaths.fromJson(Map<String, dynamic> json) {
+    json.clean();
     date = '${json['time'].substring(0, 19)}';
     level = json['level'] as int;
     reason = json['reason'] as String;
@@ -139,6 +146,7 @@ class Involved {
   Involved({this.name});
 
   Involved.fromJson(Map<String, dynamic> json) {
+    json.clean();
     name = json['name'] as String;
   }
 
@@ -149,6 +157,7 @@ class AccountInformation {
   AccountInformation({this.loyaltyTitle, this.created});
 
   AccountInformation.fromJson(Map<String, dynamic> json) {
+    json.clean();
     loyaltyTitle = json['loyalty_title'] as String;
     created = '${json['created']['date'].substring(0, 19)} ${json['created']['timezone']}';
   }
@@ -161,6 +170,7 @@ class OtherCharacters {
   OtherCharacters({this.name, this.world, this.status});
 
   OtherCharacters.fromJson(Map<String, dynamic> json) {
+    json.clean();
     name = json['name'] as String;
     world = json['world'] as String;
     status = json['status'] as String;

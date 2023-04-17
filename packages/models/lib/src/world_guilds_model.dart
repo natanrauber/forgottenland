@@ -1,7 +1,10 @@
+import 'package:utils/utils.dart';
+
 class WorldGuilds {
   WorldGuilds({this.guilds});
 
   WorldGuilds.fromJson(Map<String, dynamic> json) {
+    json.clean();
     guilds = json['guilds'] != null ? Guilds.fromJson(json['guilds'] as Map<String, dynamic>) : null;
   }
 
@@ -12,6 +15,7 @@ class Guilds {
   Guilds({this.world, this.active});
 
   Guilds.fromJson(Map<String, dynamic> json) {
+    json.clean();
     world = json['world'] as String;
     if (json['active'] != null) {
       active = <Active>[];
@@ -30,6 +34,7 @@ class Active {
   Active({this.name, this.desc, this.guildlogo});
 
   Active.fromJson(Map<String, dynamic> json) {
+    json.clean();
     name = json['name'] as String;
     desc = json['desc'] as String;
     guildlogo = json['guildlogo'] as String;

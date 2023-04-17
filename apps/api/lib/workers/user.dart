@@ -1,10 +1,8 @@
 import 'dart:convert';
 
+import 'package:forgottenlandapi/utils/api_responses.dart';
 import 'package:shelf/shelf.dart';
-
-import '../utils/datetime.dart';
-import '../utils/responses.dart';
-import 'supabase_client.dart';
+import 'package:utils/utils.dart';
 
 class User {
   Future<Response> login(Request request) async {
@@ -35,9 +33,9 @@ class User {
         );
       }
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess(
+    return ApiResponseSuccess(
       data: {
         "session_id": sessionId,
         "char_name": response["char_name"],
@@ -58,9 +56,9 @@ class User {
         response = await MySupabaseClient().client.from('account').select().eq('id', response['account_id']).single();
       }
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess(
+    return ApiResponseSuccess(
       data: {
         "session_id": sessionId,
         "char_name": response["char_name"],

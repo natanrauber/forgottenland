@@ -1,23 +1,20 @@
-import 'package:dio/dio.dart';
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/rxmodels/character_rxmodel.dart';
-import 'package:forgottenland/utils/src/http.dart';
 import 'package:models/models.dart';
+import 'package:utils/utils.dart';
 
 class CharacterController extends Controller {
   RxCharacter data = Character().obs;
 
-  Future<Response<dynamic>?> get(String name) async {
+  Future<MyHttpResponse> get(String name) async {
     isLoading.value = true;
     data.value = Character();
 
-    final Response<dynamic>? response = await Http().get(
-      '/character/$name',
-    );
+    final MyHttpResponse response = await MyHttpClient().get('${PATH.tibiaDataApi}/character/$name');
 
-    if (response?.data is Map<String, dynamic>) {
-      if (response?.data['characters'] is Map<String, dynamic>) {
-        data.value = Character.fromJson(response?.data['characters'] as Map<String, dynamic>);
+    if (response.success) {
+      if (response.dataAsMap['characters'] is Map<String, dynamic>) {
+        data.value = Character.fromJson(response.dataAsMap['characters'] as Map<String, dynamic>);
       }
     }
 

@@ -1,3 +1,5 @@
+import 'package:utils/utils.dart';
+
 class World {
   World({
     this.name,
@@ -14,6 +16,7 @@ class World {
   });
 
   World.fromJson(Map<String, dynamic> json) {
+    json.clean();
     name = json['name'] as String?;
     status = json['status'] as String?;
     playersOnline = json['players_online'] as int?;
@@ -63,6 +66,6 @@ class World {
         : 'None';
     data['game_world_type'] = worldType;
     data['tournament_world_type'] = tournamentWorldType;
-    return data;
+    return data.clean();
   }
 }

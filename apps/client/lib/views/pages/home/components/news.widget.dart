@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/news_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
-import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/buttons/card_button.widget.dart';
 import 'package:forgottenland/views/widgets/src/other/app_header.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/instance_manager.dart';
 import 'package:models/models.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:utils/utils.dart';
 
 class NewsWidget extends StatefulWidget {
   const NewsWidget({super.key});

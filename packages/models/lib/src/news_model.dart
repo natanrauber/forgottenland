@@ -1,3 +1,5 @@
+import 'package:utils/utils.dart';
+
 class News {
   News({
     this.id,
@@ -9,6 +11,7 @@ class News {
   });
 
   News.fromJson(Map<String, dynamic> json) {
+    json.clean();
     id = json['id'] as int?;
     date = json['date'] as String?;
     news = json['news'] as String?;

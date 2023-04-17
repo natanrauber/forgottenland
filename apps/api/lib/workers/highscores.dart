@@ -1,11 +1,8 @@
+import 'package:forgottenlandapi/utils/api_responses.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
-
-import '../utils/datetime.dart';
-import '../utils/http.dart';
-import '../utils/responses.dart';
-import 'supabase_client.dart';
+import 'package:utils/utils.dart';
 
 class Highscores {
   Future<Response> get(Request request) async {
@@ -14,19 +11,19 @@ class Highscores {
     String? vocation = request.params['vocation'];
     int page = int.tryParse(request.params['page'] ?? '') ?? 1;
 
-    CustomResponse? response;
+    MyHttpResponse? response;
     Record record;
 
     if (category != null && category.contains('experiencegained')) return _getExpGain(category, page);
     if (category != null && category.contains('onlinetime')) return _getOnlineTime(category, page);
 
     try {
-      response = await Http().get('https://api.tibiadata.com/v3/highscores/$world/$category/$vocation/$page');
+      response = await MyHttpClient().get('${PATH.tibiaDataApi}/$world/$category/$vocation/$page');
       record = Record.fromJson((response.dataAsMap['highscores'] as Map<String, dynamic>?) ?? <String, dynamic>{});
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess(data: record.toJson());
+    return ApiResponseSuccess(data: record.toJson());
   }
 
   Future<Response> _getExpGain(String category, int page) async {
@@ -64,9 +61,9 @@ class Highscores {
         record.list = record.list.getRange(start, end).toList();
       }
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess(data: record.toJson());
+    return ApiResponseSuccess(data: record.toJson());
   }
 
   Future<Response> _getOnlineTime(String category, int page) async {
@@ -92,8 +89,8 @@ class Highscores {
         online.list = online.list.getRange(start, end).toList();
       }
     } catch (e) {
-      return ResponseError(e);
+      return ApiResponseError(e);
     }
-    return ResponseSuccess(data: online.toJson());
+    return ApiResponseSuccess(data: online.toJson());
   }
 }

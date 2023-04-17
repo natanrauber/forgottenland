@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forgottenland/theme/colors.dart';
-import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:utils/utils.dart';
 
 class GuildPage extends StatelessWidget {
   @override

@@ -1,3 +1,5 @@
+import 'package:utils/utils.dart';
+
 class Guild {
   Guild({
     this.name,
@@ -27,6 +29,7 @@ class Guild {
   });
 
   Guild.fromJson(Map<String, dynamic> json) {
+    json.clean();
     if (json['guild']['members'] != null) {
       ranks = <GuildRank>[];
       for (final Map<String, dynamic> v in json['guild']['members']) {
@@ -128,6 +131,7 @@ class Guildhall {
   Guildhall({this.name, this.town, this.paid, this.world, this.houseid});
 
   Guildhall.fromJson(Map<String, dynamic> json) {
+    json.clean();
     name = json['name'] as String;
     town = json['town'] as String;
     paid = json['paid'] as String;
@@ -146,6 +150,7 @@ class GuildRank {
   GuildRank({this.rankTitle, this.members});
 
   GuildRank.fromJson(Map<String, dynamic> json) {
+    json.clean();
     rankTitle = json['rank_title'] as String;
     if (json['characters'] != null) {
       members = <GuildMember>[];
@@ -171,6 +176,7 @@ class GuildMember {
   });
 
   GuildMember.fromJson(Map<String, dynamic> json) {
+    json.clean();
     name = json['name'] as String;
     nick = json['nick'] as String;
     level = json['level'] as int;

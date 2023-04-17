@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
-import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/instance_manager.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:utils/utils.dart';
 
 class CharacterPage extends StatefulWidget {
   @override
@@ -22,13 +22,7 @@ class _CharacterPageState extends State<CharacterPage> {
   final TextController controller = TextController();
   Timer timer = Timer(Duration.zero, () {});
 
-  Future<void> _getCharacter(String name) async {
-    await Http.handleRequest(
-      context,
-      showError: false,
-      request: () => characterCtrl.get(name),
-    );
-  }
+  Future<void> _getCharacter(String name) async => characterCtrl.get(name);
 
   @override
   Widget build(BuildContext context) => Obx(

@@ -1,34 +1,24 @@
-import 'package:dio/dio.dart';
 import 'package:forgottenland/controllers/controller.dart';
-import 'package:forgottenland/utils/src/http.dart';
 import 'package:models/models.dart';
+import 'package:utils/utils.dart';
 
 class GuildsController extends Controller {
   final List<Guild> list = <Guild>[];
 
-  /// [load guild list]
   Future<bool> load(List<World> worlds) async {
     list.clear();
 
-    Response<dynamic>? response;
+    MyHttpResponse response;
 
     for (final World world in worlds) {
-      response = await Http().get(
-        '/guilds/${world.name}',
-      );
+      response = await MyHttpClient().get('${PATH.tibiaDataApi}/guilds/${world.name}');
 
-      final WorldGuilds worldGuildList = WorldGuilds.fromJson(
-        response?.data as Map<String, dynamic>,
-      );
+      final WorldGuilds worldGuildList = WorldGuilds.fromJson(response.dataAsMap);
 
       for (final Active activeGuild in worldGuildList.guilds?.active ?? <Active>[]) {
-        response = await Http().get(
-          '/guild/${activeGuild.name}.json',
-        );
+        response = await MyHttpClient().get('${PATH.tibiaDataApi}/guild/${activeGuild.name}.json');
 
-        final Guild guild = Guild.fromJson(
-          response?.data as Map<String, dynamic>,
-        );
+        final Guild guild = Guild.fromJson(response.dataAsMap);
 
         if (guild.rookerGuild == true) {
           list.add(guild);

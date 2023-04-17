@@ -5,10 +5,10 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/rxmodels/user_rxmodel.dart';
-import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:models/models.dart';
+import 'package:utils/utils.dart';
 
 class UserController extends Controller {
   RxBool isLoggedIn = false.obs;
@@ -18,23 +18,22 @@ class UserController extends Controller {
   TextController emailCtrl = TextController();
   TextController passwordCtrl = TextController();
 
-  Future<Response<dynamic>?> login() async {
+  Future<MyHttpResponse> login() async {
     isLoading.value = true;
 
-    final Response<dynamic>? response = await Http().post(
-      '/login',
+    final MyHttpResponse response = await MyHttpClient().post(
+      '${PATH.forgottenLandApi}/login',
       <String, dynamic>{
         'email': emailCtrl.text,
         'password': passwordCtrl.text,
         'device': (await DeviceInfoPlugin().deviceInfo).data.toString(),
       },
-      baseUrl: PATH.forgottenLandApi,
     );
 
-    if (response?.statusCode == 200) {
-      document.cookie = 'session_id=${response?.data['data']['session_id']}';
+    if (response.success) {
+      document.cookie = 'session_id=${response.dataAsMap['data']['session_id']}';
       isLoggedIn.value = true;
-      data = User.fromJson(response?.data['data'] as Map<String, dynamic>).obs;
+      data = User.fromJson(response.dataAsMap['data'] as Map<String, dynamic>).obs;
     }
 
     isLoading.value = false;
@@ -50,7 +49,7 @@ class UserController extends Controller {
     return null;
   }
 
-  Future<Response<dynamic>?> retrieveSession() async {
+  Future<MyHttpResponse?> retrieveSession() async {
     if (isLoggedIn.value) return null;
     if (isLoading.isTrue) return null;
 
@@ -59,17 +58,16 @@ class UserController extends Controller {
 
     isLoading.value = true;
 
-    final Response<dynamic>? response = await Http().post(
-      '/revive',
+    final MyHttpResponse response = await MyHttpClient().post(
+      '${PATH.forgottenLandApi}/revive',
       <String, dynamic>{
         'session_id': sessionId,
       },
-      baseUrl: PATH.forgottenLandApi,
     );
 
-    if (response?.statusCode == 200) {
+    if (response.success) {
       isLoggedIn.value = true;
-      data = User.fromJson(response?.data['data'] as Map<String, dynamic>).obs;
+      data = User.fromJson(response.dataAsMap['data'] as Map<String, dynamic>).obs;
     }
 
     isLoading.value = false;

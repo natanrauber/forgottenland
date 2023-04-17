@@ -11,6 +11,7 @@ import 'package:forgottenland/views/pages/highscores/components/highscores_item.
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
+import 'package:utils/utils.dart';
 
 class HighscoresPage extends StatefulWidget {
   const HighscoresPage({this.category, this.period});

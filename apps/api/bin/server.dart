@@ -1,13 +1,12 @@
 import 'dart:io';
 
+import 'package:forgottenlandapi/workers/highscores.dart';
+import 'package:forgottenlandapi/workers/online_controller.dart';
+import 'package:forgottenlandapi/workers/scraper.dart';
+import 'package:forgottenlandapi/workers/user.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
-
-import 'lib/workers/highscores.dart';
-import 'lib/workers/online_controller.dart';
-import 'lib/workers/scraper.dart';
-import 'lib/workers/user.dart';
 
 // Configure routes.
 final _router = Router()

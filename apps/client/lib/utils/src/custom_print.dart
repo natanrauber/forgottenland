@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:forgottenland/utils/utils.dart';
+import 'package:utils/utils.dart';
 
 /// define [customPrint]
 typedef CustomPrintCallback = void Function(

@@ -1,14 +1,12 @@
-import 'package:dio/dio.dart';
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/controllers/online_controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/rxmodels/world_rxmodel.dart';
-import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/instance_manager.dart';
 import 'package:models/models.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:utils/utils.dart';
 
 class HighscoresController extends Controller {
   final OnlineController _onlineCtrl = Get.find<OnlineController>();
@@ -44,7 +42,7 @@ class HighscoresController extends Controller {
   }
 
   Future<void> loadHighscores({bool newPage = false, bool resetTimer = true}) async {
-    Response<dynamic>? response;
+    MyHttpResponse response;
 
     pageCtrl.value = newPage ? pageCtrl.value + 1 : 1;
     if (!newPage) loadedAll = false.obs;
@@ -66,13 +64,14 @@ class HighscoresController extends Controller {
       if (cat == 'Experience gained') cat = '$cat+$period';
       if (cat == 'Online time') cat = '$cat+$period';
 
-      response = await Http().get(
-        '/highscores/$world/$cat/none/$pageCtrl'.toLowerCase().replaceAll(' ', ''),
-        baseUrl: PATH.forgottenLandApi,
+      response = await MyHttpClient().get(
+        '${PATH.forgottenLandApi}/highscores/$world/$cat/none/$pageCtrl'.toLowerCase().replaceAll(' ', ''),
       );
 
-      if (response?.statusCode == 200) {
-        final Record aux = Record.fromJson((response?.data['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
+      if (response.success) {
+        final Record aux = Record.fromJson(
+          (response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{},
+        );
         _onlineCtrl.onlineTimes = <HighscoresEntry>[].obs;
         if (category.value == 'Experience gained') {
           if (period.value == 'Today') await _onlineCtrl.getOnlineTimes(MyDateTime.today());
@@ -86,7 +85,7 @@ class HighscoresController extends Controller {
         return loadHighscores(newPage: newPage, resetTimer: false);
       }
     } catch (e) {
-      HandleError.fallback(e);
+      MyErrorHandler.fallback(e);
     }
 
     return filterList(resetTimer: false);
@@ -167,12 +166,12 @@ class HighscoresController extends Controller {
     isLoading.value = true;
 
     try {
-      final dynamic response = await Supabase.instance.client.from('supporter').select();
+      final dynamic response = await MySupabaseClient().client.from('supporter').select();
       for (final dynamic e in response) {
         if (e is Map<String, dynamic>) supporters.add(Supporter.fromJson(e));
       }
     } catch (e) {
-      HandleError.fallback(e);
+      MyErrorHandler.fallback(e);
     }
 
     isLoading.value = false;
@@ -183,12 +182,12 @@ class HighscoresController extends Controller {
     isLoading.value = true;
 
     try {
-      final dynamic response = await Supabase.instance.client.from('hidden').select();
+      final dynamic response = await MySupabaseClient().client.from('hidden').select();
       for (final dynamic e in response) {
         if (e is Map<String, dynamic> && e['name'] is String) hidden.add(e['name'] as String);
       }
     } catch (e) {
-      HandleError.fallback(e);
+      MyErrorHandler.fallback(e);
     }
 
     isLoading.value = false;

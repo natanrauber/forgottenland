@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:forgottenland/utils/src/lists.dart';
 import 'package:forgottenland/views/pages/character.page.dart';
 import 'package:forgottenland/views/pages/guild.page.dart';
 import 'package:forgottenland/views/pages/highscores/highscores.page.dart';
@@ -7,6 +6,7 @@ import 'package:forgottenland/views/pages/home/home.page.dart';
 import 'package:forgottenland/views/pages/login/login.page.dart';
 import 'package:forgottenland/views/pages/online/online_characters_page.dart';
 import 'package:get/get.dart';
+import 'package:utils/utils.dart';
 
 class Routes {
   static final GetPage<dynamic> login = GetPage<dynamic>(name: '/login', page: () => LoginPage());
