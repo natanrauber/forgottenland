@@ -15,6 +15,7 @@ class Online {
     if (json['online_players'] is! List<dynamic>) return;
 
     for (final dynamic e in json['online_players']) {
+      print(e);
       if (e is Map<String, dynamic>) list.add(OnlineEntry.fromJson(e));
     }
   }
