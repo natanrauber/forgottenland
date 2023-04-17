@@ -15,6 +15,3 @@ scripts:
     exec: flutter pub outdated
   test:
     exec: flutter test
-
-  bsapi:
-    exec: dart pub get
