@@ -22,7 +22,7 @@ class Highscores {
 
     try {
       response = await Http().get('https://api.tibiadata.com/v3/highscores/$world/$category/$vocation/$page');
-      record = Record.fromJson((response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
+      record = Record.fromJson((response.dataAsMap['highscores'] as Map<String, dynamic>?) ?? <String, dynamic>{});
     } catch (e) {
       return ResponseError(e);
     }
