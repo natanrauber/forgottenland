@@ -33,6 +33,10 @@ class HighscoresEntry {
     level = online.level;
     vocation = online.vocation;
     value = online.time;
+
+    final int hours = (value ?? 0) ~/ 60;
+    final int minutes = (value ?? 0) % 60;
+    onlineTime = '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
   }
 
   int? rank;
