@@ -72,8 +72,7 @@ class HighscoresController extends Controller {
       );
 
       if (response?.statusCode == 200) {
-        final Record aux = Record.fromJson((response?.data as Map<String, dynamic>?) ?? <String, dynamic>{});
-
+        final Record aux = Record.fromJson((response?.data['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
         _onlineCtrl.onlineTimes = <HighscoresEntry>[].obs;
         if (category.value == 'Experience gained') {
           if (period.value == 'Today') await _onlineCtrl.getOnlineTimes(MyDateTime.today());
@@ -93,29 +92,26 @@ class HighscoresController extends Controller {
     return filterList(resetTimer: false);
   }
 
-  void _populateList(List<dynamic> responseList) {
-    for (final dynamic data in responseList) {
-      if (data is Map<String, dynamic>) {
-        final HighscoresEntry item = HighscoresEntry.fromJson(data);
-        if (category.value != 'Experience gained') item.rank = rawList.length + 1;
-        if (category.value != 'Online time') item.rank = rawList.length + 1;
-        item.world = _worldsCtrl.list.firstWhere(
-          (World e) => e.name?.toLowerCase() == item.world?.name?.toLowerCase(),
-          orElse: () => World(name: item.world?.name),
-        );
+  void _populateList(List<HighscoresEntry> responseList) {
+    for (final HighscoresEntry entry in responseList) {
+      if (category.value != 'Experience gained') entry.rank = rawList.length + 1;
+      if (category.value != 'Online time') entry.rank = rawList.length + 1;
+      entry.world = _worldsCtrl.list.firstWhere(
+        (World e) => e.name?.toLowerCase() == entry.world?.name?.toLowerCase(),
+        orElse: () => World(name: entry.world?.name),
+      );
 
-        item.supporterTitle =
-            supporters.firstWhere((Supporter e) => e.name == item.name, orElse: () => Supporter()).title;
+      entry.supporterTitle =
+          supporters.firstWhere((Supporter e) => e.name == entry.name, orElse: () => Supporter()).title;
 
-        item.onlineTime ??= _onlineCtrl.onlineTimes
-            .firstWhere((HighscoresEntry e) => e.name == item.name, orElse: () => HighscoresEntry())
-            .onlineTime;
+      entry.onlineTime ??= _onlineCtrl.onlineTimes
+          .firstWhere((HighscoresEntry e) => e.name == entry.name, orElse: () => HighscoresEntry())
+          .onlineTime;
 
-        rawList.add(item);
+      rawList.add(entry);
 
-        if ((item.level ?? 0) < 10) rawList.remove(item);
-        if (category.value == 'Achievements' && (item.value ?? 0) > 38) rawList.remove(item);
-      }
+      if ((entry.level ?? 0) < 10) rawList.remove(entry);
+      if (category.value == 'Achievements' && (entry.value ?? 0) > 38) rawList.remove(entry);
     }
   }
 
