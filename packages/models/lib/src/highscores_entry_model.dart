@@ -18,6 +18,9 @@ class HighscoresEntry {
     if (json['level'] is int) level = json['level'] as int;
     if (json['value'] is int) value = json['value'] as int;
     if (json['world'] is String) world = World(name: json['world'] as String);
+    if (json['world'] is Map<String, dynamic> && json['world']['name'] is String) {
+      world = World(name: json['world']['name'] as String);
+    }
     if (json['time'] is int) {
       final int hours = (json['time'] as int) ~/ 60;
       final int minutes = (json['time'] as int) % 60;
