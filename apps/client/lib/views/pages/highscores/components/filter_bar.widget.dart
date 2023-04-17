@@ -67,6 +67,8 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
             ),
 
             _selectedFilters(),
+
+            _disclaimer()
           ],
         ),
       );
@@ -354,6 +356,29 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
             highscoresCtrl.worldType.value = value;
             await highscoresCtrl.filterList();
           }
+        },
+      );
+
+  Widget _disclaimer() => Obx(
+        () {
+          if (highscoresCtrl.category.value != 'Experience gained') return Container();
+
+          return Container(
+            margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            decoration: BoxDecoration(
+              color: AppColors.bgPaper,
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: const Text(
+              'Characters that were connected at server save time can have the experience gained (before server save) counted for the next day (after server save).',
+              style: TextStyle(
+                fontSize: 14,
+                height: 1.2,
+                color: Colors.orange,
+              ),
+            ),
+          );
         },
       );
 }
