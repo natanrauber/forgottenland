@@ -58,7 +58,7 @@ class Scraper implements IScraper {
         );
 
         if (response.success) {
-          aux = Record.fromJson((response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
+          aux = Record.fromJson((response.dataAsMap['highscores'] as Map<String, dynamic>?) ?? <String, dynamic>{});
           currentExp.list.addAll(aux.list);
           page++;
         }
