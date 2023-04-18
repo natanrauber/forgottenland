@@ -1,4 +1,6 @@
+import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/utils/api_responses.dart';
+import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -21,7 +23,7 @@ class OnlineController implements IOnlineController {
     Online online;
 
     try {
-      response = await MySupabaseClient().client.from('online').select().single();
+      response = await DatabaseClient().from('online').select().single();
       online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
     } catch (e) {
       return ApiResponseError(e);
@@ -36,7 +38,7 @@ class OnlineController implements IOnlineController {
     Online online;
 
     try {
-      response = await MySupabaseClient().client.from('online-time').select().eq('day', day).single();
+      response = await DatabaseClient().from('online-time').select().eq('day', day).single();
       online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
     } catch (e) {
       return ApiResponseError(e);
@@ -48,7 +50,7 @@ class OnlineController implements IOnlineController {
   Future<Response> registerOnlinePlayers(Request request) async {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
-    MySupabaseClient().start(supabaseUrl, supabaseKey);
+    DatabaseClient().start(supabaseUrl, supabaseKey);
 
     try {
       Online onlineNow = await _getOnlineNow();
@@ -106,7 +108,7 @@ class OnlineController implements IOnlineController {
 
   Future<dynamic> _saveOnlineNow(Online online) async {
     try {
-      return MySupabaseClient().client.from('online').update(
+      return DatabaseClient().from('online').update(
         <String, dynamic>{
           'data': online.toJson(),
           'timestamp': MyDateTime.timeStamp(),
@@ -123,7 +125,7 @@ class OnlineController implements IOnlineController {
     Online onlineTime = Online(list: <OnlineEntry>[]);
 
     try {
-      List<dynamic> response = await MySupabaseClient().client.from('online-time').select().eq(
+      List<dynamic> response = await DatabaseClient().from('online-time').select().eq(
             'day',
             MyDateTime.today(),
           );
@@ -157,7 +159,7 @@ class OnlineController implements IOnlineController {
 
   Future<dynamic> _saveOnlineTime(Online online) async {
     try {
-      return MySupabaseClient().client.from('online-time').upsert(
+      return DatabaseClient().from('online-time').upsert(
         <String, dynamic>{
           'day': MyDateTime.today(),
           'data': online.toJson(),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/utils/api_responses.dart';
 import 'package:shelf/shelf.dart';
 import 'package:utils/utils.dart';
@@ -22,10 +23,10 @@ class User {
     try {
       String token = utf8.fuse(base64).encode('Basic $email:$password');
 
-      response = await MySupabaseClient().client.from('account').select().eq('secret', token).single();
+      response = await DatabaseClient().from('account').select().eq('secret', token).single();
 
       if (response['id'] != null) {
-        await MySupabaseClient().client.from('session').insert(
+        await DatabaseClient().from('session').insert(
           {
             'id': sessionId,
             'account_id': response['id'],
@@ -50,10 +51,10 @@ class User {
     dynamic response;
 
     try {
-      response = await MySupabaseClient().client.from('session').select().eq('id', sessionId).single();
+      response = await DatabaseClient().from('session').select().eq('id', sessionId).single();
 
       if (response['account_id'] != null) {
-        response = await MySupabaseClient().client.from('account').select().eq('id', response['account_id']).single();
+        response = await DatabaseClient().from('account').select().eq('id', response['account_id']).single();
       }
     } catch (e) {
       return ApiResponseError(e);

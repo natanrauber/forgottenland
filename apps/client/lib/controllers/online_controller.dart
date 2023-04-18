@@ -4,6 +4,7 @@ import 'package:forgottenland/rxmodels/world_rxmodel.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/instance_manager.dart';
+import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 

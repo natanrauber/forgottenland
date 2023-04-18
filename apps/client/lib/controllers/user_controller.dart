@@ -2,11 +2,11 @@
 import 'dart:html';
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:dio/dio.dart';
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/rxmodels/user_rxmodel.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
@@ -40,13 +40,12 @@ class UserController extends Controller {
     return response;
   }
 
-  Future<Response<dynamic>?> logout() async {
+  Future<void> logout() async {
     isLoading.value = true;
     data = null;
     isLoggedIn.value = false;
     document.cookie = 'session_id=';
     isLoading.value = false;
-    return null;
   }
 
   Future<MyHttpResponse?> retrieveSession() async {

@@ -1,4 +1,6 @@
+import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/utils/api_responses.dart';
+import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -48,7 +50,7 @@ class Highscores {
     String date = dates[category] ?? '';
 
     try {
-      response = await MySupabaseClient().client.from(table).select().eq('date', date).single();
+      response = await DatabaseClient().from(table).select().eq('date', date).single();
       record = Record.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
 
       if ((page - 1) * 50 > record.list.length) {
@@ -76,7 +78,7 @@ class Highscores {
     };
 
     try {
-      response = await MySupabaseClient().client.from('online-time').select().eq('day', date[category]).single();
+      response = await DatabaseClient().from('online-time').select().eq('day', date[category]).single();
       online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
 
       if ((page - 1) * 50 > online.list.length) {
