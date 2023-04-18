@@ -167,11 +167,13 @@ class Scraper implements IScraper {
   }
 
   Future<Record> _calcExpGainLastDay() async {
-    Map<String, dynamic> json = await _getWhere('exp-record', MyDateTime.yesterday());
-    Record yesterday = Record.fromJson(json);
+    dynamic response = await _getWhere('exp-record', MyDateTime.yesterday());
+    Record yesterday = Record.fromJson(response['data']);
+    print(yesterday.list.length);
 
-    json = await _getWhere('exp-record', MyDateTime.today());
-    Record today = Record.fromJson(json);
+    response = await _getWhere('exp-record', MyDateTime.today());
+    Record today = Record.fromJson(response['data']);
+    print(today.list.length);
 
     Record result = Record(list: <HighscoresEntry>[]);
 
@@ -187,8 +189,7 @@ class Scraper implements IScraper {
   }
 
   List<HighscoresEntry> _getExpDiff(Record yesterday, Record today) {
-    List<HighscoresEntry> newList;
-    newList = <HighscoresEntry>[];
+    List<HighscoresEntry> newList = <HighscoresEntry>[];
 
     for (final HighscoresEntry t in today.list) {
       if (_isValidEntry(t, yesterday)) {
