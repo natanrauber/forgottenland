@@ -1,3 +1,4 @@
+import 'package:database_client/database_client.dart';
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/controllers/online_controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
@@ -5,6 +6,7 @@ import 'package:forgottenland/rxmodels/world_rxmodel.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/instance_manager.dart';
+import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
@@ -85,7 +87,7 @@ class HighscoresController extends Controller {
         return loadHighscores(newPage: newPage, resetTimer: false);
       }
     } catch (e) {
-      MyErrorHandler.fallback(e);
+      HttpErrorHandler.fallback(e);
     }
 
     return filterList(resetTimer: false);
@@ -166,12 +168,12 @@ class HighscoresController extends Controller {
     isLoading.value = true;
 
     try {
-      final dynamic response = await MySupabaseClient().client.from('supporter').select();
+      final dynamic response = await DatabaseClient().from('supporter').select();
       for (final dynamic e in response) {
         if (e is Map<String, dynamic>) supporters.add(Supporter.fromJson(e));
       }
     } catch (e) {
-      MyErrorHandler.fallback(e);
+      HttpErrorHandler.fallback(e);
     }
 
     isLoading.value = false;
@@ -182,12 +184,12 @@ class HighscoresController extends Controller {
     isLoading.value = true;
 
     try {
-      final dynamic response = await MySupabaseClient().client.from('hidden').select();
+      final dynamic response = await DatabaseClient().from('hidden').select();
       for (final dynamic e in response) {
         if (e is Map<String, dynamic> && e['name'] is String) hidden.add(e['name'] as String);
       }
     } catch (e) {
-      MyErrorHandler.fallback(e);
+      HttpErrorHandler.fallback(e);
     }
 
     isLoading.value = false;
