@@ -12,7 +12,7 @@ class CardAppInfo extends StatefulWidget {
 }
 
 class _CardAppInfoState extends State<CardAppInfo> {
-  String appVersion = '23.04.19+1';
+  String appVersion = '23.04.19+2';
 
   @override
   Widget build(BuildContext context) => Container(
