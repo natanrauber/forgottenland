@@ -75650,7 +75650,7 @@ i=n.ok.j(0)
 h=A.e(m)
 g=n.fx.j(0)
 s=10
-return A.N(j.eg(0,A.c4(("https://forgotten-land-api.herokuapp.com/highscores/"+i+"/"+h+"/none/"+g).toLowerCase()," ","")),$async$km)
+return A.N(j.eg(0,A.c4(("https://forgottenland.up.railway.app/highscores/"+i+"/"+h+"/none/"+g).toLowerCase()," ","")),$async$km)
 case 10:d=a2
 j=d
 s=B.c.D(A.a([200,201,204],t.t),j.b)?11:13
@@ -75947,7 +75947,7 @@ break
 case 3:s=5
 return A.N(n.oV(0),$async$nl)
 case 5:case 4:s=6
-return A.N($.ov().eg(0,"https://forgotten-land-api.herokuapp.com/online"),$async$nl)
+return A.N($.ov().eg(0,"https://forgottenland.up.railway.app/online"),$async$nl)
 case 6:m=b
 if(B.c.D(A.a([200,201,204],t.t),m.b))p.Lm(o,m)
 l.sl(0,!1)
@@ -76048,7 +76048,7 @@ break
 case 3:s=5
 return A.N(o.oV(0),$async$nm)
 case 5:case 4:s=6
-return A.N($.ov().eg(0,"https://forgotten-land-api.herokuapp.com/onlinetime/"+a),$async$nm)
+return A.N($.ov().eg(0,"https://forgottenland.up.railway.app/onlinetime/"+a),$async$nm)
 case 6:n=c
 if(B.c.D(A.a([200,201,204],t.t),n.b))p.Lm(p.fy,n)
 m.sl(0,!1)
@@ -76060,7 +76060,7 @@ var $async$rR=A.L(function(a,b){if(a===1)return A.H(b,r)
 while(true)switch(s){case 0:n=p.ax
 n.sl(0,!0)
 m=$.ov()
-l="https://forgotten-land-api.herokuapp.com/login"
+l="https://forgottenland.up.railway.app/login"
 k=A
 j=p.fr.a.a
 i=p.fx.a.a
@@ -76102,7 +76102,7 @@ if(n==null){q=null
 s=1
 break}o.sl(0,!0)
 s=3
-return A.N($.ov().tf("https://forgotten-land-api.herokuapp.com/revive",A.ay(["session_id",n],t.N,t.z)),$async$y_)
+return A.N($.ov().tf("https://forgottenland.up.railway.app/revive",A.ay(["session_id",n],t.N,t.z)),$async$y_)
 case 3:m=b
 if(B.c.D(A.a([200,201,204],t.t),m.b)){l.sl(0,!0)
 p.dy=A.azG(A.aAo(t.P.a(J.au(m.gjZ(),"data"))))}o.sl(0,!1)
