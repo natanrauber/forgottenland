@@ -1,8 +1,8 @@
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/rxmodels/character_rxmodel.dart';
+import 'package:forgottenland/utils/src/paths.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
-import 'package:utils/utils.dart';
 
 class CharacterController extends Controller {
   RxCharacter data = Character().obs;

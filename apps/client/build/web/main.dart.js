@@ -75650,7 +75650,7 @@ i=n.ok.j(0)
 h=A.e(m)
 g=n.fx.j(0)
 s=10
-return A.N(j.eg(0,A.c4(("https://forgottenland.up.railway.app/highscores/"+i+"/"+h+"/none/"+g).toLowerCase()," ","")),$async$km)
+return A.N(j.eg(0,A.c4(("/highscores/"+i+"/"+h+"/none/"+g).toLowerCase()," ","")),$async$km)
 case 10:d=a2
 j=d
 s=B.c.D(A.a([200,201,204],t.t),j.b)?11:13
@@ -75947,7 +75947,7 @@ break
 case 3:s=5
 return A.N(n.oV(0),$async$nl)
 case 5:case 4:s=6
-return A.N($.ov().eg(0,"https://forgottenland.up.railway.app/online"),$async$nl)
+return A.N($.ov().eg(0,"/online"),$async$nl)
 case 6:m=b
 if(B.c.D(A.a([200,201,204],t.t),m.b))p.Lm(o,m)
 l.sl(0,!1)
@@ -76048,28 +76048,27 @@ break
 case 3:s=5
 return A.N(o.oV(0),$async$nm)
 case 5:case 4:s=6
-return A.N($.ov().eg(0,"https://forgottenland.up.railway.app/onlinetime/"+a),$async$nm)
+return A.N($.ov().eg(0,"/onlinetime/"+a),$async$nm)
 case 6:n=c
 if(B.c.D(A.a([200,201,204],t.t),n.b))p.Lm(p.fy,n)
 m.sl(0,!1)
 case 1:return A.I(q,r)}})
 return A.J($async$nm,r)}}
 A.vz.prototype={
-rR(){var s=0,r=A.K(t.oK),q,p=this,o,n,m,l,k,j,i,h,g
+rR(){var s=0,r=A.K(t.oK),q,p=this,o,n,m,l,k,j,i,h
 var $async$rR=A.L(function(a,b){if(a===1)return A.H(b,r)
 while(true)switch(s){case 0:n=p.ax
 n.sl(0,!0)
 m=$.ov()
-l="https://forgottenland.up.railway.app/login"
-k=A
-j=p.fr.a.a
-i=p.fx.a.a
+l=A
+k=p.fr.a.a
+j=p.fx.a.a
+i=J
 h=J
-g=J
 s=4
 return A.N(new A.a00().gDu(),$async$rR)
 case 4:s=3
-return A.N(m.tf(l,k.ay(["email",j,"password",i,"device",h.bI(g.aG4(b))],t.N,t.z)),$async$rR)
+return A.N(m.tf("/login",l.ay(["email",k,"password",j,"device",i.bI(h.aG4(b))],t.N,t.z)),$async$rR)
 case 3:o=b
 if(B.c.D(A.a([200,201,204],t.t),o.b)){document.cookie="session_id="+A.e(J.au(J.au(o.gjZ(),"data"),"session_id"))
 p.dx.sl(0,!0)
@@ -76102,7 +76101,7 @@ if(n==null){q=null
 s=1
 break}o.sl(0,!0)
 s=3
-return A.N($.ov().tf("https://forgottenland.up.railway.app/revive",A.ay(["session_id",n],t.N,t.z)),$async$y_)
+return A.N($.ov().tf("/revive",A.ay(["session_id",n],t.N,t.z)),$async$y_)
 case 3:m=b
 if(B.c.D(A.a([200,201,204],t.t),m.b)){l.sl(0,!0)
 p.dy=A.azG(A.aAo(t.P.a(J.au(m.gjZ(),"data"))))}o.sl(0,!1)
@@ -77434,7 +77433,7 @@ aa(){return new A.R0(B.j)}}
 A.R0.prototype={
 L(a){var s=null,r=A.dN(11),q=A.I1(B.X)
 return A.ao(s,this.a_i(0),B.i,s,s,new A.cc(s,s,q,r,s,s,B.L),s,B.bN,B.aS,17976931348623157e292)},
-a_i(a){var s,r=null,q=A.cL(r,r,r,"Forgotten Land App \xa9 2021 - "+A.Bc(A.au6())),p=A.cL(r,r,B.ym," (v23.04.17+4)"),o=A.vb(r)
+a_i(a){var s,r=null,q=A.cL(r,r,r,"Forgotten Land App \xa9 2021 - "+A.Bc(A.au6())),p=A.cL(r,r,B.ym," (v23.04.19+1)"),o=A.vb(r)
 o.U=new A.ak_()
 o=A.cL(r,o,B.fS,"Tibia")
 s=A.vb(r)

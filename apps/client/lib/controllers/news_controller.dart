@@ -1,8 +1,8 @@
 import 'package:forgottenland/controllers/controller.dart';
+import 'package:forgottenland/utils/src/paths.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
-import 'package:utils/utils.dart';
 
 class NewsController extends Controller {
   RxList<News> list = <News>[].obs;

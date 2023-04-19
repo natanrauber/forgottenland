@@ -1,6 +1,7 @@
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/rxmodels/world_rxmodel.dart';
+import 'package:forgottenland/utils/src/paths.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/instance_manager.dart';

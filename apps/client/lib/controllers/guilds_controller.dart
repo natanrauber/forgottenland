@@ -1,7 +1,7 @@
 import 'package:forgottenland/controllers/controller.dart';
+import 'package:forgottenland/utils/src/paths.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
-import 'package:utils/utils.dart';
 
 class GuildsController extends Controller {
   final List<Guild> list = <Guild>[];
