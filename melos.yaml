@@ -15,3 +15,5 @@ scripts:
     exec: flutter pub outdated
   test:
     exec: flutter test
+  buildweb:
+    exec: --dir-exists="web" flutter build web
