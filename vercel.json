@@ -1,0 +1,5 @@
+{
+  "installCommand": "if cd flutter; then git pull && cd .. ; else git clone https://github.com/flutter/flutter.git -b stable; fi && echo 'export PATH=$PATH:$HOME/path0/flutter/bin'  >> /etc/bashrc && . /etc/bashrc && flutter clean && flutter pub global activate melos && flutter pub get && flutter pub run melos bs",
+  "buildCommand": "echo 'export PATH=$PATH:$HOME/path0/flutter/bin' >> /etc/bashrc && . /etc/bashrc && cd apps/client && flutter build web",
+  "outputDirectory": "apps/client/build/web"
+}
