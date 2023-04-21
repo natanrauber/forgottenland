@@ -56,7 +56,7 @@ class Highscores {
 
       if ((page - 1) * 50 > record.list.length) {
         record.list = [];
-      } else {
+      } else if (record.list.length > 50) {
         int start = (page - 1) * 50;
         int end = page * 50;
         if (start < 0) start = 0;
