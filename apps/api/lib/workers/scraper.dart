@@ -280,10 +280,10 @@ class Scraper implements IScraper {
 
   Future<Record> _calcExpGainLast30Days() async {
     Map<String, dynamic> json = await _getWhere('exp-record', MyDateTime.aMonthAgo());
-    Record start = Record.fromJson(json);
+    Record start = Record.fromJson(json['data']);
 
     json = await _getWhere('exp-record', MyDateTime.today());
-    Record end = Record.fromJson(json);
+    Record end = Record.fromJson(json['data']);
 
     Record result = Record(list: <HighscoresEntry>[]);
 
