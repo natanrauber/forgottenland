@@ -52,9 +52,7 @@ class HighscoresEntry {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['rank'] = rank;
     data['name'] = name;
-    data['vocation'] = vocation;
     data['world'] = world?.toJson();
     data['level'] = level;
     data['value'] = value;

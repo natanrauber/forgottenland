@@ -25,6 +25,7 @@ class Scraper implements IScraper {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     DatabaseClient().start(supabaseUrl, supabaseKey);
+    if (await _exists('exp-record', MyDateTime.today())) return ApiResponseSuccess();
     return _getCurrentExp('exp-record', 'insert');
   }
 
@@ -68,6 +69,7 @@ class Scraper implements IScraper {
       } while ((aux?.list.last.level ?? 0) > 30);
     }
 
+    currentExp.list.removeWhere((e) => (e.level ?? 0) < 30);
     return currentExp;
   }
 
@@ -120,7 +122,7 @@ class Scraper implements IScraper {
 
     try {
       Record result = await _calcExpGainToday();
-      await _saveExpGainToday(result);
+      await _saveExpGain('exp-gain-today', MyDateTime.today(), result, canUpdate: true);
     } catch (e) {
       return ApiResponseError(e);
     }
@@ -128,29 +130,15 @@ class Scraper implements IScraper {
   }
 
   Future<Record> _calcExpGainToday() async {
-    dynamic response = await _getWhere('exp-record', MyDateTime.today());
-    Record start = Record.fromJson(response['data']);
-
-    response = await DatabaseClient().from('current-exp').select().single();
+    Record start = await _getWhere('exp-record', MyDateTime.today());
+    dynamic response = await DatabaseClient().from('current-exp').select().single();
     Record end = Record.fromJson(response['data']);
-
     Record result = Record(list: <HighscoresEntry>[]);
-
     result.list.clear();
     result.list.addAll(_getExpDiff(start, end));
     _sortList(result.list);
-
     return result;
   }
-
-  Future<dynamic> _saveExpGainToday(Record data) => DatabaseClient().from('exp-gain-today').upsert(
-        <String, dynamic>{
-          'date': MyDateTime.today(),
-          'world': 'All',
-          'data': data.toJson(),
-          'timestamp': MyDateTime.timeStamp(),
-        },
-      );
 
   @override
   Future<Response> getExpLastDay(Request request) async {
@@ -158,35 +146,63 @@ class Scraper implements IScraper {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     DatabaseClient().start(supabaseUrl, supabaseKey);
 
+    if (await _exists('exp-gain-last-day', MyDateTime.yesterday())) return ApiResponseSuccess();
+
     try {
-      Record result = await _calcExpGainLastDay();
-      await _saveExpGainLastDay(result);
+      Record result = await _getExpGainRange(MyDateTime.yesterday(), MyDateTime.today());
+      await _saveExpGain('exp-gain-last-day', MyDateTime.yesterday(), result);
     } catch (e) {
       return ApiResponseError(e);
     }
     return ApiResponseSuccess();
   }
 
-  Future<Record> _calcExpGainLastDay() async {
-    dynamic response = await _getWhere('exp-record', MyDateTime.yesterday());
-    Record yesterday = Record.fromJson(response['data']);
-    print(yesterday.list.length);
+  @override
+  Future<Response> getExpLast7Days(Request request) async {
+    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
+    String supabaseKey = request.headers['supabaseKey'] ?? '';
+    DatabaseClient().start(supabaseUrl, supabaseKey);
 
-    response = await _getWhere('exp-record', MyDateTime.today());
-    Record today = Record.fromJson(response['data']);
-    print(today.list.length);
+    if (await _exists('exp-gain-last-7-days', MyDateTime.yesterday())) return ApiResponseSuccess();
 
+    try {
+      Record result = await _getExpGainRange(MyDateTime.aWeekAgo(), MyDateTime.today());
+      await _saveExpGain('exp-gain-last-7-days', MyDateTime.yesterday(), result);
+    } catch (e) {
+      return ApiResponseError(e);
+    }
+    return ApiResponseSuccess();
+  }
+
+  @override
+  Future<Response> getExpLast30Days(Request request) async {
+    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
+    String supabaseKey = request.headers['supabaseKey'] ?? '';
+    DatabaseClient().start(supabaseUrl, supabaseKey);
+
+    if (await _exists('exp-gain-last-30-days', MyDateTime.yesterday())) return ApiResponseSuccess();
+
+    try {
+      Record result = await _getExpGainRange(MyDateTime.aMonthAgo(), MyDateTime.today());
+      await _saveExpGain('exp-gain-last-30-days', MyDateTime.yesterday(), result);
+    } catch (e) {
+      return ApiResponseError(e);
+    }
+    return ApiResponseSuccess();
+  }
+
+  Future<Record> _getExpGainRange(String startDate, String endDate) async {
+    Record start = await _getWhere('exp-record', startDate);
+    Record end = await _getWhere('exp-record', endDate);
     Record result = Record(list: <HighscoresEntry>[]);
-
-    result.list.clear();
-    result.list.addAll(_getExpDiff(yesterday, today));
+    result.list.addAll(_getExpDiff(start, end));
     _sortList(result.list);
-
     return result;
   }
 
-  Future<dynamic> _getWhere(String table, String date) async {
-    return await DatabaseClient().from(table).select().eq('date', date).single();
+  Future<Record> _getWhere(String table, String date) async {
+    dynamic response = await DatabaseClient().from(table).select().eq('date', date).single();
+    return Record.fromJson(response['data']);
   }
 
   List<HighscoresEntry> _getExpDiff(Record yesterday, Record today) {
@@ -216,89 +232,19 @@ class Scraper implements IScraper {
         (HighscoresEntry a, HighscoresEntry b) => b.value!.compareTo(a.value!),
       );
 
-  Future<dynamic> _saveExpGainLastDay(Record data) => DatabaseClient().from('exp-gain-last-day').insert(
-        <String, dynamic>{
-          'date': MyDateTime.yesterday(),
-          'world': 'All',
-          'data': data.toJson(),
-        },
+  Future<dynamic> _saveExpGain(String table, String date, Record data, {bool canUpdate = false}) {
+    if (canUpdate) {
+      return DatabaseClient().from(table).upsert(
+        <String, dynamic>{'date': date, 'world': 'All', 'data': data.toJson()},
       );
-
-  @override
-  Future<Response> getExpLast7Days(Request request) async {
-    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
-    String supabaseKey = request.headers['supabaseKey'] ?? '';
-    DatabaseClient().start(supabaseUrl, supabaseKey);
-
-    try {
-      Record result = await _calcExpGainLast7Days();
-      await _saveExpGainLast7Days(result);
-    } catch (e) {
-      return ApiResponseError(e);
     }
-    return ApiResponseSuccess();
+    return DatabaseClient().from(table).insert(
+      <String, dynamic>{'date': date, 'world': 'All', 'data': data.toJson()},
+    );
   }
 
-  Future<Record> _calcExpGainLast7Days() async {
-    dynamic response = await _getWhere('exp-record', MyDateTime.aWeekAgo());
-    Record start = Record.fromJson(response['data']);
-
-    response = await _getWhere('exp-record', MyDateTime.today());
-    Record end = Record.fromJson(response['data']);
-
-    Record result = Record(list: <HighscoresEntry>[]);
-
-    result.list.clear();
-    result.list.addAll(_getExpDiff(start, end));
-    _sortList(result.list);
-
-    return result;
+  Future<bool> _exists(String table, String date) async {
+    List<dynamic> response = await DatabaseClient().from(table).select().eq('date', date);
+    return response.isNotEmpty;
   }
-
-  Future<dynamic> _saveExpGainLast7Days(Record data) => DatabaseClient().from('exp-gain-last-7-days').insert(
-        <String, dynamic>{
-          'date': MyDateTime.yesterday(),
-          'world': 'All',
-          'data': data.toJson(),
-        },
-      );
-
-  @override
-  Future<Response> getExpLast30Days(Request request) async {
-    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
-    String supabaseKey = request.headers['supabaseKey'] ?? '';
-    DatabaseClient().start(supabaseUrl, supabaseKey);
-
-    try {
-      Record result = await _calcExpGainLast30Days();
-      await _saveExpGainLast30Days(result);
-    } catch (e) {
-      return ApiResponseError(e);
-    }
-    return ApiResponseSuccess();
-  }
-
-  Future<Record> _calcExpGainLast30Days() async {
-    Map<String, dynamic> json = await _getWhere('exp-record', MyDateTime.aMonthAgo());
-    Record start = Record.fromJson(json['data']);
-
-    json = await _getWhere('exp-record', MyDateTime.today());
-    Record end = Record.fromJson(json['data']);
-
-    Record result = Record(list: <HighscoresEntry>[]);
-
-    result.list.clear();
-    result.list.addAll(_getExpDiff(start, end));
-    _sortList(result.list);
-
-    return result;
-  }
-
-  Future<dynamic> _saveExpGainLast30Days(Record data) => DatabaseClient().from('exp-gain-last-30-days').insert(
-        <String, dynamic>{
-          'date': MyDateTime.yesterday(),
-          'world': 'All',
-          'data': data.toJson(),
-        },
-      );
 }
