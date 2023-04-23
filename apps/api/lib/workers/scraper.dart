@@ -25,6 +25,7 @@ class Scraper implements IScraper {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     DatabaseClient().start(supabaseUrl, supabaseKey);
+    if (await _exists('exp-record', MyDateTime.today())) return ApiResponseSuccess();
     return _getCurrentExp('exp-record', 'insert');
   }
 
@@ -121,7 +122,7 @@ class Scraper implements IScraper {
 
     try {
       Record result = await _calcExpGainToday();
-      await _saveExpGain('exp-gain-today', MyDateTime.today(), result);
+      await _saveExpGain('exp-gain-today', MyDateTime.today(), result, canUpdate: true);
     } catch (e) {
       return ApiResponseError(e);
     }
@@ -145,6 +146,8 @@ class Scraper implements IScraper {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     DatabaseClient().start(supabaseUrl, supabaseKey);
 
+    if (await _exists('exp-gain-last-day', MyDateTime.yesterday())) return ApiResponseSuccess();
+
     try {
       Record result = await _getExpGainRange(MyDateTime.yesterday(), MyDateTime.today());
       await _saveExpGain('exp-gain-last-day', MyDateTime.yesterday(), result);
@@ -160,6 +163,8 @@ class Scraper implements IScraper {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     DatabaseClient().start(supabaseUrl, supabaseKey);
 
+    if (await _exists('exp-gain-last-7-days', MyDateTime.yesterday())) return ApiResponseSuccess();
+
     try {
       Record result = await _getExpGainRange(MyDateTime.aWeekAgo(), MyDateTime.today());
       await _saveExpGain('exp-gain-last-7-days', MyDateTime.yesterday(), result);
@@ -174,6 +179,8 @@ class Scraper implements IScraper {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     DatabaseClient().start(supabaseUrl, supabaseKey);
+
+    if (await _exists('exp-gain-last-30-days', MyDateTime.yesterday())) return ApiResponseSuccess();
 
     try {
       Record result = await _getExpGainRange(MyDateTime.aMonthAgo(), MyDateTime.today());
@@ -225,11 +232,19 @@ class Scraper implements IScraper {
         (HighscoresEntry a, HighscoresEntry b) => b.value!.compareTo(a.value!),
       );
 
-  Future<dynamic> _saveExpGain(String table, String date, Record data) => DatabaseClient().from(table).insert(
-        <String, dynamic>{
-          'date': date,
-          'world': 'All',
-          'data': data.toJson(),
-        },
+  Future<dynamic> _saveExpGain(String table, String date, Record data, {bool canUpdate = false}) {
+    if (canUpdate) {
+      return DatabaseClient().from(table).upsert(
+        <String, dynamic>{'date': date, 'world': 'All', 'data': data.toJson()},
       );
+    }
+    return DatabaseClient().from(table).insert(
+      <String, dynamic>{'date': date, 'world': 'All', 'data': data.toJson()},
+    );
+  }
+
+  Future<bool> _exists(String table, String date) async {
+    List<dynamic> response = await DatabaseClient().from(table).select().eq('date', date);
+    return response.isNotEmpty;
+  }
 }
