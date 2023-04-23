@@ -63,7 +63,7 @@ class World {
         ? battleyeType == 'Green'
             ? 'Release'
             : ''
-        : 'None';
+        : null;
     data['game_world_type'] = worldType;
     data['tournament_world_type'] = tournamentWorldType;
     return data.clean();
