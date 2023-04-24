@@ -50,7 +50,7 @@ ThemeData appTheme() => ThemeData(
         //
         titleMedium: TextStyle(
           fontFamily: 'NunitoSans',
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w500,
           letterSpacing: 1,
           color: AppColors.textPrimary,
         ),
@@ -58,7 +58,7 @@ ThemeData appTheme() => ThemeData(
         bodyMedium: TextStyle(
           fontFamily: 'NunitoSans',
           fontSize: 16,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w500,
           letterSpacing: 1,
           color: AppColors.textPrimary,
         ),
