@@ -100,11 +100,11 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: RobotoSlab
+    - family: NunitoSans
       fonts:
-        - asset: assets/fonts/RobotoSlab/RobotoSlab_Regular.ttf
-        - asset: assets/fonts/RobotoSlab/RobotoSlab_Bold.ttf
-        - asset: assets/fonts/RobotoSlab/RobotoSlab_Thin.ttf
+        - asset: assets/fonts/NunitoSans/NunitoSans_Regular.ttf
+        - asset: assets/fonts/NunitoSans/NunitoSans_Bold.ttf
+        - asset: assets/fonts/NunitoSans/NunitoSans_Light.ttf
 
   #
   # For details regarding fonts from package dependencies,
