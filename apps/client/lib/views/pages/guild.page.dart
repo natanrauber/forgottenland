@@ -1,5 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -103,6 +103,7 @@ class GuildPage extends StatelessWidget {
 
   Widget _viewOnTibiaWebsiteButton() => Container(
         constraints: const BoxConstraints(maxWidth: 600),
+        margin: const EdgeInsets.all(20),
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
@@ -111,7 +112,6 @@ class GuildPage extends StatelessWidget {
             ),
             child: Container(
               padding: const EdgeInsets.all(20),
-              margin: const EdgeInsets.only(top: 25),
               decoration: BoxDecoration(
                 color: AppColors.bgPaper,
                 borderRadius: BorderRadius.circular(11),
@@ -126,8 +126,8 @@ class GuildPage extends StatelessWidget {
                     ),
                   ),
                   Icon(
-                    FontAwesomeIcons.upRightFromSquare,
-                    size: 17,
+                    CupertinoIcons.arrow_up_right_square,
+                    size: 18,
                     color: AppColors.primary,
                   )
                 ],

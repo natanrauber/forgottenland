@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
@@ -237,8 +237,8 @@ class _CharacterPageState extends State<CharacterPage> {
                             ),
                           ),
                           Icon(
-                            FontAwesomeIcons.upRightFromSquare,
-                            size: 17,
+                            CupertinoIcons.arrow_up_right_square,
+                            size: 18,
                             color: AppColors.primary,
                           )
                         ],
