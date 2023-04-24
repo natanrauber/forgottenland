@@ -100,21 +100,19 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
   Widget _rank() => SizedBox(
         height: 20,
         child: Stack(
+          alignment: Alignment.center,
           children: <Widget>[
             //
             Image.asset(
               'assets/icons/rank/rank${(widget.index + 1).toString().length}.png',
             ),
 
-            Container(
-              padding: const EdgeInsets.only(left: 4.5, top: 1.5),
-              child: Text(
-                '${widget.index + 1}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.black80,
-                ),
+            Text(
+              '${widget.index + 1}',
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.black80,
               ),
             )
           ],

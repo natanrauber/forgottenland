@@ -77,9 +77,8 @@ class GuildPage extends StatelessWidget {
   Widget _text(String text) => SelectableText(
         text,
         style: const TextStyle(
-          fontFamily: 'RobotoSlab',
           fontSize: 18,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w700,
           color: AppColors.textSecondary,
         ),
         textAlign: TextAlign.justify,
