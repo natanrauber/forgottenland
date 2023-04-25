@@ -7,31 +7,28 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
-class Highscores {
+class HighscoresController {
   Future<Response> get(Request request) async {
     String? world = request.params['world'];
     String? category = request.params['category'];
     String? vocation = request.params['vocation'];
     int page = int.tryParse(request.params['page'] ?? '') ?? 1;
 
-    MyHttpResponse? response;
-    Record record;
-
-    if (category != null && category.contains('experiencegained')) return _getExpGain(category, page);
-    if (category != null && category.contains('onlinetime')) return _getOnlineTime(category, page);
+    if (category == null) return ApiResponseError('Missing param "category"');
+    if (category.contains('experiencegained')) return _getExpGain(category, page);
+    if (category.contains('onlinetime')) return _getOnlineTime(category, page);
 
     try {
-      response = await MyHttpClient().get('${PATH.tibiaDataApi}/highscores/$world/$category/$vocation/$page');
-      record = Record.fromJson((response.dataAsMap['highscores'] as Map<String, dynamic>?) ?? <String, dynamic>{});
+      var response = await MyHttpClient().get('${PATH.tibiaDataApi}/highscores/$world/$category/$vocation/$page');
+      var record = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
+      return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
       return ApiResponseError(e);
     }
-    return ApiResponseSuccess(data: record.toJson());
   }
 
   Future<Response> _getExpGain(String category, int page) async {
-    dynamic response;
-    Record record;
+    if (page < 0) return ApiResponseError('Invalid page number');
 
     Map<String, String> tables = <String, String>{
       'experiencegained+today': 'exp-gain-today',
@@ -51,27 +48,26 @@ class Highscores {
     String date = dates[category] ?? '';
 
     try {
-      response = await DatabaseClient().from(table).select().eq('date', date).single();
-      record = Record.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
+      var response = await DatabaseClient().from(table).select().eq('date', date).single();
+      var record = Record.fromJson(response['data'] as Map<String, dynamic>);
 
       if ((page - 1) * 50 > record.list.length) {
         record.list = [];
       } else if (record.list.length > 50) {
         int start = (page - 1) * 50;
         int end = page * 50;
-        if (start < 0) start = 0;
-        if (end > record.list.length + 1) end = record.list.length;
+        if (end > record.list.length) end = record.list.length;
         record.list = record.list.getRange(start, end).toList();
       }
+
+      return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
       return ApiResponseError(e);
     }
-    return ApiResponseSuccess(data: record.toJson());
   }
 
   Future<Response> _getOnlineTime(String category, int page) async {
-    dynamic response;
-    Online online;
+    if (page < 0) return ApiResponseError('Invalid page number');
 
     Map<String, String> date = <String, String>{
       'onlinetime+today': MyDateTime.today(),
@@ -79,21 +75,21 @@ class Highscores {
     };
 
     try {
-      response = await DatabaseClient().from('online-time').select().eq('day', date[category]).single();
-      online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
+      var response = await DatabaseClient().from('online-time').select().eq('day', date[category]).single();
+      var online = Online.fromJson(response['data'] as Map<String, dynamic>);
 
       if ((page - 1) * 50 > online.list.length) {
         online.list = [];
       } else {
         int start = (page - 1) * 50;
         int end = page * 50;
-        if (start < 0) start = 0;
-        if (end > online.list.length + 1) end = online.list.length;
+        if (end > online.list.length) end = online.list.length;
         online.list = online.list.getRange(start, end).toList();
       }
+
+      return ApiResponseSuccess(data: online.toJson());
     } catch (e) {
       return ApiResponseError(e);
     }
-    return ApiResponseSuccess(data: online.toJson());
   }
 }

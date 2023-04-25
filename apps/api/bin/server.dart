@@ -1,27 +1,28 @@
 import 'dart:io';
 
-import 'package:forgottenlandapi/workers/highscores.dart';
-import 'package:forgottenlandapi/workers/online_controller.dart';
-import 'package:forgottenlandapi/workers/scraper.dart';
-import 'package:forgottenlandapi/workers/user.dart';
+import 'package:forgottenlandapi/src/etl.dart';
+import 'package:forgottenlandapi/src/highscores_controller.dart';
+import 'package:forgottenlandapi/src/online_controller.dart';
+import 'package:forgottenlandapi/src/user_controller.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 // Configure routes.
 final _router = Router()
-  ..post('/login', User().login)
-  ..post('/revive', User().revive)
-  ..get('/highscores/<world>/<category>/<vocation>/<page>', Highscores().get)
+  ..post('/login', UserController().login)
+  ..post('/revive', UserController().revive)
+  ..get('/highscores/<world>/<category>/<vocation>/<page>', HighscoresController().get)
   ..get('/online', OnlineController().getOnlineNow)
   ..get('/onlinetime/<day>', OnlineController().getOnlineTime)
-  ..get('/private/exprecord', Scraper().getExpRecord)
-  ..get('/private/currentexp', Scraper().getCurrentExp)
-  ..get('/private/expgain+today', Scraper().getExpToday)
-  ..get('/private/expgain+yesterday', Scraper().getExpLastDay)
-  ..get('/private/expgain+last7days', Scraper().getExpLast7Days)
-  ..get('/private/expgain+last30days', Scraper().getExpLast30Days)
-  ..get('/private/online', OnlineController().registerOnlinePlayers);
+  ..get('/private/exprecord', ETL().expRecord)
+  ..get('/private/currentexp', ETL().currentExp)
+  ..get('/private/expgain+today', ETL().expGainedToday)
+  ..get('/private/expgain+yesterday', ETL().expGainedYesterday)
+  ..get('/private/expgain+last7days', ETL().expGainedLast7Days)
+  ..get('/private/expgain+last30days', ETL().expGainedLast30Days)
+  ..get('/private/online', ETL().registerOnlinePlayers);
+
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
