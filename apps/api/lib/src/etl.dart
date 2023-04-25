@@ -27,7 +27,7 @@ class ETL implements IETL {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     DatabaseClient().start(supabaseUrl, supabaseKey);
-    if (await _exists('exp-record', MyDateTime.today())) return ApiResponseSuccess();
+    if (await _exists('exp-record', MyDateTime.today())) return ApiResponseAccepted();
     return _getCurrentExp('exp-record', 'insert');
   }
 
@@ -141,7 +141,7 @@ class ETL implements IETL {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     DatabaseClient().start(supabaseUrl, supabaseKey);
 
-    if (await _exists('exp-gain-last-day', MyDateTime.yesterday())) return ApiResponseSuccess();
+    if (await _exists('exp-gain-last-day', MyDateTime.yesterday())) return ApiResponseAccepted();
 
     try {
       Record result = await _getExpGainRange(MyDateTime.yesterday(), MyDateTime.today());
@@ -158,7 +158,7 @@ class ETL implements IETL {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     DatabaseClient().start(supabaseUrl, supabaseKey);
 
-    if (await _exists('exp-gain-last-7-days', MyDateTime.yesterday())) return ApiResponseSuccess();
+    if (await _exists('exp-gain-last-7-days', MyDateTime.yesterday())) return ApiResponseAccepted();
 
     try {
       Record result = await _getExpGainRange(MyDateTime.aWeekAgo(), MyDateTime.today());
@@ -175,7 +175,7 @@ class ETL implements IETL {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     DatabaseClient().start(supabaseUrl, supabaseKey);
 
-    if (await _exists('exp-gain-last-30-days', MyDateTime.yesterday())) return ApiResponseSuccess();
+    if (await _exists('exp-gain-last-30-days', MyDateTime.yesterday())) return ApiResponseAccepted();
 
     try {
       Record result = await _getExpGainRange(MyDateTime.aMonthAgo(), MyDateTime.today());
