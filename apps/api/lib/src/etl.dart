@@ -261,6 +261,9 @@ class ETL implements IETL {
         if (response.success) {
           Online aux = Online.fromJsonTibiaDataAPI(response.dataAsMap);
           aux.list.removeWhere((e) => e.vocation != 'None' || (e.level ?? 0) < 5);
+          for (var e in aux.list) {
+            e.world = world.name;
+          }
           online.list.addAll(aux.list);
         }
       } while (!response.success && i != 5);
