@@ -28,8 +28,8 @@ class OnlineController implements IOnlineController {
   @override
   Future<Response> getOnlineTime(Request request) async {
     try {
-      String? day = request.params['day'];
-      dynamic response = await DatabaseClient().from('online-time').select().eq('day', day).single();
+      String? day = request.params['date'];
+      dynamic response = await DatabaseClient().from('onlinetime').select().eq('date', day).single();
       Online online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
       return ApiResponseSuccess(data: online.toJson());
     } catch (e) {

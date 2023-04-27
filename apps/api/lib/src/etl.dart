@@ -280,7 +280,7 @@ class ETL implements IETL {
 
   Future<Online> _getOnlineTime(Online onlineNow) async {
     onlineNow.list.removeWhere((e) => (e.level ?? 0) < 10);
-    List<dynamic> response = await DatabaseClient().from('online-time').select().eq('day', MyDateTime.today());
+    List<dynamic> response = await DatabaseClient().from('onlinetime').select().eq('date', MyDateTime.today());
     Online onlineTime;
 
     if (response.isEmpty) {
@@ -307,7 +307,7 @@ class ETL implements IETL {
   }
 
   Future<dynamic> _saveOnlineTime(Online online) async {
-    var values = <String, dynamic>{'day': MyDateTime.today(), 'data': online.toJson()};
-    return DatabaseClient().from('online-time').upsert(values).match(<String, dynamic>{'day': MyDateTime.now()});
+    var values = <String, dynamic>{'date': MyDateTime.today(), 'data': online.toJson()};
+    return DatabaseClient().from('onlinetime').upsert(values).match(<String, dynamic>{'date': MyDateTime.now()});
   }
 }

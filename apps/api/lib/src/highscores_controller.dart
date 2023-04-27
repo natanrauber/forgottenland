@@ -75,7 +75,7 @@ class HighscoresController {
     };
 
     try {
-      var response = await DatabaseClient().from('online-time').select().eq('day', date[category]).single();
+      var response = await DatabaseClient().from('onlinetime').select().eq('date', date[category]).single();
       var online = Online.fromJson(response['data'] as Map<String, dynamic>);
 
       if ((page - 1) * 50 > online.list.length) {
