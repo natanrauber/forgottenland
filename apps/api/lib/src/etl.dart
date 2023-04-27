@@ -331,6 +331,7 @@ class ETL implements IETL {
           if (result.list.any((resultE) => resultE.name == dayE.name)) {
             result.list.firstWhere((resultE) => resultE.name == dayE.name).time += dayE.time;
             result.list.firstWhere((resultE) => resultE.name == dayE.name).level = dayE.level;
+            result.list.firstWhere((resultE) => resultE.name == dayE.name).world ??= dayE.world;
           } else {
             result.list.add(dayE);
           }
