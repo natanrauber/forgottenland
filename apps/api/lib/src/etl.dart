@@ -238,10 +238,14 @@ class ETL implements IETL {
   Future<Response> registerOnlinePlayers(Request request) async {
     try {
       DatabaseClient().start(request.headers['supabaseUrl'], request.headers['supabaseKey']);
+
       Online onlineNow = await _getOnlineNow();
       await _saveOnlineNow(onlineNow);
-      Online onlineTime = await _getOnlineTime(onlineNow);
-      await _saveOnlineTime(onlineTime);
+
+      await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
+
+      await _saveOnlineTimeLast7days(await _getOnlineTimeLast7days());
+
       return ApiResponseSuccess();
     } catch (e) {
       return ApiResponseError(e);
@@ -278,7 +282,7 @@ class ETL implements IETL {
     return DatabaseClient().from('online').update(values).match(<String, dynamic>{'world': 'All'});
   }
 
-  Future<Online> _getOnlineTime(Online onlineNow) async {
+  Future<Online> _getOnlineTimeToday(Online onlineNow) async {
     onlineNow.list.removeWhere((e) => (e.level ?? 0) < 10);
     List<dynamic> response = await DatabaseClient().from('onlinetime').select().eq('date', MyDateTime.today());
     Online onlineTime;
@@ -306,8 +310,42 @@ class ETL implements IETL {
     return (b.level ?? 0).compareTo((a.level ?? 0));
   }
 
-  Future<dynamic> _saveOnlineTime(Online online) async {
+  Future<dynamic> _saveOnlineTimeToday(Online online) async {
     var values = <String, dynamic>{'date': MyDateTime.today(), 'data': online.toJson()};
     return DatabaseClient().from('onlinetime').upsert(values).match(<String, dynamic>{'date': MyDateTime.now()});
+  }
+
+  Future<Online?> _getOnlineTimeLast7days() async {
+    if (await _exists('onlinetime-last7days', MyDateTime.yesterday())) return null;
+
+    DateTime start = MyDateTime.now().subtract(Duration(days: 7));
+    DateTime end = MyDateTime.now().subtract(Duration(days: 1));
+    Online result = Online(list: <OnlineEntry>[]);
+
+    for (String date in MyDateTime.range(start, end)) {
+      List<dynamic> response = await DatabaseClient().from('online-time').select().eq('day', date);
+
+      if (response.isNotEmpty) {
+        Online onlineTimeOnDate = Online.fromJson(response.first['data']);
+        for (var dayE in onlineTimeOnDate.list) {
+          if (result.list.any((resultE) => resultE.name == dayE.name)) {
+            result.list.firstWhere((resultE) => resultE.name == dayE.name).time += dayE.time;
+            result.list.firstWhere((resultE) => resultE.name == dayE.name).level = dayE.level;
+          } else {
+            result.list.add(dayE);
+          }
+        }
+      }
+    }
+
+    result.list.sort(_compareTo);
+
+    return result;
+  }
+
+  Future<dynamic> _saveOnlineTimeLast7days(Online? onlineTime) async {
+    if (onlineTime == null) return;
+    var values = <String, dynamic>{'date': MyDateTime.yesterday(), 'data': onlineTime.toJson()};
+    return DatabaseClient().from('onlinetime-last7days').insert(values);
   }
 }
