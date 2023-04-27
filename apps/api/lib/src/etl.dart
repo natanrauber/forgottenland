@@ -239,10 +239,10 @@ class ETL implements IETL {
     try {
       DatabaseClient().start(request.headers['supabaseUrl'], request.headers['supabaseKey']);
 
-      // Online onlineNow = await _getOnlineNow();
-      // await _saveOnlineNow(onlineNow);
+      Online onlineNow = await _getOnlineNow();
+      await _saveOnlineNow(onlineNow);
 
-      // await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
+      await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
 
       await _saveOnlineTimeLast7days(await _getOnlineTimeLast7days());
 
