@@ -96,7 +96,7 @@ class _AppPageState extends State<AppPage> {
           image: AssetImage('assets/images/background/offline.jpg'),
           fit: BoxFit.cover,
           alignment: Alignment.topCenter,
-          opacity: 0.7,
+          // opacity: 0.7,
         ),
       );
 
