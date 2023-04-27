@@ -239,10 +239,10 @@ class ETL implements IETL {
     try {
       DatabaseClient().start(request.headers['supabaseUrl'], request.headers['supabaseKey']);
 
-      Online onlineNow = await _getOnlineNow();
-      await _saveOnlineNow(onlineNow);
+      // Online onlineNow = await _getOnlineNow();
+      // await _saveOnlineNow(onlineNow);
 
-      await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
+      // await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
 
       await _saveOnlineTimeLast7days(await _getOnlineTimeLast7days());
 
@@ -323,7 +323,7 @@ class ETL implements IETL {
     Online result = Online(list: <OnlineEntry>[]);
 
     for (String date in MyDateTime.range(start, end)) {
-      List<dynamic> response = await DatabaseClient().from('online-time').select().eq('day', date);
+      List<dynamic> response = await DatabaseClient().from('onlinetime').select().eq('date', date);
 
       if (response.isNotEmpty) {
         Online onlineTimeOnDate = Online.fromJson(response.first['data']);
