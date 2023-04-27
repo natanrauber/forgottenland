@@ -17,6 +17,16 @@ class MyDateTime {
 
   static String aMonthAgo() => (now().subtract(const Duration(days: 30))).toIso8601String().substring(0, 10);
 
+  static List<String> range(DateTime start, DateTime end) {
+    List<String> range = <String>[];
+    DateTime date = start;
+    do {
+      range.add(date.toIso8601String().substring(0, 10));
+      date = date.add(Duration(days: 1));
+    } while (date.isBefore(end));
+    return range;
+  }
+
   /// returns current utc datetime formated as `yyyy-MM-ddTHH:mm:ss.mmmuuuZ`
   static String timeStamp() => now().toIso8601String();
 }

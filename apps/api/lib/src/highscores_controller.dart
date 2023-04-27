@@ -69,13 +69,24 @@ class HighscoresController {
   Future<Response> _getOnlineTime(String category, int page) async {
     if (page < 0) return ApiResponseError('Invalid page number');
 
-    Map<String, String> date = <String, String>{
-      'onlinetime+today': MyDateTime.today(),
-      'onlinetime+yesterday': MyDateTime.yesterday(),
+    Map<String, String> tables = <String, String>{
+      'onlinetime+today': 'onlinetime',
+      'onlinetime+yesterday': 'onlinetime',
+      'onlinetime+last7days': 'onlinetime-last7days',
     };
 
+    Map<String, String> dates = <String, String>{
+      'onlinetime+today': MyDateTime.today(),
+      'onlinetime+yesterday': MyDateTime.yesterday(),
+      'onlinetime+last7days': MyDateTime.yesterday(),
+      'onlinetime+last30days': MyDateTime.yesterday(),
+    };
+
+    String table = tables[category] ?? '';
+    String date = dates[category] ?? '';
+
     try {
-      var response = await DatabaseClient().from('onlinetime').select().eq('date', date[category]).single();
+      var response = await DatabaseClient().from(table).select().eq('date', date).single();
       var online = Online.fromJson(response['data'] as Map<String, dynamic>);
 
       if ((page - 1) * 50 > online.list.length) {
