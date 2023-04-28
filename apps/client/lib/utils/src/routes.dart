@@ -8,16 +8,28 @@ import 'package:forgottenland/views/pages/online/online_characters_page.dart';
 import 'package:get/get.dart';
 import 'package:utils/utils.dart';
 
-class Routes {
-  static final GetPage<dynamic> login = GetPage<dynamic>(name: '/login', page: () => LoginPage());
-  static final GetPage<dynamic> home = GetPage<dynamic>(name: '/home', page: () => HomePage());
-  static final GetPage<dynamic> highscores = GetPage<dynamic>(name: '/highscores', page: () => const HighscoresPage());
-  static final GetPage<dynamic> online = GetPage<dynamic>(name: '/online', page: () => OnlineCharactersPage());
-  static final GetPage<dynamic> character = GetPage<dynamic>(name: '/character', page: () => CharacterPage());
-  static final GetPage<dynamic> guild = GetPage<dynamic>(name: '/guild', page: () => GuildPage());
+class MyPage extends GetPage<dynamic> {
+  MyPage(
+    String name,
+    Widget page,
+  ) : super(
+          name: name,
+          page: () => page,
+          transition: Transition.noTransition,
+          transitionDuration: Duration.zero,
+        );
+}
 
-  static List<GetPage<dynamic>> getPages() {
-    final List<GetPage<dynamic>> list = <GetPage<dynamic>>[
+class Routes {
+  static final MyPage login = MyPage('/login', LoginPage());
+  static final MyPage home = MyPage('/home', HomePage());
+  static final MyPage highscores = MyPage('/highscores', const HighscoresPage());
+  static final MyPage online = MyPage('/online', OnlineCharactersPage());
+  static final MyPage character = MyPage('/character', CharacterPage());
+  static final MyPage guild = MyPage('/guild', GuildPage());
+
+  static List<MyPage> getPages() {
+    final List<MyPage> list = <MyPage>[
       login,
       home,
       highscores,
@@ -28,17 +40,17 @@ class Routes {
 
     for (final String c in LIST.category) {
       String name = '/highscores/${c.toLowerCase().replaceAll(' ', '')}';
-      Widget Function() page = () => HighscoresPage(category: c);
+      Widget page = HighscoresPage(category: c);
 
       if (c == 'Experience gained' || c == 'Online time') {
         for (final String p in LIST.period) {
           name = '/highscores/$c/$p'.toLowerCase().replaceAll(' ', '');
-          page = () => HighscoresPage(category: c, period: p);
-          final GetPage<dynamic> route = GetPage<dynamic>(name: name, page: page);
+          page = HighscoresPage(category: c, period: p);
+          final MyPage route = MyPage(name, page);
           list.add(route);
         }
       } else {
-        final GetPage<dynamic> route = GetPage<dynamic>(name: name, page: page);
+        final MyPage route = MyPage(name, page);
         list.add(route);
       }
     }
