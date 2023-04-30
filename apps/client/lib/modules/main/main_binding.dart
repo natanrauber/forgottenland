@@ -1,3 +1,4 @@
+import 'package:database_client/database_client.dart';
 import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/controllers/guilds_controller.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
@@ -16,6 +17,6 @@ class MainBinding implements Bindings {
     Get.put(WorldsController());
     Get.put(GuildsController());
     Get.put(OnlineController());
-    Get.put(HighscoresController());
+    Get.put(HighscoresController(MySupabaseClient()));
   }
 }

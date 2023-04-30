@@ -8,6 +8,10 @@ import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
 class HighscoresController {
+  HighscoresController(this.databaseClient);
+
+  final IDatabaseClient databaseClient;
+
   Future<Response> get(Request request) async {
     String? world = request.params['world'];
     String? category = request.params['category'];
@@ -48,7 +52,7 @@ class HighscoresController {
     String date = dates[category] ?? '';
 
     try {
-      var response = await DatabaseClient().from(table).select().eq('date', date).single();
+      var response = await databaseClient.from(table).select().eq('date', date).single();
       var record = Record.fromJson(response['data'] as Map<String, dynamic>);
 
       if ((page - 1) * 50 > record.list.length) {
@@ -86,7 +90,7 @@ class HighscoresController {
     String date = dates[category] ?? '';
 
     try {
-      var response = await DatabaseClient().from(table).select().eq('date', date).single();
+      var response = await databaseClient.from(table).select().eq('date', date).single();
       var online = Online.fromJson(response['data'] as Map<String, dynamic>);
 
       if ((page - 1) * 50 > online.list.length) {

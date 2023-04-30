@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/src/etl.dart';
 import 'package:forgottenlandapi/src/highscores_controller.dart';
 import 'package:forgottenlandapi/src/online_controller.dart';
@@ -8,20 +9,22 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
+final IDatabaseClient _databaseClient = MySupabaseClient();
+
 // Configure routes.
 final _router = Router()
-  ..post('/login', UserController().login)
-  ..post('/revive', UserController().revive)
-  ..get('/highscores/<world>/<category>/<vocation>/<page>', HighscoresController().get)
-  ..get('/online', OnlineController().getOnlineNow)
-  ..get('/onlinetime/<date>', OnlineController().getOnlineTime)
-  ..get('/private/exprecord', ETL().expRecord)
-  ..get('/private/currentexp', ETL().currentExp)
-  ..get('/private/expgain+today', ETL().expGainedToday)
-  ..get('/private/expgain+yesterday', ETL().expGainedYesterday)
-  ..get('/private/expgain+last7days', ETL().expGainedLast7Days)
-  ..get('/private/expgain+last30days', ETL().expGainedLast30Days)
-  ..get('/private/online', ETL().registerOnlinePlayers);
+  ..post('/login', UserController(_databaseClient).login)
+  ..post('/revive', UserController(_databaseClient).revive)
+  ..get('/highscores/<world>/<category>/<vocation>/<page>', HighscoresController(_databaseClient).get)
+  ..get('/online', OnlineController(_databaseClient).getOnlineNow)
+  ..get('/onlinetime/<date>', OnlineController(_databaseClient).getOnlineTime)
+  ..get('/private/exprecord', ETL(_databaseClient).expRecord)
+  ..get('/private/currentexp', ETL(_databaseClient).currentExp)
+  ..get('/private/expgain+today', ETL(_databaseClient).expGainedToday)
+  ..get('/private/expgain+yesterday', ETL(_databaseClient).expGainedYesterday)
+  ..get('/private/expgain+last7days', ETL(_databaseClient).expGainedLast7Days)
+  ..get('/private/expgain+last30days', ETL(_databaseClient).expGainedLast30Days)
+  ..get('/private/online', ETL(_databaseClient).registerOnlinePlayers);
 
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).

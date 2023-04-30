@@ -10,14 +10,14 @@ abstract class IOnlineController {
 }
 
 class OnlineController implements IOnlineController {
-  factory OnlineController() => _singleton;
-  OnlineController._internal();
-  static final OnlineController _singleton = OnlineController._internal();
+  OnlineController(this.databaseClient);
+
+  final IDatabaseClient databaseClient;
 
   @override
   Future<Response> getOnlineNow(Request request) async {
     try {
-      dynamic response = await DatabaseClient().from('online').select().single();
+      dynamic response = await databaseClient.from('online').select().single();
       Online online = Online.fromJson((response['data'] as Map<String, dynamic>));
       return ApiResponseSuccess(data: online.toJson());
     } catch (e) {
@@ -29,7 +29,7 @@ class OnlineController implements IOnlineController {
   Future<Response> getOnlineTime(Request request) async {
     try {
       String? date = request.params['date'];
-      dynamic response = await DatabaseClient().from('onlinetime').select().eq('date', date).single();
+      dynamic response = await databaseClient.from('onlinetime').select().eq('date', date).single();
       Online online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
       return ApiResponseSuccess(data: online.toJson());
     } catch (e) {

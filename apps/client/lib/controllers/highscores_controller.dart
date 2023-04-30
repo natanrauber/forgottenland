@@ -12,6 +12,10 @@ import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
 class HighscoresController extends Controller {
+  HighscoresController(this.databaseClient);
+
+  final IDatabaseClient databaseClient;
+
   final OnlineController _onlineCtrl = Get.find<OnlineController>();
   final WorldsController _worldsCtrl = Get.find<WorldsController>();
 
@@ -169,7 +173,7 @@ class HighscoresController extends Controller {
     isLoading.value = true;
 
     try {
-      final dynamic response = await DatabaseClient().from('supporter').select();
+      final dynamic response = await databaseClient.from('supporter').select();
       for (final dynamic e in response) {
         if (e is Map<String, dynamic>) supporters.add(Supporter.fromJson(e));
       }
@@ -185,7 +189,7 @@ class HighscoresController extends Controller {
     isLoading.value = true;
 
     try {
-      final dynamic response = await DatabaseClient().from('hidden').select();
+      final dynamic response = await databaseClient.from('hidden').select();
       for (final dynamic e in response) {
         if (e is Map<String, dynamic> && e['name'] is String) hidden.add(e['name'] as String);
       }

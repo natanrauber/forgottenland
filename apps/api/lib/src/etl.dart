@@ -18,15 +18,15 @@ abstract class IETL {
 
 // Extract, Transform, Load.
 class ETL implements IETL {
-  factory ETL() => _singleton;
-  ETL._internal();
-  static final ETL _singleton = ETL._internal();
+  ETL(this.databaseClient);
+
+  final IDatabaseClient databaseClient;
 
   @override
   Future<Response> expRecord(Request request) async {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
-    DatabaseClient().start(supabaseUrl, supabaseKey);
+    databaseClient.setup(supabaseUrl, supabaseKey);
     if (await _exists('exp-record', MyDateTime.today())) return ApiResponseAccepted();
     return _getCurrentExp('exp-record', 'insert');
   }
@@ -35,7 +35,7 @@ class ETL implements IETL {
   Future<Response> currentExp(Request request) async {
     String? supabaseUrl = request.headers['supabaseUrl'];
     String? supabaseKey = request.headers['supabaseKey'];
-    DatabaseClient().start(supabaseUrl, supabaseKey);
+    databaseClient.setup(supabaseUrl, supabaseKey);
     return _getCurrentExp('current-exp', 'update');
   }
 
@@ -104,17 +104,17 @@ class ETL implements IETL {
   Future<dynamic> _saveCurrentExp(Record record, String table, String operation) async {
     if (operation == 'update') {
       var values = <String, dynamic>{'data': record.toJson(), 'timestamp': MyDateTime.timeStamp()};
-      return DatabaseClient().from(table).update(values).match(<String, dynamic>{'world': 'All'});
+      return databaseClient.from(table).update(values).match(<String, dynamic>{'world': 'All'});
     }
     var values = <String, dynamic>{'date': MyDateTime.today(), 'world': 'All', 'data': record.toJson()};
-    return DatabaseClient().from(table).insert(values);
+    return databaseClient.from(table).insert(values);
   }
 
   @override
   Future<Response> expGainedToday(Request request) async {
     String? supabaseUrl = request.headers['supabaseUrl'];
     String? supabaseKey = request.headers['supabaseKey'];
-    DatabaseClient().start(supabaseUrl, supabaseKey);
+    databaseClient.setup(supabaseUrl, supabaseKey);
 
     try {
       Record result = await _calcExpGainToday();
@@ -127,7 +127,7 @@ class ETL implements IETL {
 
   Future<Record> _calcExpGainToday() async {
     Record start = await _getWhere('exp-record', MyDateTime.today());
-    dynamic response = await DatabaseClient().from('current-exp').select().single();
+    dynamic response = await databaseClient.from('current-exp').select().single();
     Record end = Record.fromJson(response['data']);
     Record result = Record(list: <HighscoresEntry>[]);
     result.list.addAll(_getExpDiff(start, end));
@@ -139,7 +139,7 @@ class ETL implements IETL {
   Future<Response> expGainedYesterday(Request request) async {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
-    DatabaseClient().start(supabaseUrl, supabaseKey);
+    databaseClient.setup(supabaseUrl, supabaseKey);
 
     if (await _exists('exp-gain-last-day', MyDateTime.yesterday())) return ApiResponseAccepted();
 
@@ -156,7 +156,7 @@ class ETL implements IETL {
   Future<Response> expGainedLast7Days(Request request) async {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
-    DatabaseClient().start(supabaseUrl, supabaseKey);
+    databaseClient.setup(supabaseUrl, supabaseKey);
 
     if (await _exists('exp-gain-last-7-days', MyDateTime.yesterday())) return ApiResponseAccepted();
 
@@ -173,7 +173,7 @@ class ETL implements IETL {
   Future<Response> expGainedLast30Days(Request request) async {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
-    DatabaseClient().start(supabaseUrl, supabaseKey);
+    databaseClient.setup(supabaseUrl, supabaseKey);
 
     if (await _exists('exp-gain-last-30-days', MyDateTime.yesterday())) return ApiResponseAccepted();
 
@@ -196,7 +196,7 @@ class ETL implements IETL {
   }
 
   Future<Record> _getWhere(String table, String date) async {
-    dynamic response = await DatabaseClient().from(table).select().eq('date', date).single();
+    dynamic response = await databaseClient.from(table).select().eq('date', date).single();
     return Record.fromJson(response['data']);
   }
 
@@ -223,21 +223,21 @@ class ETL implements IETL {
   Future<dynamic> _saveExpGain(String table, String date, Record data, {bool canUpdate = false}) {
     if (canUpdate) {
       var values = <String, dynamic>{'date': date, 'world': 'All', 'data': data.toJson()};
-      return DatabaseClient().from(table).upsert(values);
+      return databaseClient.from(table).upsert(values);
     }
     var values = <String, dynamic>{'date': date, 'world': 'All', 'data': data.toJson()};
-    return DatabaseClient().from(table).insert(values);
+    return databaseClient.from(table).insert(values);
   }
 
   Future<bool> _exists(String table, String date) async {
-    List<dynamic> response = await DatabaseClient().from(table).select().eq('date', date);
+    List<dynamic> response = await databaseClient.from(table).select().eq('date', date);
     return response.isNotEmpty;
   }
 
   @override
   Future<Response> registerOnlinePlayers(Request request) async {
     try {
-      DatabaseClient().start(request.headers['supabaseUrl'], request.headers['supabaseKey']);
+      databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
 
       Online onlineNow = await _getOnlineNow();
       await _saveOnlineNow(onlineNow);
@@ -279,12 +279,12 @@ class ETL implements IETL {
 
   Future<dynamic> _saveOnlineNow(Online online) async {
     var values = <String, dynamic>{'data': online.toJson(), 'timestamp': MyDateTime.timeStamp()};
-    return DatabaseClient().from('online').update(values).match(<String, dynamic>{'world': 'All'});
+    return databaseClient.from('online').update(values).match(<String, dynamic>{'world': 'All'});
   }
 
   Future<Online> _getOnlineTimeToday(Online onlineNow) async {
     onlineNow.list.removeWhere((e) => (e.level ?? 0) < 10);
-    List<dynamic> response = await DatabaseClient().from('onlinetime').select().eq('date', MyDateTime.today());
+    List<dynamic> response = await databaseClient.from('onlinetime').select().eq('date', MyDateTime.today());
     Online onlineTime;
 
     if (response.isEmpty) {
@@ -312,7 +312,7 @@ class ETL implements IETL {
 
   Future<dynamic> _saveOnlineTimeToday(Online online) async {
     var values = <String, dynamic>{'date': MyDateTime.today(), 'data': online.toJson()};
-    return DatabaseClient().from('onlinetime').upsert(values).match(<String, dynamic>{'date': MyDateTime.now()});
+    return databaseClient.from('onlinetime').upsert(values).match(<String, dynamic>{'date': MyDateTime.now()});
   }
 
   Future<Online?> _getOnlineTimeLast7days() async {
@@ -323,7 +323,7 @@ class ETL implements IETL {
     Online result = Online(list: <OnlineEntry>[]);
 
     for (String date in MyDateTime.range(start, end)) {
-      List<dynamic> response = await DatabaseClient().from('onlinetime').select().eq('date', date);
+      List<dynamic> response = await databaseClient.from('onlinetime').select().eq('date', date);
 
       if (response.isNotEmpty) {
         Online onlineTimeOnDate = Online.fromJson(response.first['data']);
@@ -347,6 +347,6 @@ class ETL implements IETL {
   Future<dynamic> _saveOnlineTimeLast7days(Online? onlineTime) async {
     if (onlineTime == null) return;
     var values = <String, dynamic>{'date': MyDateTime.yesterday(), 'data': onlineTime.toJson()};
-    return DatabaseClient().from('onlinetime-last7days').insert(values);
+    return databaseClient.from('onlinetime-last7days').insert(values);
   }
 }
