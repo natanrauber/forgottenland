@@ -103,10 +103,18 @@ class ETL implements IETL {
 
   Future<dynamic> _saveCurrentExp(Record record, String table, String operation) async {
     if (operation == 'update') {
-      var values = <String, dynamic>{'data': record.toJson(), 'timestamp': MyDateTime.timeStamp()};
+      var values = <String, dynamic>{
+        'data': record.toJson(),
+        'timestamp': MyDateTime.timeStamp(),
+      };
       return databaseClient.from(table).update(values).match(<String, dynamic>{'world': 'All'});
     }
-    var values = <String, dynamic>{'date': MyDateTime.today(), 'world': 'All', 'data': record.toJson()};
+    var values = <String, dynamic>{
+      'date': MyDateTime.today(),
+      'world': 'All',
+      'data': record.toJson(),
+      'timestamp': MyDateTime.timeStamp(),
+    };
     return databaseClient.from(table).insert(values);
   }
 
@@ -222,10 +230,20 @@ class ETL implements IETL {
 
   Future<dynamic> _saveExpGain(String table, String date, Record data, {bool canUpdate = false}) {
     if (canUpdate) {
-      var values = <String, dynamic>{'date': date, 'world': 'All', 'data': data.toJson()};
+      var values = <String, dynamic>{
+        'date': date,
+        'world': 'All',
+        'data': data.toJson(),
+        'timestamp': MyDateTime.timeStamp(),
+      };
       return databaseClient.from(table).upsert(values);
     }
-    var values = <String, dynamic>{'date': date, 'world': 'All', 'data': data.toJson()};
+    var values = <String, dynamic>{
+      'date': date,
+      'world': 'All',
+      'data': data.toJson(),
+      'timestamp': MyDateTime.timeStamp(),
+    };
     return databaseClient.from(table).insert(values);
   }
 
@@ -311,7 +329,11 @@ class ETL implements IETL {
   }
 
   Future<dynamic> _saveOnlineTimeToday(Online online) async {
-    var values = <String, dynamic>{'date': MyDateTime.today(), 'data': online.toJson()};
+    var values = <String, dynamic>{
+      'date': MyDateTime.today(),
+      'data': online.toJson(),
+      'timestamp': MyDateTime.timeStamp(),
+    };
     return databaseClient.from('onlinetime').upsert(values).match(<String, dynamic>{'date': MyDateTime.now()});
   }
 
@@ -346,7 +368,11 @@ class ETL implements IETL {
 
   Future<dynamic> _saveOnlineTimeLast7days(Online? onlineTime) async {
     if (onlineTime == null) return;
-    var values = <String, dynamic>{'date': MyDateTime.yesterday(), 'data': onlineTime.toJson()};
+    var values = <String, dynamic>{
+      'date': MyDateTime.yesterday(),
+      'data': onlineTime.toJson(),
+      'timestamp': MyDateTime.timeStamp(),
+    };
     return databaseClient.from('onlinetime-last7days').insert(values);
   }
 }
