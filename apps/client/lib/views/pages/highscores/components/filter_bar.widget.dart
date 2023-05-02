@@ -5,6 +5,7 @@ import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
+import 'package:forgottenland/views/widgets/src/images/svg_image.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
@@ -126,6 +127,9 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
 
             if (value is World && value.battleyeType != null) _battleyeTypeIcon(value),
             if (labelText.toLowerCase().contains('battleye')) _battleyeTypeIcon(value),
+
+            if (value is World && value.location != null) _locationIcon(value.location),
+            if (LIST.location.contains(value)) _locationIcon(value),
           ],
         ),
       );
@@ -144,9 +148,15 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
     return a == b ? AppColors.primary : AppColors.textPrimary;
   }
 
-  Widget _infoIcon({required Widget child}) => Container(
+  Widget _infoIcon({required Widget child, Color? backgroundColor, EdgeInsets? padding}) => Container(
         height: 20,
+        width: 20,
         margin: const EdgeInsets.only(left: 4),
+        padding: padding,
+        decoration: BoxDecoration(
+          color: backgroundColor ?? Colors.transparent,
+          shape: BoxShape.circle,
+        ),
         child: child,
       );
 
@@ -162,6 +172,21 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
     if (value is World) image = '${value.battleyeType?.toLowerCase().replaceAll(' ', '_')}';
     if (image == 'all') return Container();
     return _infoIcon(child: Image.asset('assets/icons/battleye_type/$image.png'));
+  }
+
+  Widget _locationIcon(dynamic value) {
+    final Map<String, String> map = <String, String>{
+      'Europe': 'EU',
+      'North America': 'NA',
+      'South America': 'SA',
+    };
+    if (value is! String) return Container();
+    if (!map.containsKey(value)) return Container();
+    return _infoIcon(
+      backgroundColor: Colors.black87,
+      padding: const EdgeInsets.all(1.5),
+      child: SvgImage(asset: 'assets/icons/location/${map[value]}.svg'),
+    );
   }
 
   Widget _searchBar() => Container(
