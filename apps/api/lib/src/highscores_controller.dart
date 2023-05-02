@@ -8,9 +8,10 @@ import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
 class HighscoresController {
-  HighscoresController(this.databaseClient);
+  HighscoresController(this.databaseClient, this.httpClient);
 
   final IDatabaseClient databaseClient;
+  final IHttpClient httpClient;
 
   Future<Response> get(Request request) async {
     String? world = request.params['world'];
@@ -23,7 +24,7 @@ class HighscoresController {
     if (category.contains('onlinetime')) return _getOnlineTime(category, page);
 
     try {
-      var response = await MyHttpClient().get('${PATH.tibiaDataApi}/highscores/$world/$category/$vocation/$page');
+      var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/$world/$category/$vocation/$page');
       var record = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
       return ApiResponseSuccess(data: record.toJson());
     } catch (e) {

@@ -5,13 +5,17 @@ import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 
 class CharacterController extends Controller {
+  CharacterController(this.httpClient);
+
+  final IHttpClient httpClient;
+
   RxCharacter data = Character().obs;
 
   Future<MyHttpResponse> get(String name) async {
     isLoading.value = true;
     data.value = Character();
 
-    final MyHttpResponse response = await MyHttpClient().get('${PATH.tibiaDataApi}/character/$name');
+    final MyHttpResponse response = await httpClient.get('${PATH.tibiaDataApi}/character/$name');
 
     if (response.success) {
       if (response.dataAsMap['characters'] is Map<String, dynamic>) {

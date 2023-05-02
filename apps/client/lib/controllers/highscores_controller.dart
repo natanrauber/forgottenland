@@ -12,9 +12,10 @@ import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
 class HighscoresController extends Controller {
-  HighscoresController(this.databaseClient);
+  HighscoresController(this.databaseClient, this.httpClient);
 
   final IDatabaseClient databaseClient;
+  final IHttpClient httpClient;
 
   final OnlineController _onlineCtrl = Get.find<OnlineController>();
   final WorldsController _worldsCtrl = Get.find<WorldsController>();
@@ -71,7 +72,7 @@ class HighscoresController extends Controller {
       if (cat == 'Experience gained') cat = '$cat+$period';
       if (cat == 'Online time') cat = '$cat+$period';
 
-      response = await MyHttpClient().get(
+      response = await httpClient.get(
         '${PATH.forgottenLandApi}/highscores/$world/$cat/none/$pageCtrl'.toLowerCase().replaceAll(' ', ''),
       );
 
