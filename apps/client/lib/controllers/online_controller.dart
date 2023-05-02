@@ -10,6 +10,10 @@ import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
 class OnlineController extends Controller {
+  OnlineController(this.httpClient);
+
+  final IHttpClient httpClient;
+
   WorldsController worldsCtrl = Get.find<WorldsController>();
 
   RxList<Supporter> supporters = <Supporter>[].obs;
@@ -34,7 +38,7 @@ class OnlineController extends Controller {
 
     if (worldsCtrl.list.isEmpty) await worldsCtrl.load();
 
-    final MyHttpResponse response = await MyHttpClient().get('${PATH.forgottenLandApi}/online');
+    final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/online');
     if (response.success) _populateList(rawList, response);
 
     isLoading.value = false;
@@ -99,7 +103,7 @@ class OnlineController extends Controller {
 
     if (worldsCtrl.list.isEmpty) await worldsCtrl.load();
 
-    final MyHttpResponse response = await MyHttpClient().get('${PATH.forgottenLandApi}/onlinetime/$day');
+    final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/onlinetime/$day');
     if (response.success) _populateList(onlineTimes, response);
 
     isLoading.value = false;

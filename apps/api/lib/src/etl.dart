@@ -18,9 +18,10 @@ abstract class IETL {
 
 // Extract, Transform, Load.
 class ETL implements IETL {
-  ETL(this.databaseClient);
+  ETL(this.databaseClient, this.httpClient);
 
   final IDatabaseClient databaseClient;
+  final IHttpClient httpClient;
 
   @override
   Future<Response> expRecord(Request request) async {
@@ -68,7 +69,7 @@ class ETL implements IETL {
         loadNext = false;
 
         aux = null;
-        var response = await MyHttpClient().get('${PATH.tibiaDataApi}/highscores/$world/experience/none/$page');
+        var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/$world/experience/none/$page');
 
         if (response.success) {
           aux = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
@@ -87,7 +88,7 @@ class ETL implements IETL {
   }
 
   Future<List<World>> _getWorlds() async {
-    final MyHttpResponse response = await MyHttpClient().get('${PATH.tibiaDataApi}/worlds');
+    final MyHttpResponse response = await httpClient.get('${PATH.tibiaDataApi}/worlds');
 
     if (response.dataAsMap['worlds'] is! Map) return [];
     if (response.dataAsMap['worlds']['regular_worlds'] is! List) return [];
@@ -279,7 +280,7 @@ class ETL implements IETL {
       int i = 1;
 
       do {
-        response = await MyHttpClient().get('${PATH.tibiaDataApi}/world/$world');
+        response = await httpClient.get('${PATH.tibiaDataApi}/world/$world');
         if (response.success) {
           Online aux = Online.fromJsonTibiaDataAPI(response.dataAsMap);
           aux.list.removeWhere((e) => e.vocation != 'None' || (e.level ?? 0) < 5);

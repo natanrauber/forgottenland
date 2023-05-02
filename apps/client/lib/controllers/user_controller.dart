@@ -11,6 +11,10 @@ import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 
 class UserController extends Controller {
+  UserController(this.httpClient);
+
+  final IHttpClient httpClient;
+
   RxBool isLoggedIn = false.obs;
 
   RxUser? data;
@@ -21,7 +25,7 @@ class UserController extends Controller {
   Future<MyHttpResponse> login() async {
     isLoading.value = true;
 
-    final MyHttpResponse response = await MyHttpClient().post(
+    final MyHttpResponse response = await httpClient.post(
       '${PATH.forgottenLandApi}/login',
       <String, dynamic>{
         'email': emailCtrl.text,
@@ -57,7 +61,7 @@ class UserController extends Controller {
 
     isLoading.value = true;
 
-    final MyHttpResponse response = await MyHttpClient().post(
+    final MyHttpResponse response = await httpClient.post(
       '${PATH.forgottenLandApi}/revive',
       <String, dynamic>{
         'session_id': sessionId,

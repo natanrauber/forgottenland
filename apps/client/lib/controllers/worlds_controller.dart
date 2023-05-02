@@ -5,6 +5,10 @@ import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 
 class WorldsController extends Controller {
+  WorldsController(this.httpClient);
+
+  final IHttpClient httpClient;
+
   final List<World> _list = <World>[];
 
   ///
@@ -19,7 +23,7 @@ class WorldsController extends Controller {
 
     List<dynamic>? aux;
 
-    final MyHttpResponse response = await MyHttpClient().get('${PATH.tibiaDataApi}/worlds');
+    final MyHttpResponse response = await httpClient.get('${PATH.tibiaDataApi}/worlds');
 
     aux = response.dataAsMap['worlds']['regular_worlds'] as List<dynamic>?;
 
