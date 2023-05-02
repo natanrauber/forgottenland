@@ -3,7 +3,7 @@ description: forgottenland
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0
+version: 23.05.02+1
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -51,40 +51,40 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/logo.jpg
-    - assets/logo_alt.png
-    - assets/scroll.png
-    - assets/outfit/awkn.png
-    - assets/outfit/draven.png
-    - assets/outfit/karkaroff.png
-    - assets/outfit/junck.png
-    - assets/outfit/freedan.png
-    # icons:
-    - assets/icons/rank/rank1.png
-    - assets/icons/rank/rank2.png
-    - assets/icons/rank/rank3.png
-    - assets/icons/rank/rank4.png
-    - assets/icons/rank/globalrank1.png
-    - assets/icons/rank/globalrank2.png
-    - assets/icons/rank/globalrank3.png
-    - assets/icons/rank/globalrank4.png
-    - assets/icons/battleye_type/yellow.png
     - assets/icons/battleye_type/green.png
     - assets/icons/battleye_type/none.png
-    - assets/icons/pvp_type/optional_pvp.png
-    - assets/icons/pvp_type/open_pvp.png
-    - assets/icons/pvp_type/hardcore_pvp.png
-    - assets/icons/pvp_type/retro_open_pvp.png
-    - assets/icons/pvp_type/retro_hardcore_pvp.png
+    - assets/icons/battleye_type/yellow.png
+    - assets/icons/location/EU.svg
+    - assets/icons/location/NA.svg
+    - assets/icons/location/SA.svg
     - assets/icons/news_type/cipsoft.png
     - assets/icons/news_type/community.png
     - assets/icons/news_type/development.png
     - assets/icons/news_type/support.png
     - assets/icons/news_type/technical.png
-    # images
+    - assets/icons/pvp_type/hardcore_pvp.png
+    - assets/icons/pvp_type/open_pvp.png
+    - assets/icons/pvp_type/optional_pvp.png
+    - assets/icons/pvp_type/retro_hardcore_pvp.png
+    - assets/icons/pvp_type/retro_open_pvp.png
+    - assets/icons/rank/globalrank1.png
+    - assets/icons/rank/globalrank2.png
+    - assets/icons/rank/globalrank3.png
+    - assets/icons/rank/globalrank4.png
+    - assets/icons/rank/rank1.png
+    - assets/icons/rank/rank2.png
+    - assets/icons/rank/rank3.png
+    - assets/icons/rank/rank4.png
     - assets/images/background/25th_anniversary.jpg
     - assets/images/background/offline.jpg
-    # svg
+    - assets/logo_alt.png
+    - assets/logo.jpg
+    - assets/outfit/awkn.png
+    - assets/outfit/draven.png
+    - assets/outfit/freedan.png
+    - assets/outfit/junck.png
+    - assets/outfit/karkaroff.png
+    - assets/scroll.png
     - assets/svg/logo.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
