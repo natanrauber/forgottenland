@@ -73,7 +73,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
                       ),
 
                     if (widget.item.supporterTitle != null)
-                      _info('\n<primary>${widget.item.supporterTitle ?? ''}<primary>'),
+                      _info('<primary>${widget.item.supporterTitle ?? ''}<primary>'),
                   ],
                 ),
               ),
