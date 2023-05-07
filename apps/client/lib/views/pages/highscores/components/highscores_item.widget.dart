@@ -72,8 +72,8 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
                         '${highscoresCtrl.category.value}: ${hideData ? '<primary>???<primary>' : formatter.format(widget.item.value)}',
                       ),
 
-                    if (widget.item.supporterTitle != null)
-                      _info('<primary>${widget.item.supporterTitle ?? ''}<primary>'),
+                    // if (widget.item.supporterTitle != null)
+                    //   _info('\n<primary>${widget.item.supporterTitle ?? ''}<primary>'),
                   ],
                 ),
               ),
