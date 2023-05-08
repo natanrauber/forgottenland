@@ -29,14 +29,26 @@ class _HighscoresPageState extends State<HighscoresPage> {
 
   @override
   void initState() {
+    super.initState();
+
+    final String c = widget.category ?? LIST.category.first;
+    final String p = widget.period ?? LIST.period.first;
+    if (_alreadyLoaded(c, p)) return;
+
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        highscoresCtrl.category.value = widget.category ?? LIST.category.first;
-        highscoresCtrl.period.value = widget.period ?? LIST.period.first;
+        highscoresCtrl.category.value = c;
+        highscoresCtrl.period.value = p;
         _loadHighscores();
       },
     );
-    super.initState();
+  }
+
+  bool _alreadyLoaded(String c, String p) {
+    if (highscoresCtrl.category.value != c) return false;
+    if (highscoresCtrl.period.value != p) return false;
+    if (highscoresCtrl.rawList.isEmpty) return false;
+    return true;
   }
 
   Future<void> _loadHighscores({bool newPage = false}) async {

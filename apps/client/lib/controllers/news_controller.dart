@@ -12,10 +12,8 @@ class NewsController extends Controller {
   RxList<News> list = <News>[].obs;
 
   Future<MyHttpResponse> getNews() async {
-    MyHttpResponse response;
-
     isLoading.value = true;
-    response = await httpClient.get('${PATH.tibiaDataApi}/news/latest');
+    final MyHttpResponse response = await httpClient.get('${PATH.tibiaDataApi}/news/latest');
 
     if (response.success) {
       for (final dynamic item in response.dataAsMap['news'] as List<dynamic>) {

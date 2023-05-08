@@ -23,8 +23,9 @@ class _NewsWidgetState extends State<NewsWidget> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => newsCtrl.getNews());
     super.initState();
+    if (newsCtrl.list.isNotEmpty) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) => newsCtrl.getNews());
   }
 
   @override
