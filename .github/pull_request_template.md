@@ -1,7 +1,8 @@
-# Related issue
+## Related issue
 Resolves #issueNumber
 
-# Versioning
+
+## Versioning
 Updated apps/packages and corresponding new versions:
 - Package: year.month.day+buildNumber
 - App: year.month.day+buildNumber
