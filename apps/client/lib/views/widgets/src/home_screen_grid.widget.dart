@@ -121,8 +121,17 @@ class HomeScreenGrid extends StatelessWidget {
   GridButtonModel _highscores(BuildContext context) => GridButtonModel(
         name: 'Highscores',
         icon: CupertinoIcons.chart_bar_alt_fill,
-        onTap: () => Get.toNamed('/highscores/${highscoresCtrl.category.value.toLowerCase().replaceAll(' ', '')}'),
+        onTap: _getToHighscoresPage,
       );
+
+  Future<void> _getToHighscoresPage() async {
+    final String c = highscoresCtrl.category.value;
+    final String p = highscoresCtrl.period.value;
+    String route = '${Routes.highscores.name}/$c';
+    if (c == 'Experience gained' || c == 'Online time') route = '$route/$p';
+
+    return Get.toNamed(route.toLowerCase().replaceAll(' ', ''));
+  }
 
   GridButtonModel _onlineCharacters(BuildContext context) => GridButtonModel(
         name: 'Online',
