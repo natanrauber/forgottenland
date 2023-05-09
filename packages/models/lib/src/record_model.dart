@@ -17,6 +17,27 @@ class Record {
     }
   }
 
+  Record.fromJsonExpanded(Map<String, dynamic> json) {
+    json.clean();
+    List<dynamic> responseList = <dynamic>[];
+
+    if (json['highscore_list'] is List<dynamic>) responseList = json['highscore_list'] as List<dynamic>;
+    if (json['online_players'] is List<dynamic>) responseList = json['online_players'] as List<dynamic>;
+
+    for (final dynamic e in responseList) {
+      if (e is Map<String, dynamic>) {
+        HighscoresEntry entry = HighscoresEntry.fromJson(e);
+        if (entry.expanded == null) {
+          entry.expanded = ExpandedData();
+          entry.expanded?.experience.value = entry.value;
+          entry.expanded?.experience.points = ((entry.value ?? 0) / 30000).floor();
+          entry.expanded?.points = entry.expanded?.experience.points ?? 0;
+        }
+        list.add(entry);
+      }
+    }
+  }
+
   List<HighscoresEntry> list = <HighscoresEntry>[];
 
   Map<String, dynamic> toJson() {

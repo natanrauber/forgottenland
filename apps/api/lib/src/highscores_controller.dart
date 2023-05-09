@@ -108,4 +108,14 @@ class HighscoresController {
       return ApiResponseError(e);
     }
   }
+
+  Future<Response> rookmaster(Request request) async {
+    try {
+      var response = await databaseClient.from('rook-master').select().limit(1).single();
+      var record = Record.fromJsonExpanded(response['data'] as Map<String, dynamic>);
+      return ApiResponseSuccess(data: record.toJson());
+    } catch (e) {
+      return ApiResponseError(e);
+    }
+  }
 }

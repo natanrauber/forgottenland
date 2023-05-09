@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/utils/api_responses.dart';
 import 'package:forgottenlandapi/utils/paths.dart';
@@ -14,6 +16,7 @@ abstract class IETL {
   Future<Response> expGainedLast7Days(Request request);
   Future<Response> expGainedLast30Days(Request request);
   Future<Response> registerOnlinePlayers(Request request);
+  Future<Response> rookmaster(Request request);
 }
 
 // Extract, Transform, Load.
@@ -375,5 +378,189 @@ class ETL implements IETL {
       'timestamp': MyDateTime.timeStamp(),
     };
     return databaseClient.from('onlinetime-last7days').insert(values);
+  }
+
+  @override
+  Future<Response> rookmaster(Request request) async {
+    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
+    String supabaseKey = request.headers['supabaseKey'] ?? '';
+    databaseClient.setup(supabaseUrl, supabaseKey);
+    if (await _exists('rook-master', MyDateTime.today())) return ApiResponseAccepted();
+    return _getRookMaster('rook-master', 'insert');
+  }
+
+  Future<Response> _getRookMaster(String table, String operation) async {
+    try {
+      Record record = await _calcRookMaster();
+      await _saveCurrentExp(record, table, operation);
+      return ApiResponseSuccess();
+    } catch (e) {
+      return ApiResponseError(e);
+    }
+  }
+
+  Future<Record> _calcRookMaster() async {
+    Record record = await _getLevel();
+
+    Record fistRecord = await _getSkillRecord('fist');
+    _addFist(record, fistRecord);
+
+    Record axeRecord = await _getSkillRecord('axe');
+    _addAxe(record, axeRecord);
+
+    Record clubRecord = await _getSkillRecord('club');
+    _addClub(record, clubRecord);
+
+    Record swordRecord = await _getSkillRecord('sword');
+    _addSword(record, swordRecord);
+
+    Record distanceRecord = await _getSkillRecord('distance');
+    _addDistance(record, distanceRecord);
+
+    Record shieldingRecord = await _getSkillRecord('shielding');
+    _addShielding(record, shieldingRecord);
+
+    Record fishingRecord = await _getSkillRecord('fishing');
+    _addFishing(record, fishingRecord);
+
+    record.list.sort((a, b) => (b.expanded?.points ?? 0).compareTo(a.expanded?.points ?? 0));
+    return record;
+  }
+
+  Future<Record> _getLevel() async {
+    Record record = Record(list: <HighscoresEntry>[]);
+
+    Record? aux;
+    int page = 1;
+    int i = 0;
+    bool retry = false;
+    bool loadNext = false;
+
+    do {
+      if (retry) page--;
+      i = retry ? i++ : 0;
+
+      retry = false;
+      loadNext = false;
+
+      aux = null;
+      var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/all/experience/none/$page');
+
+      if (response.success) {
+        aux = Record.fromJsonExpanded(response.dataAsMap['highscores'] as Map<String, dynamic>);
+        record.list.addAll(aux.list);
+        page++;
+      }
+
+      if (!response.success && i < 5) retry = true;
+      if (aux?.list.isNotEmpty == true && page <= 20) loadNext = true;
+    } while (retry || loadNext);
+
+    return record;
+  }
+
+  Future<Record> _getSkillRecord(String skill) async {
+    Record record = Record(list: <HighscoresEntry>[]);
+
+    Record? aux;
+    int page = 1;
+    int i = 0;
+    bool retry = false;
+    bool loadNext = false;
+
+    do {
+      if (retry) page--;
+      i = retry ? i++ : 0;
+
+      retry = false;
+      loadNext = false;
+
+      aux = null;
+      var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/all/$skill/none/$page');
+
+      if (response.success) {
+        aux = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
+        record.list.addAll(aux.list);
+        page++;
+      }
+
+      if (!response.success && i < 5) retry = true;
+      if (aux?.list.isNotEmpty == true && page <= 20) loadNext = true;
+    } while (retry || loadNext);
+
+    return record;
+  }
+
+  void _addFist(Record record, Record fistRecord) {
+    for (HighscoresEntry e in record.list) {
+      if (fistRecord.list.any((se) => se.name == e.name)) {
+        e.expanded?.fist.value = fistRecord.list.firstWhere((se) => se.name == e.name).value;
+        e.expanded?.fist.points = ((((pow(1.5, (e.expanded?.fist.value ?? 10) - 10) - 1) / 0.5) * 50) / 1800).floor();
+        e.expanded?.points += e.expanded?.fist.points ?? 0;
+      }
+    }
+  }
+
+  void _addAxe(Record record, Record axeRecord) {
+    for (HighscoresEntry e in record.list) {
+      if (axeRecord.list.any((se) => se.name == e.name)) {
+        e.expanded?.axe.value = axeRecord.list.firstWhere((se) => se.name == e.name).value;
+        e.expanded?.axe.points = ((((pow(2, (e.expanded?.axe.value ?? 10) - 10) - 1) / 1) * 50) / 1800).floor();
+        e.expanded?.points += e.expanded?.axe.points ?? 0;
+      }
+    }
+  }
+
+  void _addClub(Record record, Record clubRecord) {
+    for (HighscoresEntry e in record.list) {
+      if (clubRecord.list.any((se) => se.name == e.name)) {
+        e.expanded?.club.value = clubRecord.list.firstWhere((se) => se.name == e.name).value;
+        e.expanded?.club.points = ((((pow(2, (e.expanded?.club.value ?? 10) - 10) - 1) / 1) * 50) / 1800).floor();
+        e.expanded?.points += e.expanded?.club.points ?? 0;
+      }
+    }
+  }
+
+  void _addSword(Record record, Record swordRecord) {
+    for (HighscoresEntry e in record.list) {
+      if (swordRecord.list.any((se) => se.name == e.name)) {
+        e.expanded?.sword.value = swordRecord.list.firstWhere((se) => se.name == e.name).value;
+        e.expanded?.sword.points = ((((pow(2, (e.expanded?.sword.value ?? 10) - 10) - 1) / 1) * 50) / 1800).floor();
+        e.expanded?.points += e.expanded?.sword.points ?? 0;
+      }
+    }
+  }
+
+  void _addDistance(Record record, Record distanceRecord) {
+    for (HighscoresEntry e in record.list) {
+      if (distanceRecord.list.any((se) => se.name == e.name)) {
+        e.expanded?.distance.value = distanceRecord.list.firstWhere((se) => se.name == e.name).value;
+        e.expanded?.distance.points =
+            ((((pow(2, (e.expanded?.distance.value ?? 10) - 10) - 1) / 1) * 25) / 1800).floor();
+        e.expanded?.points += e.expanded?.distance.points ?? 0;
+      }
+    }
+  }
+
+  void _addShielding(Record record, Record shieldingRecord) {
+    for (HighscoresEntry e in record.list) {
+      if (shieldingRecord.list.any((se) => se.name == e.name)) {
+        e.expanded?.shielding.value = shieldingRecord.list.firstWhere((se) => se.name == e.name).value;
+        e.expanded?.shielding.points =
+            ((((pow(1.5, (e.expanded?.shielding.value ?? 10) - 10) - 1) / 0.5) * 100) / 3600).floor();
+        e.expanded?.points += (e.expanded?.shielding.points ?? 0) ~/ 2;
+      }
+    }
+  }
+
+  void _addFishing(Record record, Record fishingRecord) {
+    for (HighscoresEntry e in record.list) {
+      if (fishingRecord.list.any((se) => se.name == e.name)) {
+        e.expanded?.fishing.value = fishingRecord.list.firstWhere((se) => se.name == e.name).value;
+        e.expanded?.fishing.points =
+            ((((pow(1.1, (e.expanded?.fishing.value ?? 10) - 10) - 1) / 0.1) * 20) / 1300).floor();
+        e.expanded?.points += e.expanded?.fishing.points ?? 0;
+      }
+    }
   }
 }

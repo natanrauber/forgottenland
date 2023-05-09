@@ -18,6 +18,7 @@ final _router = Router()
   ..post('/login', UserController(_databaseClient).login)
   ..post('/revive', UserController(_databaseClient).revive)
   ..get('/highscores/<world>/<category>/<vocation>/<page>', HighscoresController(_databaseClient, _httpClient).get)
+  ..get('/rookmaster', HighscoresController(_databaseClient, _httpClient).rookmaster)
   ..get('/online', OnlineController(_databaseClient).getOnlineNow)
   ..get('/onlinetime/<date>', OnlineController(_databaseClient).getOnlineTime)
   ..get('/private/exprecord', ETL(_databaseClient, _httpClient).expRecord)
@@ -26,7 +27,8 @@ final _router = Router()
   ..get('/private/expgain+yesterday', ETL(_databaseClient, _httpClient).expGainedYesterday)
   ..get('/private/expgain+last7days', ETL(_databaseClient, _httpClient).expGainedLast7Days)
   ..get('/private/expgain+last30days', ETL(_databaseClient, _httpClient).expGainedLast30Days)
-  ..get('/private/online', ETL(_databaseClient, _httpClient).registerOnlinePlayers);
+  ..get('/private/online', ETL(_databaseClient, _httpClient).registerOnlinePlayers)
+  ..get('/private/rookmaster', ETL(_databaseClient, _httpClient).rookmaster);
 
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).

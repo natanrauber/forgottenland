@@ -288,7 +288,7 @@ packages:
       path: "../../packages/models"
       relative: true
     source: path
-    version: "1.0.0"
+    version: "23.05.08+1"
   package_info_plus:
     dependency: "direct main"
     description:
