@@ -117,7 +117,6 @@ class HighscoresController extends Controller {
 
       rawList.add(entry);
 
-      if ((entry.level ?? 0) < 10) rawList.remove(entry);
       if (category.value == 'Achievements' && (entry.value ?? 0) > 38) rawList.remove(entry);
     }
   }
@@ -139,6 +138,10 @@ class HighscoresController extends Controller {
       }
 
       if (category.value == 'Online time' && world.value.name != 'All') {
+        if (world.value.name != item.world?.name) valid = false;
+      }
+
+      if (category.value == 'Rook Master' && world.value.name != 'All') {
         if (world.value.name != item.world?.name) valid = false;
       }
 

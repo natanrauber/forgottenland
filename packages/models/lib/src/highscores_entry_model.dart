@@ -11,6 +11,7 @@ class HighscoresEntry {
     this.value,
     this.supporterTitle,
     this.onlineTime,
+    this.expanded,
   });
 
   HighscoresEntry.fromJson(Map<String, dynamic> json) {
@@ -28,6 +29,7 @@ class HighscoresEntry {
       final int minutes = (json['time'] as int) % 60;
       onlineTime = '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
     }
+    if (json['expanded'] is Map) expanded = ExpandedData.fromJson(json['expanded'] as Map<String, dynamic>);
   }
 
   HighscoresEntry.fromOnlineEntry(OnlineEntry online) {
@@ -49,6 +51,7 @@ class HighscoresEntry {
   int? value;
   String? supporterTitle;
   String? onlineTime;
+  ExpandedData? expanded;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -56,6 +59,88 @@ class HighscoresEntry {
     data['world'] = world?.toJson();
     data['level'] = level;
     data['value'] = value;
+    data['expanded'] = expanded?.toJson();
+    return data.clean();
+  }
+}
+
+class ExpandedData {
+  ExpandedData();
+
+  ExpandedData.fromJson(Map<String, dynamic> json) {
+    json.clean();
+    if (json['total_points'] is int) points = json['total_points'] as int;
+    if (json['experience'] is Map) experience = ExpandedEntry.fromJson(json['experience'] as Map<String, dynamic>);
+    if (json['magic'] is Map) magic = ExpandedEntry.fromJson(json['magic'] as Map<String, dynamic>);
+    if (json['fist'] is Map) fist = ExpandedEntry.fromJson(json['fist'] as Map<String, dynamic>);
+    if (json['axe'] is Map) axe = ExpandedEntry.fromJson(json['axe'] as Map<String, dynamic>);
+    if (json['club'] is Map) club = ExpandedEntry.fromJson(json['club'] as Map<String, dynamic>);
+    if (json['sword'] is Map) sword = ExpandedEntry.fromJson(json['sword'] as Map<String, dynamic>);
+    if (json['distance'] is Map) distance = ExpandedEntry.fromJson(json['distance'] as Map<String, dynamic>);
+    if (json['shielding'] is Map) shielding = ExpandedEntry.fromJson(json['shielding'] as Map<String, dynamic>);
+    if (json['fishing'] is Map) fishing = ExpandedEntry.fromJson(json['fishing'] as Map<String, dynamic>);
+  }
+
+  int points = 0;
+  ExpandedEntry experience = ExpandedEntry();
+  ExpandedEntry magic = ExpandedEntry();
+  ExpandedEntry fist = ExpandedEntry();
+  ExpandedEntry axe = ExpandedEntry();
+  ExpandedEntry club = ExpandedEntry();
+  ExpandedEntry sword = ExpandedEntry();
+  ExpandedEntry distance = ExpandedEntry();
+  ExpandedEntry shielding = ExpandedEntry();
+  ExpandedEntry fishing = ExpandedEntry();
+
+  void updateFromJson(Map<String, dynamic> json) {
+    json.clean();
+    if (json['total_points'] is int) points = json['total_points'] as int;
+    if (json['experience'] is Map) experience = ExpandedEntry.fromJson(json['experience'] as Map<String, dynamic>);
+    if (json['magic'] is Map) magic = ExpandedEntry.fromJson(json['magic'] as Map<String, dynamic>);
+    if (json['fist'] is Map) fist = ExpandedEntry.fromJson(json['fist'] as Map<String, dynamic>);
+    if (json['axe'] is Map) axe = ExpandedEntry.fromJson(json['axe'] as Map<String, dynamic>);
+    if (json['club'] is Map) club = ExpandedEntry.fromJson(json['club'] as Map<String, dynamic>);
+    if (json['sword'] is Map) sword = ExpandedEntry.fromJson(json['sword'] as Map<String, dynamic>);
+    if (json['distance'] is Map) distance = ExpandedEntry.fromJson(json['distance'] as Map<String, dynamic>);
+    if (json['shielding'] is Map) shielding = ExpandedEntry.fromJson(json['shielding'] as Map<String, dynamic>);
+    if (json['fishing'] is Map) fishing = ExpandedEntry.fromJson(json['fishing'] as Map<String, dynamic>);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['total_points'] = points;
+    data['experience'] = experience.toJson();
+    data['magic'] = magic.toJson();
+    data['fist'] = fist.toJson();
+    data['axe'] = axe.toJson();
+    data['club'] = club.toJson();
+    data['sword'] = sword.toJson();
+    data['distance'] = distance.toJson();
+    data['shielding'] = shielding.toJson();
+    data['fishing'] = fishing.toJson();
+    return data.clean();
+  }
+}
+
+class ExpandedEntry {
+  ExpandedEntry({this.value, this.position, this.points});
+
+  ExpandedEntry.fromJson(Map<String, dynamic> json) {
+    json.clean();
+    if (json['value'] is int) value = json['value'] as int;
+    if (json['position'] is int) position = json['position'] as int;
+    if (json['points'] is int) points = json['points'] as int;
+  }
+
+  int? value;
+  int? position;
+  int? points;
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['value'] = value;
+    data['position'] = position;
+    data['points'] = points;
     return data.clean();
   }
 }

@@ -22,6 +22,7 @@ class HighscoresController {
     if (category == null) return ApiResponseError('Missing param "category"');
     if (category.contains('experiencegained')) return _getExpGain(category, page);
     if (category.contains('onlinetime')) return _getOnlineTime(category, page);
+    if (category.contains('rookmaster')) return _getRookmaster(page);
 
     try {
       var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/$world/$category/$vocation/$page');
@@ -104,6 +105,38 @@ class HighscoresController {
       }
 
       return ApiResponseSuccess(data: online.toJson());
+    } catch (e) {
+      return ApiResponseError(e);
+    }
+  }
+
+  Future<Response> _getRookmaster(int page) async {
+    if (page < 0) return ApiResponseError('Invalid page number');
+
+    try {
+      var response = await databaseClient.from('rook-master').select().eq('date', MyDateTime.today()).single();
+      var record = Record.fromJson(response['data'] as Map<String, dynamic>);
+
+      if ((page - 1) * 50 > record.list.length) {
+        record.list = [];
+      } else if (record.list.length > 50) {
+        int start = (page - 1) * 50;
+        int end = page * 50;
+        if (end > record.list.length) end = record.list.length;
+        record.list = record.list.getRange(start, end).toList();
+      }
+
+      return ApiResponseSuccess(data: record.toJson());
+    } catch (e) {
+      return ApiResponseError(e);
+    }
+  }
+
+  Future<Response> rookmaster(Request request) async {
+    try {
+      var response = await databaseClient.from('rook-master').select().limit(1).single();
+      var record = Record.fromJsonExpanded(response['data'] as Map<String, dynamic>);
+      return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
       return ApiResponseError(e);
     }
