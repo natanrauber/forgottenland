@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/controllers/user_controller.dart';
@@ -11,10 +12,11 @@ import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
 class HighscoresItemCard extends StatefulWidget {
-  const HighscoresItemCard(this.index, this.item);
+  const HighscoresItemCard(this.index, this.item, {this.disableOnTap = false});
 
   final int index;
   final HighscoresEntry item;
+  final bool disableOnTap;
 
   @override
   State<HighscoresItemCard> createState() => _HighscoresItemCardState();
@@ -25,6 +27,8 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
   final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
   final UserController userCtrl = Get.find<UserController>();
 
+  bool expand = false;
+
   @override
   Widget build(BuildContext context) {
     final NumberFormat formatter = NumberFormat.decimalPattern();
@@ -32,9 +36,9 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         LIST.premiumCategories.contains(highscoresCtrl.category.value) && userCtrl.isLoggedIn.value != true;
 
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
+      cursor: widget.disableOnTap ? MouseCursor.defer : SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => _onTap(context),
+        onTap: widget.disableOnTap ? null : _onTap,
         child: Container(
           padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
           decoration: _decoration(context),
@@ -63,14 +67,16 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
                     if (highscoresCtrl.world.value.name == 'All') _info('World: ${widget.item.world?.name ?? ''}'),
 
-                    _info('Level: ${widget.item.level ?? ''}'),
+                    if (highscoresCtrl.category.value != 'Rook Master') _info('Level: ${widget.item.level ?? ''}'),
 
                     if (widget.item.onlineTime != null) _info('Online time: ${widget.item.onlineTime ?? ''}'),
 
                     if (widget.item.value != null)
                       _info(
-                        '${highscoresCtrl.category.value}: ${hideData ? '<primary>???<primary>' : formatter.format(widget.item.value)}',
+                        '$_rankName: ${hideData ? '<primary>???<primary>' : formatter.format(_rankValue)}',
                       ),
+
+                    if (highscoresCtrl.category.value == 'Rook Master') _skillsPosition(widget.item),
 
                     // if (widget.item.supporterTitle != null)
                     //   _info('\n<primary>${widget.item.supporterTitle ?? ''}<primary>'),
@@ -86,7 +92,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
     );
   }
 
-  void _onTap(BuildContext context) {
+  void _onTap() {
     dismissKeyboard(context);
     _loadCharacter(context);
   }
@@ -136,6 +142,110 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
             color: AppColors.textSecondary,
           ),
         ),
+      );
+
+  String get _rankName {
+    final String name = highscoresCtrl.category.value;
+    if (name == 'Rook Master') return 'Total points';
+    return name;
+  }
+
+  int? get _rankValue {
+    if (highscoresCtrl.category.value == 'Rook Master') return widget.item.expanded?.points;
+    return widget.item.value;
+  }
+
+  Widget _skillsPosition(HighscoresEntry entry) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _info(''),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () => setState(() => expand = !expand),
+              child: Row(
+                children: <Widget>[
+                  const Text(
+                    'Details',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  Container(
+                    padding: const EdgeInsets.only(top: 1),
+                    child: Icon(
+                      expand ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
+                      size: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (expand)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _info('Level:'),
+                    _info('Fist:'),
+                    _info('Axe:'),
+                    _info('Club:'),
+                    _info('Sword:'),
+                    _info('Distance:'),
+                    _info('Shielding:'),
+                    _info('Fishing:'),
+                  ],
+                ),
+                const SizedBox(width: 3),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _info('${entry.level ?? 'n/a'}'),
+                    _info('${entry.expanded?.fist.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.axe.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.club.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.sword.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.distance.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.shielding.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.fishing.value ?? 'n/a'}'),
+                  ],
+                ),
+                const SizedBox(width: 3),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _info(entry.expanded?.experience.value == null ? '' : '#${entry.expanded?.experience.position}'),
+                    _info(entry.expanded?.fist.value == null ? '' : '#${entry.expanded?.fist.position}'),
+                    _info(entry.expanded?.axe.value == null ? '' : '#${entry.expanded?.axe.position}'),
+                    _info(entry.expanded?.club.value == null ? '' : '#${entry.expanded?.club.position}'),
+                    _info(entry.expanded?.sword.value == null ? '' : '#${entry.expanded?.sword.position}'),
+                    _info(entry.expanded?.distance.value == null ? '' : '#${entry.expanded?.distance.position}'),
+                    _info(entry.expanded?.shielding.value == null ? '' : '#${entry.expanded?.shielding.position}'),
+                    _info(entry.expanded?.fishing.value == null ? '' : '#${entry.expanded?.fishing.position}'),
+                  ],
+                ),
+                const SizedBox(width: 3),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _info(entry.expanded?.experience.value == null ? '' : '+${entry.expanded?.experience.points}'),
+                    _info(entry.expanded?.fist.value == null ? '' : '+${entry.expanded?.fist.points}'),
+                    _info(entry.expanded?.axe.value == null ? '' : '+${entry.expanded?.axe.points}'),
+                    _info(entry.expanded?.club.value == null ? '' : '+${entry.expanded?.club.points}'),
+                    _info(entry.expanded?.sword.value == null ? '' : '+${entry.expanded?.sword.points}'),
+                    _info(entry.expanded?.distance.value == null ? '' : '+${entry.expanded?.distance.points}'),
+                    _info(entry.expanded?.shielding.value == null ? '' : '+${entry.expanded?.shielding.points}'),
+                    _info(entry.expanded?.fishing.value == null ? '' : '+${entry.expanded?.fishing.points}'),
+                  ],
+                ),
+              ],
+            ),
+        ],
       );
 
   Widget _infoIcons(BuildContext context) => Column(

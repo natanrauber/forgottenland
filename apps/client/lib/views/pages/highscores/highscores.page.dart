@@ -139,7 +139,7 @@ class _HighscoresPageState extends State<HighscoresPage> {
 
     return Padding(
       padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
-      child: HighscoresItemCard(index, item),
+      child: HighscoresItemCard(index, item, disableOnTap: highscoresCtrl.category.value == 'Rook Master'),
     );
   }
 

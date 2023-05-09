@@ -14,6 +14,7 @@ class LIST {
     'Fishing',
     'Experience gained',
     'Online time',
+    'Rook Master',
   ];
 
   static const List<String> period = <String>[

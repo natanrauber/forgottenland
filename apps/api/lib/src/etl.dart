@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/utils/api_responses.dart';
 import 'package:forgottenlandapi/utils/paths.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
+import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
 abstract class IETL {
@@ -14,6 +17,8 @@ abstract class IETL {
   Future<Response> expGainedLast7Days(Request request);
   Future<Response> expGainedLast30Days(Request request);
   Future<Response> registerOnlinePlayers(Request request);
+  Future<Response> rookmaster(Request request);
+  Future<Response> calcSkillPoints(Request request);
 }
 
 // Extract, Transform, Load.
@@ -375,5 +380,217 @@ class ETL implements IETL {
       'timestamp': MyDateTime.timeStamp(),
     };
     return databaseClient.from('onlinetime-last7days').insert(values);
+  }
+
+  @override
+  Future<Response> rookmaster(Request request) async {
+    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
+    String supabaseKey = request.headers['supabaseKey'] ?? '';
+    databaseClient.setup(supabaseUrl, supabaseKey);
+    if (await _exists('rook-master', MyDateTime.today())) return ApiResponseAccepted();
+    return _getRookMaster('rook-master', 'insert');
+  }
+
+  Future<Response> _getRookMaster(String table, String operation) async {
+    try {
+      Record record = await _calcRookMaster();
+      await _saveCurrentExp(record, table, operation);
+      return ApiResponseSuccess();
+    } catch (e) {
+      return ApiResponseError(e);
+    }
+  }
+
+  Future<Record> _calcRookMaster() async {
+    Record record = await _getLevel();
+
+    Record fistRecord = await _getSkillRecord('fist');
+    _addSkill('fist', record, fistRecord);
+
+    Record axeRecord = await _getSkillRecord('axe');
+    _addSkill('axe', record, axeRecord);
+
+    Record clubRecord = await _getSkillRecord('club');
+    _addSkill('club', record, clubRecord);
+
+    Record swordRecord = await _getSkillRecord('sword');
+    _addSkill('sword', record, swordRecord);
+
+    Record distanceRecord = await _getSkillRecord('distance');
+    _addSkill('distance', record, distanceRecord);
+
+    Record shieldingRecord = await _getSkillRecord('shielding');
+    _addSkill('shielding', record, shieldingRecord);
+
+    Record fishingRecord = await _getSkillRecord('fishing');
+    _addSkill('fishing', record, fishingRecord);
+
+    // _sumPoints(record);
+
+    record.list.sort((a, b) => (b.expanded?.points ?? 0).compareTo(a.expanded?.points ?? 0));
+    return record;
+  }
+
+  Future<Record> _getLevel() async {
+    Record record = Record(list: <HighscoresEntry>[]);
+
+    Record? aux;
+    int page = 1;
+    int i = 0;
+    bool retry = false;
+    bool loadNext = false;
+
+    do {
+      if (retry) page--;
+      i = retry ? i++ : 0;
+
+      retry = false;
+      loadNext = false;
+
+      aux = null;
+      var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/all/experience/none/$page');
+
+      if (response.success) {
+        aux = Record.fromJsonExpanded(response.dataAsMap['highscores'] as Map<String, dynamic>);
+        record.list.addAll(aux.list);
+        page++;
+      }
+
+      if (!response.success && i < 5) retry = true;
+      if (aux?.list.isNotEmpty == true && page <= 20) loadNext = true;
+    } while (retry || loadNext);
+
+    for (var e in record.list) {
+      int position = record.list.indexOf(e) + 1;
+      int points = 1000 - position;
+      e.expanded?.experience.position = position;
+      e.expanded?.experience.points = points;
+      e.expanded?.points = points;
+    }
+
+    return record;
+  }
+
+  Future<Record> _getSkillRecord(String skill) async {
+    Record record = Record(list: <HighscoresEntry>[]);
+
+    Record? aux;
+    int page = 1;
+    int i = 0;
+    bool retry = false;
+    bool loadNext = false;
+
+    do {
+      if (retry) page--;
+      i = retry ? i++ : 0;
+
+      retry = false;
+      loadNext = false;
+
+      aux = null;
+      var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/all/$skill/none/$page');
+
+      if (response.success) {
+        aux = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
+        record.list.addAll(aux.list);
+        page++;
+      }
+
+      if (!response.success && i < 5) retry = true;
+      if (aux?.list.isNotEmpty == true && page <= 20) loadNext = true;
+    } while (retry || loadNext);
+
+    return record;
+  }
+
+  // a = skill constant
+  // b = vocation constant
+  // c = skill offset
+  // d = skill points per hour
+  // points = total skill points
+  // skill = skill level
+  void _addSkill(String name, Record record, Record skillRecord) {
+    for (HighscoresEntry e in record.list) {
+      if (skillRecord.list.any((se) => se.name == e.name)) {
+        int? value = skillRecord.list.firstWhere((se) => se.name == e.name).value;
+        // points = _calcSkillPoints(name, value);
+        int position = skillRecord.list.indexWhere((se) => se.name == e.name) + 1;
+        int points = 1000 - position;
+        e.expanded?.updateFromJson(
+          {
+            name: {
+              'value': value,
+              'position': position,
+              'points': points,
+            },
+          },
+        );
+        e.expanded?.points += points;
+      }
+    }
+  }
+
+  int _calcSkillPoints(String name, int? value) {
+    Map a = {
+      'fist': 50,
+      'axe': 50,
+      'club': 50,
+      'sword': 50,
+      'distance': 25,
+      'shielding': 100,
+      'fishing': 20,
+    };
+
+    Map b = {
+      'fist': 1.5,
+      'axe': 2.0,
+      'club': 2.0,
+      'sword': 2.0,
+      'distance': 2.0,
+      'shielding': 1.5,
+      'fishing': 1.1,
+    };
+
+    int c = 10;
+
+    Map d = {
+      'fist': 1800,
+      'axe': 1800,
+      'club': 1800,
+      'sword': 1800,
+      'distance': 1000,
+      'shielding': 3600,
+      'fishing': 1200,
+    };
+
+    return ((((pow(b[name], (value ?? c) - c) - 1) / (b[name] - 1)) * a[name]) / d[name]).floor();
+  }
+
+  // void _sumPoints(Record record) {
+  //   for (HighscoresEntry e in record.list) {
+  //     e.expanded?.points += ((e.expanded?.experience.points ?? 0) * 1).floor();
+  //     e.expanded?.points += ((e.expanded?.fist.points ?? 0) * 0.75).floor();
+  //     e.expanded?.points += ((e.expanded?.axe.points ?? 0) * 0.75).floor();
+  //     e.expanded?.points += ((e.expanded?.club.points ?? 0) * 0.75).floor();
+  //     e.expanded?.points += ((e.expanded?.sword.points ?? 0) * 0.75).floor();
+  //     e.expanded?.points += ((e.expanded?.distance.points ?? 0) * 0.75).floor();
+  //     e.expanded?.points += ((e.expanded?.fishing.points ?? 0) * 1).floor();
+  //   }
+  // }
+
+  @override
+  Future<Response> calcSkillPoints(Request request) async {
+    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
+    String supabaseKey = request.headers['supabaseKey'] ?? '';
+    databaseClient.setup(supabaseUrl, supabaseKey);
+
+    try {
+      String? name = request.params['name'] ?? '';
+      int value = int.tryParse(request.params['value'] ?? '') ?? 0;
+      int points = _calcSkillPoints(name, value);
+      return ApiResponseSuccess(data: points);
+    } catch (e) {
+      return ApiResponseError(e);
+    }
   }
 }
