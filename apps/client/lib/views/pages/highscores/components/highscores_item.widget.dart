@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/controllers/user_controller.dart';
