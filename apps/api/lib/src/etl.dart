@@ -461,13 +461,11 @@ class ETL implements IETL {
     } while (retry || loadNext);
 
     for (var e in record.list) {
-      if (record.list.any((a) => a.name == e.name)) {
-        int position = record.list.indexOf(e) + 1;
-        int points = 1000 - position;
-        e.expanded?.experience.position = position;
-        e.expanded?.experience.points = points;
-        e.expanded?.points = points;
-      }
+      int position = record.list.indexOf(e) + 1;
+      int points = 1000 - position;
+      e.expanded?.experience.position = position;
+      e.expanded?.experience.points = points;
+      e.expanded?.points = points;
     }
 
     return record;
@@ -516,7 +514,7 @@ class ETL implements IETL {
       if (skillRecord.list.any((se) => se.name == e.name)) {
         int? value = skillRecord.list.firstWhere((se) => se.name == e.name).value;
         // points = _calcSkillPoints(name, value);
-        int position = skillRecord.list.indexWhere((a) => a.name == e.name) + 1;
+        int position = skillRecord.list.indexWhere((se) => se.name == e.name) + 1;
         int points = 1000 - position;
         e.expanded?.updateFromJson(
           {
