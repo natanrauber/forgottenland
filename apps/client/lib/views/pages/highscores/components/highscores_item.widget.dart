@@ -69,8 +69,10 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
                     if (widget.item.value != null)
                       _info(
-                        '${highscoresCtrl.category.value}: ${hideData ? '<primary>???<primary>' : formatter.format(widget.item.value)}',
+                        '$_rankName: ${hideData ? '<primary>???<primary>' : formatter.format(_rankValue)}',
                       ),
+
+                    if (highscoresCtrl.category.value == 'Rook Master') _skillsPosition(widget.item),
 
                     // if (widget.item.supporterTitle != null)
                     //   _info('\n<primary>${widget.item.supporterTitle ?? ''}<primary>'),
@@ -136,6 +138,47 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
             color: AppColors.textSecondary,
           ),
         ),
+      );
+
+  String get _rankName {
+    final String name = highscoresCtrl.category.value;
+    if (name == 'Rook Master') return 'Total points';
+    return name;
+  }
+
+  int? get _rankValue {
+    if (highscoresCtrl.category.value == 'Rook Master') return widget.item.expanded?.points;
+    return widget.item.value;
+  }
+
+  Widget _skillsPosition(HighscoresEntry entry) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _info(
+            'Experience: ${entry.expanded?.experience.position ?? ''}${entry.expanded?.experience.position == null ? 'n/a' : 'º'}',
+          ),
+          _info(
+            'Fist: ${entry.expanded?.fist.position ?? ''}${entry.expanded?.fist.position == null ? 'n/a' : 'º'}',
+          ),
+          _info(
+            'Axe: ${entry.expanded?.axe.position ?? ''}${entry.expanded?.axe.position == null ? 'n/a' : 'º'}',
+          ),
+          _info(
+            'Club: ${entry.expanded?.club.position ?? ''}${entry.expanded?.club.position == null ? 'n/a' : 'º'}',
+          ),
+          _info(
+            'Sword: ${entry.expanded?.sword.position ?? ''}${entry.expanded?.sword.position == null ? 'n/a' : 'º'}',
+          ),
+          _info(
+            'Distance: ${entry.expanded?.distance.position ?? ''}${entry.expanded?.distance.position == null ? 'n/a' : 'º'}',
+          ),
+          _info(
+            'Shielding: ${entry.expanded?.shielding.position ?? ''}${entry.expanded?.shielding.position == null ? 'n/a' : 'º'}',
+          ),
+          _info(
+            'Fishing: ${entry.expanded?.fishing.position ?? ''}${entry.expanded?.fishing.position == null ? 'n/a' : 'º'}',
+          ),
+        ],
       );
 
   Widget _infoIcons(BuildContext context) => Column(
