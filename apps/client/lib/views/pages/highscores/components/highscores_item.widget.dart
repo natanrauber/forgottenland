@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/controllers/user_controller.dart';
@@ -11,10 +12,11 @@ import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
 class HighscoresItemCard extends StatefulWidget {
-  const HighscoresItemCard(this.index, this.item);
+  const HighscoresItemCard(this.index, this.item, {this.disableOnTap = false});
 
   final int index;
   final HighscoresEntry item;
+  final bool disableOnTap;
 
   @override
   State<HighscoresItemCard> createState() => _HighscoresItemCardState();
@@ -25,6 +27,8 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
   final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
   final UserController userCtrl = Get.find<UserController>();
 
+  bool expand = false;
+
   @override
   Widget build(BuildContext context) {
     final NumberFormat formatter = NumberFormat.decimalPattern();
@@ -32,9 +36,9 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         LIST.premiumCategories.contains(highscoresCtrl.category.value) && userCtrl.isLoggedIn.value != true;
 
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
+      cursor: widget.disableOnTap ? MouseCursor.defer : SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => _onTap(context),
+        onTap: widget.disableOnTap ? null : _onTap,
         child: Container(
           padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
           decoration: _decoration(context),
@@ -88,7 +92,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
     );
   }
 
-  void _onTap(BuildContext context) {
+  void _onTap() {
     dismissKeyboard(context);
     _loadCharacter(context);
   }
@@ -154,30 +158,93 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
   Widget _skillsPosition(HighscoresEntry entry) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _info(
-            'Level: ${entry.level ?? 'n/a'} ${entry.expanded?.experience.position == null ? '' : '(${entry.expanded?.experience.position}º)'} +${entry.expanded?.experience.points ?? 0}pts',
+          _info(''),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () => setState(() => expand = !expand),
+              child: Row(
+                children: <Widget>[
+                  const Text(
+                    'Details',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  Container(
+                    padding: const EdgeInsets.only(top: 1),
+                    child: Icon(
+                      expand ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
+                      size: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          _info(
-            'Fist: ${entry.expanded?.fist.value ?? 'n/a'} ${entry.expanded?.fist.position == null ? '' : '(${entry.expanded?.fist.position}º)'} +${entry.expanded?.fist.points ?? 0}pts',
-          ),
-          _info(
-            'Axe: ${entry.expanded?.axe.value ?? 'n/a'} ${entry.expanded?.axe.position == null ? '' : '(${entry.expanded?.axe.position}º)'} +${entry.expanded?.axe.points ?? 0}pts',
-          ),
-          _info(
-            'Club: ${entry.expanded?.club.value ?? 'n/a'} ${entry.expanded?.club.position == null ? '' : '(${entry.expanded?.club.position}º)'} +${entry.expanded?.club.points ?? 0}pts',
-          ),
-          _info(
-            'Sword: ${entry.expanded?.sword.value ?? 'n/a'} ${entry.expanded?.sword.position == null ? '' : '(${entry.expanded?.sword.position}º)'} +${entry.expanded?.sword.points ?? 0}pts',
-          ),
-          _info(
-            'Distance: ${entry.expanded?.distance.value ?? 'n/a'} ${entry.expanded?.distance.position == null ? '' : '(${entry.expanded?.distance.position}º)'} +${entry.expanded?.distance.points ?? 0}pts',
-          ),
-          _info(
-            'Shielding: ${entry.expanded?.shielding.value ?? 'n/a'} ${entry.expanded?.shielding.position == null ? '' : '(${entry.expanded?.shielding.position}º)'} +${entry.expanded?.shielding.points ?? 0}pts',
-          ),
-          _info(
-            'Fishing: ${entry.expanded?.fishing.value ?? 'n/a'} ${entry.expanded?.fishing.position == null ? '' : '(${entry.expanded?.fishing.position}º)'} +${entry.expanded?.fishing.points ?? 0}pts',
-          ),
+          if (expand)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _info('Level:'),
+                    _info('Fist:'),
+                    _info('Axe:'),
+                    _info('Club:'),
+                    _info('Sword:'),
+                    _info('Distance:'),
+                    _info('Shielding:'),
+                    _info('Fishing:'),
+                  ],
+                ),
+                const SizedBox(width: 3),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _info('${entry.level ?? 'n/a'}'),
+                    _info('${entry.expanded?.fist.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.axe.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.club.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.sword.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.distance.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.shielding.value ?? 'n/a'}'),
+                    _info('${entry.expanded?.fishing.value ?? 'n/a'}'),
+                  ],
+                ),
+                const SizedBox(width: 3),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _info(entry.expanded?.experience.value == null ? '' : '#${entry.expanded?.experience.position}'),
+                    _info(entry.expanded?.fist.value == null ? '' : '#${entry.expanded?.fist.position}'),
+                    _info(entry.expanded?.axe.value == null ? '' : '#${entry.expanded?.axe.position}'),
+                    _info(entry.expanded?.club.value == null ? '' : '#${entry.expanded?.club.position}'),
+                    _info(entry.expanded?.sword.value == null ? '' : '#${entry.expanded?.sword.position}'),
+                    _info(entry.expanded?.distance.value == null ? '' : '#${entry.expanded?.distance.position}'),
+                    _info(entry.expanded?.shielding.value == null ? '' : '#${entry.expanded?.shielding.position}'),
+                    _info(entry.expanded?.fishing.value == null ? '' : '#${entry.expanded?.fishing.position}'),
+                  ],
+                ),
+                const SizedBox(width: 3),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _info(entry.expanded?.experience.value == null ? '' : '+${entry.expanded?.experience.points}'),
+                    _info(entry.expanded?.fist.value == null ? '' : '+${entry.expanded?.fist.points}'),
+                    _info(entry.expanded?.axe.value == null ? '' : '+${entry.expanded?.axe.points}'),
+                    _info(entry.expanded?.club.value == null ? '' : '+${entry.expanded?.club.points}'),
+                    _info(entry.expanded?.sword.value == null ? '' : '+${entry.expanded?.sword.points}'),
+                    _info(entry.expanded?.distance.value == null ? '' : '+${entry.expanded?.distance.points}'),
+                    _info(entry.expanded?.shielding.value == null ? '' : '+${entry.expanded?.shielding.points}'),
+                    _info(entry.expanded?.fishing.value == null ? '' : '+${entry.expanded?.fishing.points}'),
+                  ],
+                ),
+              ],
+            ),
         ],
       );
 
