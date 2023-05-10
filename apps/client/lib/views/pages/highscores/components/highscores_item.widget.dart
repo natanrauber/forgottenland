@@ -63,7 +63,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
                     if (highscoresCtrl.world.value.name == 'All') _info('World: ${widget.item.world?.name ?? ''}'),
 
-                    _info('Level: ${widget.item.level ?? ''}'),
+                    if (highscoresCtrl.category.value != 'Rook Master') _info('Level: ${widget.item.level ?? ''}'),
 
                     if (widget.item.onlineTime != null) _info('Online time: ${widget.item.onlineTime ?? ''}'),
 
@@ -155,28 +155,28 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _info(
-            'Experience: ${entry.expanded?.experience.value} (${entry.expanded?.experience.position ?? ''}${entry.expanded?.experience.position == null ? 'n/a' : 'º'})',
+            'Level: ${entry.level ?? 'n/a'} ${entry.expanded?.experience.position == null ? '' : '(${entry.expanded?.experience.position}º)'} +${entry.expanded?.experience.points ?? 0}pts',
           ),
           _info(
-            'Fist: ${entry.expanded?.fist.value} (${entry.expanded?.fist.position ?? ''}${entry.expanded?.fist.position == null ? 'n/a' : 'º'})',
+            'Fist: ${entry.expanded?.fist.value ?? 'n/a'} ${entry.expanded?.fist.position == null ? '' : '(${entry.expanded?.fist.position}º)'} +${entry.expanded?.fist.points ?? 0}pts',
           ),
           _info(
-            'Axe: ${entry.expanded?.axe.value} (${entry.expanded?.axe.position ?? ''}${entry.expanded?.axe.position == null ? 'n/a' : 'º'})',
+            'Axe: ${entry.expanded?.axe.value ?? 'n/a'} ${entry.expanded?.axe.position == null ? '' : '(${entry.expanded?.axe.position}º)'} +${entry.expanded?.axe.points ?? 0}pts',
           ),
           _info(
-            'Club: ${entry.expanded?.club.value} (${entry.expanded?.club.position ?? ''}${entry.expanded?.club.position == null ? 'n/a' : 'º'})',
+            'Club: ${entry.expanded?.club.value ?? 'n/a'} ${entry.expanded?.club.position == null ? '' : '(${entry.expanded?.club.position}º)'} +${entry.expanded?.club.points ?? 0}pts',
           ),
           _info(
-            'Sword: ${entry.expanded?.sword.value} (${entry.expanded?.sword.position ?? ''}${entry.expanded?.sword.position == null ? 'n/a' : 'º'})',
+            'Sword: ${entry.expanded?.sword.value ?? 'n/a'} ${entry.expanded?.sword.position == null ? '' : '(${entry.expanded?.sword.position}º)'} +${entry.expanded?.sword.points ?? 0}pts',
           ),
           _info(
-            'Distance: ${entry.expanded?.distance.value} (${entry.expanded?.distance.position ?? ''}${entry.expanded?.distance.position == null ? 'n/a' : 'º'})',
+            'Distance: ${entry.expanded?.distance.value ?? 'n/a'} ${entry.expanded?.distance.position == null ? '' : '(${entry.expanded?.distance.position}º)'} +${entry.expanded?.distance.points ?? 0}pts',
           ),
           _info(
-            'Shielding: ${entry.expanded?.shielding.value} (${entry.expanded?.shielding.position ?? ''}${entry.expanded?.shielding.position == null ? 'n/a' : 'º'})',
+            'Shielding: ${entry.expanded?.shielding.value ?? 'n/a'} ${entry.expanded?.shielding.position == null ? '' : '(${entry.expanded?.shielding.position}º)'} +${entry.expanded?.shielding.points ?? 0}pts',
           ),
           _info(
-            'Fishing: ${entry.expanded?.fishing.value} (${entry.expanded?.fishing.position ?? ''}${entry.expanded?.fishing.position == null ? 'n/a' : 'º'})',
+            'Fishing: ${entry.expanded?.fishing.value ?? 'n/a'} ${entry.expanded?.fishing.position == null ? '' : '(${entry.expanded?.fishing.position}º)'} +${entry.expanded?.fishing.points ?? 0}pts',
           ),
         ],
       );
