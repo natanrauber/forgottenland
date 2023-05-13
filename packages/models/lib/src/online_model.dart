@@ -33,6 +33,7 @@ class Online {
 
 class OnlineEntry {
   OnlineEntry({
+    this.rank,
     this.name,
     this.level,
     this.vocation,
@@ -42,6 +43,7 @@ class OnlineEntry {
 
   OnlineEntry.fromJson(Map<String, dynamic> json) {
     json.clean();
+    if (json['rank'] is int) rank = json['rank'] as int;
     if (json['name'] is String) name = json['name'] as String;
     if (json['level'] is int) level = json['level'] as int;
     if (json['vocation'] is String) vocation = json['vocation'] as String;
@@ -49,6 +51,7 @@ class OnlineEntry {
     if (json['time'] is int) time = json['time'] as int;
   }
 
+  int? rank;
   String? name;
   int? level;
   String? vocation;
@@ -57,6 +60,7 @@ class OnlineEntry {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['rank'] = rank;
     data['name'] = name;
     data['level'] = level;
     data['world'] = world;

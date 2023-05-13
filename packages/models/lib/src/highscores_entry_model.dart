@@ -55,6 +55,7 @@ class HighscoresEntry {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['rank'] = rank;
     data['name'] = name;
     data['world'] = world?.toJson();
     data['level'] = level;
@@ -69,7 +70,6 @@ class ExpandedData {
 
   ExpandedData.fromJson(Map<String, dynamic> json) {
     json.clean();
-    if (json['total_points'] is int) points = json['total_points'] as int;
     if (json['experience'] is Map) experience = ExpandedEntry.fromJson(json['experience'] as Map<String, dynamic>);
     if (json['magic'] is Map) magic = ExpandedEntry.fromJson(json['magic'] as Map<String, dynamic>);
     if (json['fist'] is Map) fist = ExpandedEntry.fromJson(json['fist'] as Map<String, dynamic>);
@@ -81,7 +81,6 @@ class ExpandedData {
     if (json['fishing'] is Map) fishing = ExpandedEntry.fromJson(json['fishing'] as Map<String, dynamic>);
   }
 
-  int points = 0;
   ExpandedEntry experience = ExpandedEntry();
   ExpandedEntry magic = ExpandedEntry();
   ExpandedEntry fist = ExpandedEntry();
@@ -94,7 +93,6 @@ class ExpandedData {
 
   void updateFromJson(Map<String, dynamic> json) {
     json.clean();
-    if (json['total_points'] is int) points = json['total_points'] as int;
     if (json['experience'] is Map) experience = ExpandedEntry.fromJson(json['experience'] as Map<String, dynamic>);
     if (json['magic'] is Map) magic = ExpandedEntry.fromJson(json['magic'] as Map<String, dynamic>);
     if (json['fist'] is Map) fist = ExpandedEntry.fromJson(json['fist'] as Map<String, dynamic>);
@@ -108,7 +106,6 @@ class ExpandedData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['total_points'] = points;
     data['experience'] = experience.toJson();
     data['magic'] = magic.toJson();
     data['fist'] = fist.toJson();

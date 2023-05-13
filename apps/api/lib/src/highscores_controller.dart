@@ -66,9 +66,18 @@ class HighscoresController {
         record.list = record.list.getRange(start, end).toList();
       }
 
+      _recordAddMissingRank(record, page);
       return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
       return ApiResponseError(e);
+    }
+  }
+
+  void _recordAddMissingRank(Record record, int page) {
+    if (record.list.first.rank != null) return;
+    int offset = 50 * (page - 1);
+    for (var e in record.list) {
+      e.rank = record.list.indexOf(e) + 1 + offset;
     }
   }
 
@@ -104,9 +113,18 @@ class HighscoresController {
         online.list = online.list.getRange(start, end).toList();
       }
 
+      _onlineAddMissingRank(online, page);
       return ApiResponseSuccess(data: online.toJson());
     } catch (e) {
       return ApiResponseError(e);
+    }
+  }
+
+  void _onlineAddMissingRank(Online online, int page) {
+    if (online.list.first.rank != null) return;
+    int offset = 50 * (page - 1);
+    for (var e in online.list) {
+      e.rank = online.list.indexOf(e) + 1 + offset;
     }
   }
 
@@ -126,6 +144,7 @@ class HighscoresController {
         record.list = record.list.getRange(start, end).toList();
       }
 
+      _recordAddMissingRank(record, page);
       return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
       return ApiResponseError(e);
