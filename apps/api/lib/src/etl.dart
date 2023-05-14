@@ -132,6 +132,7 @@ class ETL implements IETL {
 
     try {
       Record result = await _calcExpGainToday();
+      _recordAddMissingRank(result);
       await _saveExpGain('exp-gain-today', MyDateTime.today(), result, canUpdate: true);
       return ApiResponseSuccess();
     } catch (e) {
@@ -159,6 +160,7 @@ class ETL implements IETL {
 
     try {
       Record result = await _getExpGainRange(MyDateTime.yesterday(), MyDateTime.today());
+      _recordAddMissingRank(result);
       await _saveExpGain('exp-gain-last-day', MyDateTime.yesterday(), result);
       return ApiResponseSuccess();
     } catch (e) {
@@ -176,6 +178,7 @@ class ETL implements IETL {
 
     try {
       Record result = await _getExpGainRange(MyDateTime.aWeekAgo(), MyDateTime.today());
+      _recordAddMissingRank(result);
       await _saveExpGain('exp-gain-last-7-days', MyDateTime.yesterday(), result);
       return ApiResponseSuccess();
     } catch (e) {
@@ -193,6 +196,7 @@ class ETL implements IETL {
 
     try {
       Record result = await _getExpGainRange(MyDateTime.aMonthAgo(), MyDateTime.today());
+      _recordAddMissingRank(result);
       await _saveExpGain('exp-gain-last-30-days', MyDateTime.yesterday(), result);
       return ApiResponseSuccess();
     } catch (e) {
@@ -232,6 +236,13 @@ class ETL implements IETL {
     if (t.value is! int) return false;
     if (!record.list.any((HighscoresEntry y) => y.name == t.name)) return false;
     return record.list.firstWhere((HighscoresEntry y) => y.name == t.name).value is int;
+  }
+
+  void _recordAddMissingRank(Record record) {
+    if (record.list.first.rank != null) return;
+    for (var e in record.list) {
+      e.rank = record.list.indexOf(e) + 1;
+    }
   }
 
   Future<dynamic> _saveExpGain(String table, String date, Record data, {bool canUpdate = false}) {
@@ -309,29 +320,37 @@ class ETL implements IETL {
   Future<Online> _getOnlineTimeToday(Online onlineNow) async {
     onlineNow.list.removeWhere((e) => (e.level ?? 0) < 10);
     List<dynamic> response = await databaseClient.from('onlinetime').select().eq('date', MyDateTime.today());
-    Online onlineTime;
+    Online result;
 
     if (response.isEmpty) {
-      onlineTime = Online(list: onlineNow.list);
+      result = Online(list: onlineNow.list);
     } else {
-      onlineTime = Online.fromJson(response.first['data']);
+      result = Online.fromJson(response.first['data']);
       for (var now in onlineNow.list) {
-        if (onlineTime.list.any((e) => e.name == now.name)) {
-          onlineTime.list.firstWhere((e) => e.name == now.name).time += 5;
-          onlineTime.list.firstWhere((e) => e.name == now.name).level = now.level;
+        if (result.list.any((e) => e.name == now.name)) {
+          result.list.firstWhere((e) => e.name == now.name).time += 5;
+          result.list.firstWhere((e) => e.name == now.name).level = now.level;
         } else {
-          onlineTime.list.add(now);
+          result.list.add(now);
         }
       }
     }
 
-    onlineTime.list.sort(_compareTo);
-    return onlineTime;
+    result.list.sort(_compareTo);
+    _onlineAddMissingRank(result);
+    return result;
   }
 
   int _compareTo(OnlineEntry a, OnlineEntry b) {
     if (a.time != b.time) return b.time.compareTo(a.time);
     return (b.level ?? 0).compareTo((a.level ?? 0));
+  }
+
+  void _onlineAddMissingRank(Online record) {
+    if (record.list.first.rank != null) return;
+    for (var e in record.list) {
+      e.rank = record.list.indexOf(e) + 1;
+    }
   }
 
   Future<dynamic> _saveOnlineTimeToday(Online online) async {
@@ -368,7 +387,7 @@ class ETL implements IETL {
     }
 
     result.list.sort(_compareTo);
-
+    _onlineAddMissingRank(result);
     return result;
   }
 
@@ -394,6 +413,7 @@ class ETL implements IETL {
   Future<Response> _getRookMaster(String table, String operation) async {
     try {
       Record record = await _calcRookMaster();
+      _recordAddMissingRank(record);
       await _saveCurrentExp(record, table, operation);
       return ApiResponseSuccess();
     } catch (e) {
@@ -425,9 +445,8 @@ class ETL implements IETL {
     Record fishingRecord = await _getSkillRecord('fishing');
     _addSkill('fishing', record, fishingRecord);
 
-    // _sumPoints(record);
-
-    record.list.sort((a, b) => (b.expanded?.points ?? 0).compareTo(a.expanded?.points ?? 0));
+    record.list.sort((a, b) => (b.value ?? 0).compareTo(a.value ?? 0));
+    _rookmasterAddMissingRank(record);
     return record;
   }
 
@@ -462,10 +481,10 @@ class ETL implements IETL {
 
     for (var e in record.list) {
       int position = record.list.indexOf(e) + 1;
-      int points = 1000 - position;
+      int points = 1000 - (position - 1);
       e.expanded?.experience.position = position;
       e.expanded?.experience.points = points;
-      e.expanded?.points = points;
+      e.value = points;
     }
 
     return record;
@@ -503,29 +522,24 @@ class ETL implements IETL {
     return record;
   }
 
-  // a = skill constant
-  // b = vocation constant
-  // c = skill offset
-  // d = skill points per hour
-  // points = total skill points
-  // skill = skill level
   void _addSkill(String name, Record record, Record skillRecord) {
     for (HighscoresEntry e in record.list) {
       if (skillRecord.list.any((se) => se.name == e.name)) {
         int? value = skillRecord.list.firstWhere((se) => se.name == e.name).value;
-        // points = _calcSkillPoints(name, value);
-        int position = skillRecord.list.indexWhere((se) => se.name == e.name) + 1;
-        int points = 1000 - position;
-        e.expanded?.updateFromJson(
-          {
-            name: {
-              'value': value,
-              'position': position,
-              'points': points,
+        int? position = skillRecord.list.firstWhere((se) => se.name == e.name).rank;
+        if (position != null) {
+          int points = 1000 - (position - 1);
+          e.expanded?.updateFromJson(
+            {
+              name: {
+                'value': value,
+                'position': position,
+                'points': points,
+              },
             },
-          },
-        );
-        e.expanded?.points += points;
+          );
+          e.value = (e.value ?? 0) + points;
+        }
       }
     }
   }
@@ -566,18 +580,6 @@ class ETL implements IETL {
     return ((((pow(b[name], (value ?? c) - c) - 1) / (b[name] - 1)) * a[name]) / d[name]).floor();
   }
 
-  // void _sumPoints(Record record) {
-  //   for (HighscoresEntry e in record.list) {
-  //     e.expanded?.points += ((e.expanded?.experience.points ?? 0) * 1).floor();
-  //     e.expanded?.points += ((e.expanded?.fist.points ?? 0) * 0.75).floor();
-  //     e.expanded?.points += ((e.expanded?.axe.points ?? 0) * 0.75).floor();
-  //     e.expanded?.points += ((e.expanded?.club.points ?? 0) * 0.75).floor();
-  //     e.expanded?.points += ((e.expanded?.sword.points ?? 0) * 0.75).floor();
-  //     e.expanded?.points += ((e.expanded?.distance.points ?? 0) * 0.75).floor();
-  //     e.expanded?.points += ((e.expanded?.fishing.points ?? 0) * 1).floor();
-  //   }
-  // }
-
   @override
   Future<Response> calcSkillPoints(Request request) async {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
@@ -591,6 +593,12 @@ class ETL implements IETL {
       return ApiResponseSuccess(data: points);
     } catch (e) {
       return ApiResponseError(e);
+    }
+  }
+
+  void _rookmasterAddMissingRank(Record record) {
+    for (var e in record.list) {
+      e.rank = record.list.indexOf(e) + 1;
     }
   }
 }

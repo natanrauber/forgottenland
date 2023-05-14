@@ -72,7 +72,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
                     if (widget.item.value != null)
                       _info(
-                        '$_rankName: ${hideData ? '<primary>???<primary>' : formatter.format(_rankValue)}',
+                        '$_rankName: ${hideData ? '<primary>???<primary>' : formatter.format(widget.item.value)}',
                       ),
 
                     if (highscoresCtrl.category.value == 'Rook Master') _skillsPosition(widget.item),
@@ -109,11 +109,11 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
           children: <Widget>[
             //
             Image.asset(
-              'assets/icons/rank/rank${(widget.index + 1).toString().length}.png',
+              'assets/icons/rank/rank${widget.item.rank.toString().length}.png',
             ),
 
             Text(
-              '${widget.index + 1}',
+              widget.item.rank.toString(),
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -147,11 +147,6 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
     final String name = highscoresCtrl.category.value;
     if (name == 'Rook Master') return 'Total points';
     return name;
-  }
-
-  int? get _rankValue {
-    if (highscoresCtrl.category.value == 'Rook Master') return widget.item.expanded?.points;
-    return widget.item.value;
   }
 
   Widget _skillsPosition(HighscoresEntry entry) => Column(
@@ -251,7 +246,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           //
-          if (_showGlobalRank) _globalRank(),
+          // if (_showGlobalRank) _globalRank(),
 
           _battleyeTypeIcon(),
 
@@ -259,12 +254,12 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         ],
       );
 
-  bool get _showGlobalRank {
-    if (highscoresCtrl.category.value == 'Experience gained') return false;
-    if (highscoresCtrl.category.value == 'Online time') return false;
-    if ((widget.index + 1) != widget.item.rank) return true;
-    return false;
-  }
+  // bool get _showGlobalRank {
+  //   if (highscoresCtrl.category.value == 'Experience gained') return false;
+  //   if (highscoresCtrl.category.value == 'Online time') return false;
+  //   if ((widget.index + 1) != widget.item.rank) return true;
+  //   return false;
+  // }
 
   Widget _infoIcon({required Widget child}) => Container(
         height: 20,
@@ -284,28 +279,28 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         ),
       );
 
-  Widget _globalRank() => _infoIcon(
-        child: Stack(
-          children: <Widget>[
-            //
-            Image.asset(
-              'assets/icons/rank/globalrank${((widget.item.rank ?? 0) + 1).toString().length}.png',
-            ),
+  // Widget _globalRank() => _infoIcon(
+  //       child: Stack(
+  //         children: <Widget>[
+  //           //
+  //           Image.asset(
+  //             'assets/icons/rank/globalrank${((widget.item.rank ?? 0) + 1).toString().length}.png',
+  //           ),
 
-            Container(
-              padding: const EdgeInsets.only(left: 20, top: 1.5),
-              child: Text(
-                '${widget.item.rank ?? ''}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.black80,
-                ),
-              ),
-            )
-          ],
-        ),
-      );
+  //           Container(
+  //             padding: const EdgeInsets.only(left: 20, top: 1.5),
+  //             child: Text(
+  //               '${widget.item.rank ?? ''}',
+  //               style: const TextStyle(
+  //                 fontSize: 12,
+  //                 fontWeight: FontWeight.w600,
+  //                 color: AppColors.black80,
+  //               ),
+  //             ),
+  //           )
+  //         ],
+  //       ),
+  //     );
 
   Future<void> _loadCharacter(BuildContext context) async {
     if (widget.item.name == null) return;

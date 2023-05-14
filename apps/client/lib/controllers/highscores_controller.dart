@@ -101,8 +101,6 @@ class HighscoresController extends Controller {
 
   void _populateList(List<HighscoresEntry> responseList) {
     for (final HighscoresEntry entry in responseList) {
-      if (category.value != 'Experience gained') entry.rank = rawList.length + 1;
-      if (category.value != 'Online time') entry.rank = rawList.length + 1;
       entry.world = _worldsCtrl.list.firstWhere(
         (World e) => e.name?.toLowerCase() == entry.world?.name?.toLowerCase(),
         orElse: () => World(name: entry.world?.name),

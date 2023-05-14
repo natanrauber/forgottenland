@@ -33,7 +33,6 @@ class Record {
           if (entry.expanded == null) {
             entry.expanded = ExpandedData();
             entry.expanded?.experience.value = entry.value;
-            // entry.expanded?.experience.points = _getExpPointsForLevel(entry.level, entry.name);
           }
           list.add(entry);
         }
