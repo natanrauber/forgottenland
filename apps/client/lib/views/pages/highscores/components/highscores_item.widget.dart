@@ -108,21 +108,21 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
           alignment: Alignment.center,
           children: <Widget>[
             //
-            Image.asset(
-              'assets/icons/rank/rank${widget.item.rank.toString().length}.png',
-            ),
+            Image.asset('assets/icons/rank/rank${(_rankValue ?? ' ').length}.png'),
 
             Text(
-              widget.item.rank.toString(),
+              _rankValue ?? '',
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: AppColors.black80,
               ),
-            )
+            ),
           ],
         ),
       );
+
+  String? get _rankValue => _showGlobalRank ? (widget.index + 1).toString() : widget.item.rank?.toString();
 
   Widget _name() => Text(
         widget.item.name ?? '',
@@ -246,7 +246,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           //
-          // if (_showGlobalRank) _globalRank(),
+          if (_showGlobalRank) _globalRank(),
 
           _battleyeTypeIcon(),
 
@@ -254,12 +254,10 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         ],
       );
 
-  // bool get _showGlobalRank {
-  //   if (highscoresCtrl.category.value == 'Experience gained') return false;
-  //   if (highscoresCtrl.category.value == 'Online time') return false;
-  //   if ((widget.index + 1) != widget.item.rank) return true;
-  //   return false;
-  // }
+  bool get _showGlobalRank {
+    if (highscoresCtrl.rawList.length != highscoresCtrl.filteredList.length) return true;
+    return false;
+  }
 
   Widget _infoIcon({required Widget child}) => Container(
         height: 20,
@@ -279,28 +277,29 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         ),
       );
 
-  // Widget _globalRank() => _infoIcon(
-  //       child: Stack(
-  //         children: <Widget>[
-  //           //
-  //           Image.asset(
-  //             'assets/icons/rank/globalrank${((widget.item.rank ?? 0) + 1).toString().length}.png',
-  //           ),
+  Widget _globalRank() => _infoIcon(
+        child: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            //
+            Image.asset('assets/icons/rank/globalrank${(_globalRankValue ?? ' ').length}.png'),
 
-  //           Container(
-  //             padding: const EdgeInsets.only(left: 20, top: 1.5),
-  //             child: Text(
-  //               '${widget.item.rank ?? ''}',
-  //               style: const TextStyle(
-  //                 fontSize: 12,
-  //                 fontWeight: FontWeight.w600,
-  //                 color: AppColors.black80,
-  //               ),
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     );
+            Container(
+              padding: const EdgeInsets.only(left: 16),
+              child: Text(
+                _globalRankValue ?? '',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.black80,
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+
+  String? get _globalRankValue => widget.item.rank.toString();
 
   Future<void> _loadCharacter(BuildContext context) async {
     if (widget.item.name == null) return;
