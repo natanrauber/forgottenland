@@ -122,7 +122,12 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         ),
       );
 
-  String? get _rankValue => _showGlobalRank ? (widget.index + 1).toString() : widget.item.rank?.toString();
+  String? get _rankValue {
+    if (_showGlobalRank) return (widget.index + 1).toString();
+    if (highscoresCtrl.category.value == 'Experience gained') return (widget.index + 1).toString();
+    if (highscoresCtrl.category.value == 'Online time') return (widget.index + 1).toString();
+    return widget.item.rank?.toString();
+  }
 
   Widget _name() => Text(
         widget.item.name ?? '',
@@ -299,7 +304,15 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         ),
       );
 
-  String? get _globalRankValue => widget.item.rank.toString();
+  String? get _globalRankValue {
+    if (highscoresCtrl.category.value == 'Experience gained') {
+      return (highscoresCtrl.rawList.indexOf(widget.item) + 1).toString();
+    }
+    if (highscoresCtrl.category.value == 'Online time') {
+      return (highscoresCtrl.rawList.indexOf(widget.item) + 1).toString();
+    }
+    return widget.item.rank.toString();
+  }
 
   Future<void> _loadCharacter(BuildContext context) async {
     if (widget.item.name == null) return;
