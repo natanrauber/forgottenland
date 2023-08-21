@@ -6645,14 +6645,14 @@ if(s&&!c&&!B.b.b_(a,"/")&&!B.b.b_(a,"\\"))return A.arp(a,!s||c)
 return A.m_(a)},
 amp(a,b,c,d){var s,r={}
 if(a!=null){if(d!=null)throw A.c(A.bl("Both query and queryParameters specified",null))
-return A.F5(a,b,c,B.eU,!0,!1)}if(d==null)return null
+return A.F5(a,b,c,B.eV,!0,!1)}if(d==null)return null
 s=new A.bH("")
 r.a=""
 d.a1(0,new A.amq(new A.amr(r,s)))
 r=s.a
 return r.charCodeAt(0)==0?r:r},
 ax5(a,b,c){if(a==null)return null
-return A.F5(a,b,c,B.eU,!0,!1)},
+return A.F5(a,b,c,B.eV,!0,!1)},
 aro(a,b,c){var s,r,q,p,o,n=b+2
 if(n>=a.length)return"%"
 s=B.b.W(a,b+1)
@@ -6787,7 +6787,7 @@ if(p!==44||r!==n+7||!B.b.ct(a,"base64",n+1))throw A.c(A.by("Expecting '='",a,r))
 break}}j.push(r)
 m=r+1
 if((j.length&1)===1)a=B.zA.afW(0,a,m,s)
-else{l=A.ax9(a,m,s,B.eU,!0,!1)
+else{l=A.ax9(a,m,s,B.eV,!0,!1)
 if(l!=null)a=B.b.kg(a,m,s,l)}return new A.afy(a,j,c)},
 aJ6(){var s,r,q,p,o,n="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._~!$&'()*+,;=",m=".",l=":",k="/",j="\\",i="?",h="#",g="/\\",f=A.a(new Array(22),t.XE)
 for(s=0;s<22;++s)f[s]=new Uint8Array(96)
@@ -21313,9 +21313,9 @@ oR(a,b){var s=null,r=A.aue(a)
 $.aF()
 return new A.z8(new A.a5K(b),s,s,s,B.Rb,B.aK,s,s,!0,!0,s,s,B.H1,s,B.q,!1,!0,s,a,B.H2,s,r,s,!0,new A.eu(a,t.kK),a,$.cD().to.c)},
 aG7(){var s,r,q,p,o,n=A.a([$.apd(),$.apc(),$.aso(),$.asp(),$.FR(),$.asn()],t.zF)
-for(s=0;s<13;++s){r=B.eY[s]
+for(s=0;s<12;++s){r=B.eR[s]
 q=A.bY(r.toLowerCase()," ","")
-if(r==="Experience gained"||r==="Online time")for(q="/highscores/"+r+"/",p=0;p<4;++p){o=B.eW[p]
+if(r==="Experience gained"||r==="Online time")for(q="/highscores/"+r+"/",p=0;p<4;++p){o=B.eX[p]
 n.push(A.oR(A.bY((q+o).toLowerCase()," ",""),new A.ot(r,o,null)))}else n.push(A.oR("/highscores/"+q,new A.ot(r,null,null)))}return n},
 z8:function z8(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,a0,a1,a2,a3,a4,a5,a6,a7){var _=this
 _.r=a
@@ -26483,10 +26483,10 @@ else{r=b<0
 a=r?2:0
 if(c<0!==r)++a}a0=A.a([],t.td)
 for(a1=0;a1<a;++a1){a2=a1*2
-a3=B.eX[a2]
-a4=B.eX[a2+1]
-a5=B.eX[a2+2]
-a0.push(new A.fc(a3.a,a3.b,a4.a,a4.b,a5.a,a5.b,0.707106781))}a6=B.eX[a*2]
+a3=B.eY[a2]
+a4=B.eY[a2+1]
+a5=B.eY[a2+2]
+a0.push(new A.fc(a3.a,a3.b,a4.a,a4.b,a5.a,a5.b,0.707106781))}a6=B.eY[a*2]
 r=a6.a
 q=a6.b
 a7=c*r+b*q
@@ -37824,7 +37824,7 @@ if(m==null){m=o.a
 s=o.b[0]+1
 r=B.b.eK(m,"?",s)
 q=m.length
-if(r>=0){p=A.F5(m,r+1,q,B.eU,!1,!1)
+if(r>=0){p=A.F5(m,r+1,q,B.eV,!1,!1)
 q=r}else p=n
 m=o.c=new A.Pd("data","",n,n,A.F5(m,s,q,B.oT,!1,!1),p,n)}return m},
 j(a){var s=this.a
@@ -73322,7 +73322,7 @@ l=t.YM
 k=A.lq(A.a([],m),l)
 j=A.lq(A.a([],m),l)
 i=A.lq(A.a([],m),l)
-q=new A.td(g,q,n,k,j,i,new A.ih(B.bX,e),A.avE(A.uB("All")),A.lr(B.c.gN(B.eR)),A.lr(B.c.gN(B.cP)),A.lr(B.c.gN(B.eT)),A.lr(B.c.gN(B.eS)),A.er(!0),A.er(!0),A.er(!0),A.er(!0),A.er(!1),A.a([],d),A.e_(c,b),new A.e1(a),new A.e1(a),!1,!1)
+q=new A.td(g,q,n,k,j,i,new A.ih(B.bX,e),A.avE(A.uB("All")),A.lr(B.c.gN(B.eS)),A.lr(B.c.gN(B.cP)),A.lr(B.c.gN(B.eU)),A.lr(B.c.gN(B.eT)),A.er(!0),A.er(!0),A.er(!0),A.er(!0),A.er(!1),A.a([],d),A.e_(c,b),new A.e1(a),new A.e1(a),!1,!1)
 q.km()
 n=t.FM
 A.rN(h,q,n)
@@ -73336,7 +73336,7 @@ r.af$=1
 o=A.lq(A.a([],p),o)
 p=A.lq(A.a([],t.s),t.N)
 s=A.lq(A.a([],m),l)
-g=new A.y2(this.a,g,q,f,new A.eV(n,!1),r,o,p,s,new A.ih(B.bX,e),A.lq(A.a([],m),l),A.lr(B.c.gN(B.eY)),A.lr(B.c.gN(B.eW)),A.avE(A.uB("All")),A.lr(B.c.gN(B.eR)),A.lr(B.c.gN(B.cP)),A.lr(B.c.gN(B.eT)),A.lr(B.c.gN(B.eS)),A.er(!0),A.er(!0),A.er(!0),A.er(!0),A.er(!1),A.er(!1),A.a([],d),A.e_(c,b),new A.e1(a),new A.e1(a),!1,!1)
+g=new A.y2(this.a,g,q,f,new A.eV(n,!1),r,o,p,s,new A.ih(B.bX,e),A.lq(A.a([],m),l),A.lr(B.c.gN(B.eR)),A.lr(B.c.gN(B.eX)),A.avE(A.uB("All")),A.lr(B.c.gN(B.eS)),A.lr(B.c.gN(B.cP)),A.lr(B.c.gN(B.eU)),A.lr(B.c.gN(B.eT)),A.er(!0),A.er(!0),A.er(!0),A.er(!0),A.er(!1),A.er(!1),A.a([],d),A.e_(c,b),new A.e1(a),new A.e1(a),!1,!1)
 g.km()
 A.rN(h,g,t.fA)},
 $iatd:1}
@@ -73441,12 +73441,12 @@ A.xY.prototype={
 L(a){var s=null,r=t.p
 return new A.hF(A.bR(A.a([A.a0(s,A.bR(A.a([new A.GZ(A.a0(s,A.iM("assets/logo.jpg",B.mY),B.e,B.m,s,s,200,s,B.Ei,200),s),B.aZ,A.fX("     We live and fight for a forgotten land, where the first mysteries intrigued the first warriors. In time, many have left us, entering the depths of oblivion forever. Through this union, we forge eternal alliances, where we insert our name in history.",s,B.mb,B.d2),B.aZ,A.fX("     The guild was founded on Calmera on Apr 14 2020. It is currently active and always open for applications.",s,B.mb,B.d2),B.M2,A.fX("You can find us on instagram:",s,B.mb,B.d2)],r),B.G,B.r,B.u),B.e,s,B.mW,s,s,s,B.bJ,s),A.a0(B.M,A.JB(!0,!0,!0,s,B.Z,s,B.y,this.ga0S(),5,s,B.cn,B.Ed,B.eg,s,s,!1,B.ak,s,!0),B.e,s,s,s,120,s,s,s),B.xB,this.a9j(),B.xB],r),B.G,B.r,B.u),s,B.et,!0,s)},
 a0T(a,b){var s=null
-return A.dK(A.dG(s,A.e8(A.iM("assets/outfit/"+B.eV[b]+".png",s),s,120),B.y,!1,s,s,s,s,s,s,s,s,s,s,new A.a2o(b),s,s,s,s,s,s),B.at,s,s,s,s)},
+return A.dK(A.dG(s,A.e8(A.iM("assets/outfit/"+B.eW[b]+".png",s),s,120),B.y,!1,s,s,s,s,s,s,s,s,s,s,new A.a2o(b),s,s,s,s,s,s),B.at,s,s,s,s)},
 a9j(){var s=null,r=A.dC(11)
 return A.a0(s,A.dK(A.dG(s,A.a0(s,A.fm(B.oM,B.G,B.dH,B.u),B.e,s,s,new A.bZ(B.Y,s,s,r,s,s,B.N),s,s,B.aN,s),B.y,!1,s,s,s,s,s,s,s,s,s,s,new A.a2p(),s,s,s,s,s,s),B.at,s,s,s,s),B.e,s,B.mW,s,s,B.aN,s,s)}}
 A.a2o.prototype={
 $0(){var s=this.a
-if(B.uP.h(0,B.eV[s])!=null){s=B.uP.h(0,B.eV[s])
+if(B.uP.h(0,B.eW[s])!=null){s=B.uP.h(0,B.eW[s])
 s.toString
 A.qA(s)}},
 $S:0}
@@ -73526,7 +73526,7 @@ if(!J.e(p.gl(p),r))o=o+", "+A.d(p.gl(p))
 q=q.RG
 return(!J.e(q.gl(q),r)?o+", "+A.d(q.gl(q))+" World":o)+"."},
 YP(){var s=this.d.ok
-return this.zG(B.eY,"Category",new A.aiq(this),s.gl(s),t.N)},
+return this.zG(B.eR,"Category",new A.aiq(this),s.gl(s),t.N)},
 a6g(){return new A.fV(new A.aiw(this),null)},
 a9p(){var s=this,r=s.d.p2
 r=r.gl(r)
@@ -73566,16 +73566,16 @@ l=A.ag(k).i("aB<1>")
 return A.a8(new A.aB(k,new A.aiB(j),l),!0,l.i("q.E"))},
 Yi(){var s=this.d,r=s.rx
 s=s.p3
-return this.zH(r.gl(r),B.eR,"Battleye Type",new A.aip(this),s.gl(s),t.N)},
+return this.zH(r.gl(r),B.eS,"Battleye Type",new A.aip(this),s.gl(s),t.N)},
 a44(a){var s=this.d,r=s.ry
 s=s.p4
 return this.zH(r.gl(r),B.cP,"Location",new A.aiu(this),s.gl(s),t.N)},
 a6z(){var s=this.d,r=s.to
 s=s.R8
-return this.zH(r.gl(r),B.eT,"Pvp Type",new A.aix(this),s.gl(s),t.N)},
+return this.zH(r.gl(r),B.eU,"Pvp Type",new A.aix(this),s.gl(s),t.N)},
 a9s(){var s=this.d,r=s.x1
 s=s.RG
-return this.zI(r.gl(r),B.eS,"World Type",B.ao,new A.aiC(this),s.gl(s),t.N)},
+return this.zI(r.gl(r),B.eT,"World Type",B.ao,new A.aiC(this),s.gl(s),t.N)},
 ZR(){return new A.fV(new A.air(this),null)}}
 A.aiF.prototype={
 $0(){},
@@ -73637,7 +73637,7 @@ A.aiw.prototype={
 $0(){var s=null,r=this.a,q=r.d,p=q.ok,o=p.gl(p)
 if(o!=="Experience gained"&&o!=="Online time")return A.a0(s,s,B.e,s,s,s,s,s,s,s)
 q=q.p1
-return r.zG(B.eW,"Period",new A.aiv(r),q.gl(q),t.N)},
+return r.zG(B.eX,"Period",new A.aiv(r),q.gl(q),t.N)},
 $S:36}
 A.aiv.prototype={
 $1(a){return this.RN(a)},
@@ -73923,9 +73923,9 @@ A.D_.prototype={
 az(){var s,r,q=this
 q.aM()
 s=q.a.c
-if(s==null)s=B.c.gN(B.eY)
+if(s==null)s=B.c.gN(B.eR)
 r=q.a.d
-if(r==null)r=B.c.gN(B.eW)
+if(r==null)r=B.c.gN(B.eX)
 if(q.Y6(s,r))return
 $.E.CW$.push(new A.aiM(q,s,r))},
 Y6(a,b){var s=this.d,r=s.ok
@@ -74260,16 +74260,16 @@ k=A.ag(j).i("aB<1>")
 return A.a8(new A.aB(j,new A.akg(i),k),!0,k.i("q.E"))},
 a5l(){var s=this.d,r=s.p1
 s=s.k2
-return this.pM(r.gl(r),B.eR,"Battleye Type",new A.ak5(this),s.gl(s),t.N)},
+return this.pM(r.gl(r),B.eS,"Battleye Type",new A.ak5(this),s.gl(s),t.N)},
 a5o(a){var s=this.d,r=s.p2
 s=s.k3
 return this.pM(r.gl(r),B.cP,"Location",new A.ak8(this),s.gl(s),t.N)},
 a5q(){var s=this.d,r=s.p3
 s=s.k4
-return this.pM(r.gl(r),B.eT,"Pvp Type",new A.aka(this),s.gl(s),t.N)},
+return this.pM(r.gl(r),B.eU,"Pvp Type",new A.aka(this),s.gl(s),t.N)},
 a5v(){var s=this.d,r=s.p4
 s=s.ok
-return this.pM(r.gl(r),B.eS,"World Type",new A.akh(this),s.gl(s),t.N)}}
+return this.pM(r.gl(r),B.eT,"World Type",new A.akh(this),s.gl(s),t.N)}}
 A.akk.prototype={
 $0(){},
 $S:0}
@@ -82636,6 +82636,7 @@ B.eQ=new A.bw(9,"PR")
 B.oE=new A.yH(4,"multi")
 B.FL=new A.yH(5,"multiCompatible")
 B.FM=new A.yJ(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.eR=A.a(s(["Experience","Magic","Fist","Axe","Club","Sword","Distance","Shielding","Fishing","Experience gained","Online time","Rook Master"]),t.s)
 B.FP=A.a(s([0,1]),t.u)
 B.oF=A.a(s([B.ex,B.ey,B.om,B.A,B.av,B.ez,B.bq,B.on,B.hQ]),A.ac("r<hO>"))
 B.oG=A.a(s([0,0,32776,33792,1,10240,0,0]),t.t)
@@ -82662,11 +82663,11 @@ B.bn=new A.dw(1,"fuchsia")
 B.bz=new A.dw(3,"linux")
 B.bA=new A.dw(5,"windows")
 B.Ge=A.a(s([B.aC,B.bn,B.ap,B.bz,B.b0,B.bA]),t.r6)
-B.eR=A.a(s(["All","Green","Yellow","None"]),t.s)
-B.eS=A.a(s(["All","Regular","Experimental"]),t.s)
-B.eT=A.a(s(["All","Optional Pvp","Open Pvp","Hardcore Pvp","Retro Open Pvp","Retro Hardcore Pvp"]),t.s)
-B.eU=A.a(s([0,0,65490,45055,65535,34815,65534,18431]),t.t)
-B.eV=A.a(s(["awkn","draven","karkaroff","junck","freedan"]),t.s)
+B.eS=A.a(s(["All","Green","Yellow","None"]),t.s)
+B.eT=A.a(s(["All","Regular","Experimental"]),t.s)
+B.eU=A.a(s(["All","Optional Pvp","Open Pvp","Hardcore Pvp","Retro Open Pvp","Retro Hardcore Pvp"]),t.s)
+B.eV=A.a(s([0,0,65490,45055,65535,34815,65534,18431]),t.t)
+B.eW=A.a(s(["awkn","draven","karkaroff","junck","freedan"]),t.s)
 B.mk=new A.cZ(0,"DoubleQuote")
 B.d7=new A.cZ(1,"SingleQuote")
 B.aE=new A.cZ(2,"HebrewLetter")
@@ -82704,7 +82705,7 @@ B.Mf=new A.j7(1,"round")
 B.Mg=new A.j7(2,"bevel")
 B.GE=A.a(s([B.e4,B.Mf,B.Mg]),A.ac("r<j7>"))
 B.GM=A.a(s(["ar","fa","he","ps","ur"]),t.s)
-B.eW=A.a(s(["Today","Yesterday","Last 7 days","Last 30 days"]),t.s)
+B.eX=A.a(s(["Today","Yesterday","Last 7 days","Last 30 days"]),t.s)
 B.bS=new A.m(1,0)
 B.K3=new A.m(1,1)
 B.dQ=new A.m(0,1)
@@ -82713,7 +82714,7 @@ B.fe=new A.m(-1,0)
 B.Ke=new A.m(-1,-1)
 B.v5=new A.m(0,-1)
 B.K4=new A.m(1,-1)
-B.eX=A.a(s([B.bS,B.K3,B.dQ,B.Kd,B.fe,B.Ke,B.v5,B.K4]),t.yv)
+B.eY=A.a(s([B.bS,B.K3,B.dQ,B.Kd,B.fe,B.Ke,B.v5,B.K4]),t.yv)
 B.a2=new A.lF(0,"rtl")
 B.t=new A.lF(1,"ltr")
 B.GP=A.a(s([B.a2,B.t]),A.ac("r<lF>"))
@@ -82747,7 +82748,6 @@ B.bW=new A.j6(0,"butt")
 B.Me=new A.j6(1,"round")
 B.xI=new A.j6(2,"square")
 B.GX=A.a(s([B.bW,B.Me,B.xI]),A.ac("r<j6>"))
-B.eY=A.a(s(["Experience","Achievements","Magic","Fist","Axe","Club","Sword","Distance","Shielding","Fishing","Experience gained","Online time","Rook Master"]),t.s)
 B.GY=A.a(s(["click","scroll"]),t.s)
 B.GZ=A.a(s([0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0]),t.u)
 B.H1=A.a(s([]),t.UO)
@@ -82928,7 +82928,7 @@ B.f4=new A.i(4294968072)
 B.Hf=A.a(s([B.f4,null,null,B.ir]),t.L)
 B.Gs=A.a(s([B.bP,B.bP,B.cd,null]),t.L)
 B.Jf=new A.aP(31,{"*":B.Gy,"+":B.Gz,"-":B.GA,".":B.GB,"/":B.GC,"0":B.Ho,"1":B.Hp,"2":B.Hq,"3":B.Hr,"4":B.Hs,"5":B.Ht,"6":B.Hu,"7":B.Hv,"8":B.GN,"9":B.GO,Alt:B.Gp,ArrowDown:B.GF,ArrowLeft:B.GG,ArrowRight:B.GH,ArrowUp:B.FV,Clear:B.Gn,Control:B.Gq,Delete:B.Gw,End:B.GI,Enter:B.GW,Home:B.GJ,Insert:B.Go,Meta:B.Gr,PageDown:B.GK,PageUp:B.Hf,Shift:B.Gs},B.oI,A.ac("aP<h,n<i?>>"))
-B.uP=new A.aP(5,{awkn:"https://instagram.com/awknrook",draven:"https://instagram.com/draventhehunter",karkaroff:"https://instagram.com/kvkknight",junck:"https://instagram.com/cronicas.de.aldricht",freedan:"https://instagram.com/freedan.tibianknight"},B.eV,t.l)
+B.uP=new A.aP(5,{awkn:"https://instagram.com/awknrook",draven:"https://instagram.com/draventhehunter",karkaroff:"https://instagram.com/kvkknight",junck:"https://instagram.com/cronicas.de.aldricht",freedan:"https://instagram.com/freedan.tibianknight"},B.eW,t.l)
 B.Gv=A.a(s(["Abort","Again","AltLeft","AltRight","ArrowDown","ArrowLeft","ArrowRight","ArrowUp","AudioVolumeDown","AudioVolumeMute","AudioVolumeUp","Backquote","Backslash","Backspace","BracketLeft","BracketRight","BrightnessDown","BrightnessUp","BrowserBack","BrowserFavorites","BrowserForward","BrowserHome","BrowserRefresh","BrowserSearch","BrowserStop","CapsLock","Comma","ContextMenu","ControlLeft","ControlRight","Convert","Copy","Cut","Delete","Digit0","Digit1","Digit2","Digit3","Digit4","Digit5","Digit6","Digit7","Digit8","Digit9","DisplayToggleIntExt","Eject","End","Enter","Equal","Esc","Escape","F1","F10","F11","F12","F13","F14","F15","F16","F17","F18","F19","F2","F20","F21","F22","F23","F24","F3","F4","F5","F6","F7","F8","F9","Find","Fn","FnLock","GameButton1","GameButton10","GameButton11","GameButton12","GameButton13","GameButton14","GameButton15","GameButton16","GameButton2","GameButton3","GameButton4","GameButton5","GameButton6","GameButton7","GameButton8","GameButton9","GameButtonA","GameButtonB","GameButtonC","GameButtonLeft1","GameButtonLeft2","GameButtonMode","GameButtonRight1","GameButtonRight2","GameButtonSelect","GameButtonStart","GameButtonThumbLeft","GameButtonThumbRight","GameButtonX","GameButtonY","GameButtonZ","Help","Home","Hyper","Insert","IntlBackslash","IntlRo","IntlYen","KanaMode","KeyA","KeyB","KeyC","KeyD","KeyE","KeyF","KeyG","KeyH","KeyI","KeyJ","KeyK","KeyL","KeyM","KeyN","KeyO","KeyP","KeyQ","KeyR","KeyS","KeyT","KeyU","KeyV","KeyW","KeyX","KeyY","KeyZ","KeyboardLayoutSelect","Lang1","Lang2","Lang3","Lang4","Lang5","LaunchApp1","LaunchApp2","LaunchAssistant","LaunchControlPanel","LaunchMail","LaunchScreenSaver","MailForward","MailReply","MailSend","MediaFastForward","MediaPause","MediaPlay","MediaPlayPause","MediaRecord","MediaRewind","MediaSelect","MediaStop","MediaTrackNext","MediaTrackPrevious","MetaLeft","MetaRight","MicrophoneMuteToggle","Minus","NonConvert","NumLock","Numpad0","Numpad1","Numpad2","Numpad3","Numpad4","Numpad5","Numpad6","Numpad7","Numpad8","Numpad9","NumpadAdd","NumpadBackspace","NumpadClear","NumpadClearEntry","NumpadComma","NumpadDecimal","NumpadDivide","NumpadEnter","NumpadEqual","NumpadMemoryAdd","NumpadMemoryClear","NumpadMemoryRecall","NumpadMemoryStore","NumpadMemorySubtract","NumpadMultiply","NumpadParenLeft","NumpadParenRight","NumpadSubtract","Open","PageDown","PageUp","Paste","Pause","Period","Power","PrintScreen","PrivacyScreenToggle","Props","Quote","Resume","ScrollLock","Select","SelectTask","Semicolon","ShiftLeft","ShiftRight","ShowAllWindows","Slash","Sleep","Space","Super","Suspend","Tab","Turbo","Undo","WakeUp","ZoomToggle"]),t.s)
 B.Jg=new A.aP(231,{Abort:458907,Again:458873,AltLeft:458978,AltRight:458982,ArrowDown:458833,ArrowLeft:458832,ArrowRight:458831,ArrowUp:458834,AudioVolumeDown:458881,AudioVolumeMute:458879,AudioVolumeUp:458880,Backquote:458805,Backslash:458801,Backspace:458794,BracketLeft:458799,BracketRight:458800,BrightnessDown:786544,BrightnessUp:786543,BrowserBack:786980,BrowserFavorites:786986,BrowserForward:786981,BrowserHome:786979,BrowserRefresh:786983,BrowserSearch:786977,BrowserStop:786982,CapsLock:458809,Comma:458806,ContextMenu:458853,ControlLeft:458976,ControlRight:458980,Convert:458890,Copy:458876,Cut:458875,Delete:458828,Digit0:458791,Digit1:458782,Digit2:458783,Digit3:458784,Digit4:458785,Digit5:458786,Digit6:458787,Digit7:458788,Digit8:458789,Digit9:458790,DisplayToggleIntExt:65717,Eject:786616,End:458829,Enter:458792,Equal:458798,Esc:458793,Escape:458793,F1:458810,F10:458819,F11:458820,F12:458821,F13:458856,F14:458857,F15:458858,F16:458859,F17:458860,F18:458861,F19:458862,F2:458811,F20:458863,F21:458864,F22:458865,F23:458866,F24:458867,F3:458812,F4:458813,F5:458814,F6:458815,F7:458816,F8:458817,F9:458818,Find:458878,Fn:18,FnLock:19,GameButton1:392961,GameButton10:392970,GameButton11:392971,GameButton12:392972,GameButton13:392973,GameButton14:392974,GameButton15:392975,GameButton16:392976,GameButton2:392962,GameButton3:392963,GameButton4:392964,GameButton5:392965,GameButton6:392966,GameButton7:392967,GameButton8:392968,GameButton9:392969,GameButtonA:392977,GameButtonB:392978,GameButtonC:392979,GameButtonLeft1:392980,GameButtonLeft2:392981,GameButtonMode:392982,GameButtonRight1:392983,GameButtonRight2:392984,GameButtonSelect:392985,GameButtonStart:392986,GameButtonThumbLeft:392987,GameButtonThumbRight:392988,GameButtonX:392989,GameButtonY:392990,GameButtonZ:392991,Help:458869,Home:458826,Hyper:16,Insert:458825,IntlBackslash:458852,IntlRo:458887,IntlYen:458889,KanaMode:458888,KeyA:458756,KeyB:458757,KeyC:458758,KeyD:458759,KeyE:458760,KeyF:458761,KeyG:458762,KeyH:458763,KeyI:458764,KeyJ:458765,KeyK:458766,KeyL:458767,KeyM:458768,KeyN:458769,KeyO:458770,KeyP:458771,KeyQ:458772,KeyR:458773,KeyS:458774,KeyT:458775,KeyU:458776,KeyV:458777,KeyW:458778,KeyX:458779,KeyY:458780,KeyZ:458781,KeyboardLayoutSelect:787101,Lang1:458896,Lang2:458897,Lang3:458898,Lang4:458899,Lang5:458900,LaunchApp1:786836,LaunchApp2:786834,LaunchAssistant:786891,LaunchControlPanel:786847,LaunchMail:786826,LaunchScreenSaver:786865,MailForward:787083,MailReply:787081,MailSend:787084,MediaFastForward:786611,MediaPause:786609,MediaPlay:786608,MediaPlayPause:786637,MediaRecord:786610,MediaRewind:786612,MediaSelect:786819,MediaStop:786615,MediaTrackNext:786613,MediaTrackPrevious:786614,MetaLeft:458979,MetaRight:458983,MicrophoneMuteToggle:24,Minus:458797,NonConvert:458891,NumLock:458835,Numpad0:458850,Numpad1:458841,Numpad2:458842,Numpad3:458843,Numpad4:458844,Numpad5:458845,Numpad6:458846,Numpad7:458847,Numpad8:458848,Numpad9:458849,NumpadAdd:458839,NumpadBackspace:458939,NumpadClear:458968,NumpadClearEntry:458969,NumpadComma:458885,NumpadDecimal:458851,NumpadDivide:458836,NumpadEnter:458840,NumpadEqual:458855,NumpadMemoryAdd:458963,NumpadMemoryClear:458962,NumpadMemoryRecall:458961,NumpadMemoryStore:458960,NumpadMemorySubtract:458964,NumpadMultiply:458837,NumpadParenLeft:458934,NumpadParenRight:458935,NumpadSubtract:458838,Open:458868,PageDown:458830,PageUp:458827,Paste:458877,Pause:458824,Period:458807,Power:458854,PrintScreen:458822,PrivacyScreenToggle:23,Props:458915,Quote:458804,Resume:21,ScrollLock:458823,Select:458871,SelectTask:786850,Semicolon:458803,ShiftLeft:458977,ShiftRight:458981,ShowAllWindows:787103,Slash:458808,Sleep:65666,Space:458796,Super:17,Suspend:20,Tab:458795,Turbo:22,Undo:458874,WakeUp:65667,ZoomToggle:786994},B.Gv,t.eL)
 B.Gx=A.a(s(["aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkgrey","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkslategrey","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dimgrey","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","grey","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgray","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightslategrey","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","slategrey","snow","springgreen","steelblue","tan","teal","thistle","tomato","transparent","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen"]),t.s)
