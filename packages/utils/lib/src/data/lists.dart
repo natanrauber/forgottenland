@@ -3,7 +3,7 @@ library lists;
 class LIST {
   static const List<String> category = <String>[
     'Experience',
-    'Achievements',
+    // 'Achievements',
     'Magic',
     'Fist',
     'Axe',
