@@ -11,7 +11,7 @@ class ForgottenLand extends StatelessWidget {
         title: 'Forgotten Land',
         debugShowCheckedModeBanner: false,
         theme: appTheme(),
-        initialRoute: Routes.home.name,
+        initialRoute: Routes.splash.name,
         initialBinding: MainBinding(),
         getPages: Routes.getPages(),
         scrollBehavior: const MaterialScrollBehavior().copyWith(

@@ -3,10 +3,10 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "version.json": "0ff14f46b087894f7245e2376edcb274",
-"index.html": "9e29c88c9b14285976122a9971957421",
-"/": "9e29c88c9b14285976122a9971957421",
-"main.dart.js": "8abff1ddd149a47431b311e288542ed5",
+  "version.json": "9be43b5c50b3f13d0dd6dbf345d58220",
+"index.html": "c5c9e1f7c735ea7c0b3efdfd46efaacf",
+"/": "c5c9e1f7c735ea7c0b3efdfd46efaacf",
+"main.dart.js": "386252c3b37fed690957e32fe7d231ab",
 "flutter.js": "f85e6fb278b0fd20c349186fb46ae36d",
 "offline.jpg": "40a2833ddb19db0187660a8c90ad429c",
 "favicon.png": "56c2ac33a5293e62185c562cd7cdff33",
@@ -15,7 +15,7 @@ const RESOURCES = {
 "icons/Icon-maskable-512.png": "29ad10dd0d727da937be68004807a0e4",
 "icons/Icon-512.png": "29ad10dd0d727da937be68004807a0e4",
 "manifest.json": "411ff4d4acd24226bcd3f81211ba61a0",
-"assets/AssetManifest.json": "837e276466074025ed958cd583c69a45",
+"assets/AssetManifest.json": "ac65b55ae48c04db44483dc0e5ac2047",
 "assets/NOTICES": "b45dac9d98d10b6526f4aeba85b138fa",
 "assets/FontManifest.json": "8c4487ff50e7d5a132ee442f6a238019",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
@@ -29,6 +29,7 @@ const RESOURCES = {
 "assets/assets/outfit/karkaroff.png": "09be0b26ce34161a6249d0598e1bc8d9",
 "assets/assets/images/background/25th_anniversary.jpg": "5e1984966e44b0441402bde4d10de48a",
 "assets/assets/images/background/offline.jpg": "40a2833ddb19db0187660a8c90ad429c",
+"assets/assets/images/splash/tintas_merighi.jpeg": "318bfa14330f81be376ba6db7ecac033",
 "assets/assets/logo.jpg": "d063f353bee5c15e6672cddc0d32b0c8",
 "assets/assets/logo_alt.png": "9f60c32b8e2732f45130ab9169642ead",
 "assets/assets/icons/location/SA.svg": "689979ff946769d610c6c15c1983887c",

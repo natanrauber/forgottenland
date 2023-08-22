@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forgottenland/modules/splash/splash_page.dart';
 import 'package:forgottenland/views/pages/character.page.dart';
 import 'package:forgottenland/views/pages/guild.page.dart';
 import 'package:forgottenland/views/pages/highscores/highscores.page.dart';
@@ -21,21 +22,23 @@ class MyPage extends GetPage<dynamic> {
 }
 
 class Routes {
-  static final MyPage login = MyPage('/login', LoginPage());
-  static final MyPage home = MyPage('/home', HomePage());
-  static final MyPage highscores = MyPage('/highscores', const HighscoresPage());
-  static final MyPage online = MyPage('/online', OnlineCharactersPage());
   static final MyPage character = MyPage('/character', CharacterPage());
   static final MyPage guild = MyPage('/guild', GuildPage());
+  static final MyPage highscores = MyPage('/highscores', const HighscoresPage());
+  static final MyPage home = MyPage('/home', HomePage());
+  static final MyPage login = MyPage('/login', LoginPage());
+  static final MyPage online = MyPage('/online', OnlineCharactersPage());
+  static final MyPage splash = MyPage('/splash', SplashPage());
 
   static List<MyPage> getPages() {
     final List<MyPage> list = <MyPage>[
-      login,
-      home,
-      highscores,
-      online,
       character,
       guild,
+      highscores,
+      home,
+      login,
+      online,
+      splash,
     ];
 
     for (final String c in LIST.category) {
