@@ -54,7 +54,10 @@ class _SplashPageState extends State<SplashPage> {
   Widget _advertisingImage() => MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
-          onTap: () => launchUrlString('https://www.instagram.com/merighitintas'),
+          onTap: () => launchUrlString(
+            'https://www.instagram.com/merighitintas',
+            mode: LaunchMode.externalApplication,
+          ),
           child: AnimatedOpacity(
             opacity: visible ? 1.0 : 0.0,
             duration: const Duration(seconds: 1),
