@@ -6,7 +6,14 @@ import 'package:http_client/src/http_error_handler.dart';
 import 'package:http_client/src/http_response.dart';
 
 class MyDioClient implements IHttpClient {
-  final Dio _dio = Dio(BaseOptions(headers: <String, dynamic>{'Content-Type': 'application/json'}));
+  final Dio _dio = Dio(
+    BaseOptions(
+      headers: <String, dynamic>{'Content-Type': 'application/json'},
+      sendTimeout: Duration(seconds: 10),
+      receiveTimeout: Duration(seconds: 10),
+      connectTimeout: Duration(seconds: 10),
+    ),
+  );
 
   @override
   Future<MyHttpResponse> get(String path, {Map<String, dynamic>? headers}) async {
@@ -29,7 +36,7 @@ class MyDioClient implements IHttpClient {
     } catch (e) {
       return HttpErrorHandler.fallback(e);
     } finally {
-      _printRequest(response);
+      if (response != null) _printRequest(response);
     }
     return response;
   }

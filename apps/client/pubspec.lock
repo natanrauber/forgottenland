@@ -204,7 +204,7 @@ packages:
       path: "../../packages/http_client"
       relative: true
     source: path
-    version: "1.0.0"
+    version: "23.08.22+1"
   http_parser:
     dependency: transitive
     description:
