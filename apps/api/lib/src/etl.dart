@@ -67,11 +67,11 @@ class ETL implements IETL {
       bool loadNext = false;
 
       do {
-        if (retry) page--;
-        i = retry ? i++ : 0;
-
-        retry = false;
-        loadNext = false;
+        if (retry) {
+          i++;
+        } else {
+          i = 0;
+        }
 
         aux = null;
         var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/$world/experience/none/$page');
@@ -83,8 +83,8 @@ class ETL implements IETL {
           page++;
         }
 
-        if (!response.success && i < 5) retry = true;
-        if (aux?.list.isNotEmpty == true && (aux?.list.last.level ?? 0) > 30) loadNext = true;
+        retry = !response.success && i < 5;
+        loadNext = aux?.list.isNotEmpty == true && (aux?.list.last.level ?? 0) > 30;
       } while (retry || loadNext);
     }
 
@@ -460,11 +460,11 @@ class ETL implements IETL {
     bool loadNext = false;
 
     do {
-      if (retry) page--;
-      i = retry ? i++ : 0;
-
-      retry = false;
-      loadNext = false;
+      if (retry) {
+        i++;
+      } else {
+        i = 0;
+      }
 
       aux = null;
       var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/all/experience/none/$page');
@@ -475,8 +475,8 @@ class ETL implements IETL {
         page++;
       }
 
-      if (!response.success && i < 5) retry = true;
-      if (aux?.list.isNotEmpty == true && page <= 20) loadNext = true;
+      retry = !response.success && i < 5;
+      loadNext = aux?.list.isNotEmpty == true && page <= 20;
     } while (retry || loadNext);
 
     for (var e in record.list) {
@@ -500,11 +500,11 @@ class ETL implements IETL {
     bool loadNext = false;
 
     do {
-      if (retry) page--;
-      i = retry ? i++ : 0;
-
-      retry = false;
-      loadNext = false;
+      if (retry) {
+        i++;
+      } else {
+        i = 0;
+      }
 
       aux = null;
       var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/all/$skill/none/$page');
@@ -515,8 +515,8 @@ class ETL implements IETL {
         page++;
       }
 
-      if (!response.success && i < 5) retry = true;
-      if (aux?.list.isNotEmpty == true && page <= 20) loadNext = true;
+      retry = !response.success && i < 5;
+      loadNext = aux?.list.isNotEmpty == true && page <= 20;
     } while (retry || loadNext);
 
     return record;
