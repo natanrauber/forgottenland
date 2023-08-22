@@ -132,7 +132,7 @@ class HighscoresController {
     if (page < 0) return ApiResponseError('Invalid page number');
 
     try {
-      var response = await databaseClient.from('rook-master').select().eq('date', MyDateTime.today()).single();
+      var response = await databaseClient.from('rook-master').select().order('date').limit(1).single();
       var record = Record.fromJson(response['data'] as Map<String, dynamic>);
 
       if ((page - 1) * 50 > record.list.length) {
