@@ -276,10 +276,9 @@ class ETL implements IETL {
 
       Online onlineNow = await _getOnlineNow();
       await _saveOnlineNow(onlineNow);
-
       await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
-
       await _saveOnlineTimeLast7days(await _getOnlineTimeLast7days());
+      await _saveOnlineTimeLast30days(await _getOnlineTimeLast30days());
 
       return ApiResponseSuccess();
     } catch (e) {
@@ -399,6 +398,45 @@ class ETL implements IETL {
       'timestamp': MyDateTime.timeStamp(),
     };
     return databaseClient.from('onlinetime-last7days').insert(values);
+  }
+
+  Future<Online?> _getOnlineTimeLast30days() async {
+    if (await _exists('onlinetime-last30days', MyDateTime.yesterday())) return null;
+
+    DateTime start = MyDateTime.now().subtract(Duration(days: 30));
+    DateTime end = MyDateTime.now().subtract(Duration(days: 1));
+    Online result = Online(list: <OnlineEntry>[]);
+
+    for (String date in MyDateTime.range(start, end)) {
+      List<dynamic> response = await databaseClient.from('onlinetime').select().eq('date', date);
+
+      if (response.isNotEmpty) {
+        Online onlineTimeOnDate = Online.fromJson(response.first['data']);
+        for (var dayE in onlineTimeOnDate.list) {
+          if (result.list.any((resultE) => resultE.name == dayE.name)) {
+            result.list.firstWhere((resultE) => resultE.name == dayE.name).time += dayE.time;
+            result.list.firstWhere((resultE) => resultE.name == dayE.name).level = dayE.level;
+            result.list.firstWhere((resultE) => resultE.name == dayE.name).world ??= dayE.world;
+          } else {
+            result.list.add(dayE);
+          }
+        }
+      }
+    }
+
+    result.list.sort(_compareTo);
+    _onlineAddMissingRank(result);
+    return result;
+  }
+
+  Future<dynamic> _saveOnlineTimeLast30days(Online? onlineTime) async {
+    if (onlineTime == null) return;
+    var values = <String, dynamic>{
+      'date': MyDateTime.yesterday(),
+      'data': onlineTime.toJson(),
+      'timestamp': MyDateTime.timeStamp(),
+    };
+    return databaseClient.from('onlinetime-last30days').insert(values);
   }
 
   @override
