@@ -88,6 +88,7 @@ class HighscoresController {
       'onlinetime+today': 'onlinetime',
       'onlinetime+yesterday': 'onlinetime',
       'onlinetime+last7days': 'onlinetime-last7days',
+      'onlinetime+last30days': 'onlinetime-last30days',
     };
 
     Map<String, String> dates = <String, String>{
