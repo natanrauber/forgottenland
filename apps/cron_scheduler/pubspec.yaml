@@ -1,13 +1,14 @@
-name: utils
-description: A starting point for Dart libraries or applications.
+name: cron_scheduler
+description: A sample command-line application.
 version: 23.09.11+1
 
 environment:
   sdk: '>=2.18.4 <3.0.0'
 
 dependencies:
-  dotenv: ^4.1.0
-  models:
+  cron: ^0.5.1
+  http_client:
+  utils:
 
 dev_dependencies:
   lints: ^2.0.0

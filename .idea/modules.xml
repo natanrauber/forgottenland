@@ -2,13 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/apps/cron_scheduler/melos_cron_scheduler.iml" filepath="$PROJECT_DIR$/apps/cron_scheduler/melos_cron_scheduler.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/database_client/melos_database_client.iml" filepath="$PROJECT_DIR$/packages/database_client/melos_database_client.iml" />
       <module fileurl="file://$PROJECT_DIR$/apps/client/melos_forgottenland.iml" filepath="$PROJECT_DIR$/apps/client/melos_forgottenland.iml" />
       <module fileurl="file://$PROJECT_DIR$/apps/api/melos_forgottenlandapi.iml" filepath="$PROJECT_DIR$/apps/api/melos_forgottenlandapi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/apps/etl/melos_forgottenlandetl.iml" filepath="$PROJECT_DIR$/apps/etl/melos_forgottenlandetl.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/http_client/melos_http_client.iml" filepath="$PROJECT_DIR$/packages/http_client/melos_http_client.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/models/melos_models.iml" filepath="$PROJECT_DIR$/packages/models/melos_models.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/utils/melos_utils.iml" filepath="$PROJECT_DIR$/packages/utils/melos_utils.iml" />
-      <module fileurl="file://$PROJECT_DIR$/melos_flutter_skeleton.iml" filepath="$PROJECT_DIR$/melos_flutter_skeleton.iml" />
+      <module fileurl="file://$PROJECT_DIR$/melos_forgottenland.iml" filepath="$PROJECT_DIR$/melos_forgottenland.iml" />
     </modules>
   </component>
 </project>
