@@ -2,7 +2,7 @@
 FROM dart:latest AS build
 
 # Create working directory
-WORKDIR /app
+WORKDIR /tmp
 
 # Copy app source code (except anything in .dockerignore) and AOT compile app.
 COPY . .
@@ -12,15 +12,19 @@ RUN dart pub get
 RUN dart pub global activate melos
 RUN dart pub run melos bs
 
-# compile server
-RUN dart compile exe apps/api/bin/server.dart -o apps/api/bin/server
+# Load env variables
+ARG PATH_ETL
+ARG DATABASE_URL
+ARG DATABASE_KEY
+
+# compile Cron Scheduler
+RUN dart compile exe --define=PATH_ETL=${PATH_ETL} --define=DATABASE_URL=${DATABASE_URL} --define=DATABASE_KEY=${DATABASE_KEY} apps/cron_scheduler/bin/cron_scheduler.dart -o apps/cron_scheduler/bin/cron_scheduler
 
 # Build minimal serving image from AOT-compiled `/server`
 # and the pre-built AOT-runtime in the `/runtime/` directory of the base image.
 FROM scratch
 COPY --from=build /runtime/ /
-COPY --from=build /app/apps/api/bin/server /app/bin/
+COPY --from=build /tmp/apps/cron_scheduler/bin/cron_scheduler /tmp/bin/
 
-# Start server.
-EXPOSE 8080
-CMD ["/app/bin/server"]
+# Start Cron Scheduler.
+CMD ["/tmp/bin/cron_scheduler"]

@@ -6,23 +6,27 @@ import 'package:http_client/src/http_error_handler.dart';
 import 'package:http_client/src/http_response.dart';
 
 class MyDioClient implements IHttpClient {
-  final Dio _dio = Dio(
-    BaseOptions(
-      headers: <String, dynamic>{'Content-Type': 'application/json'},
-      sendTimeout: Duration(seconds: 10),
-      receiveTimeout: Duration(seconds: 10),
-      connectTimeout: Duration(seconds: 10),
-    ),
+  MyDioClient({BaseOptions? baseOptions}) {
+    _dio = Dio(baseOptions ?? defaultBaseOptions);
+  }
+
+  late Dio _dio;
+
+  static BaseOptions defaultBaseOptions = BaseOptions(
+    headers: <String, dynamic>{'Content-Type': 'application/json'},
+    sendTimeout: Duration(seconds: 10),
+    receiveTimeout: Duration(seconds: 10),
+    connectTimeout: Duration(seconds: 10),
   );
 
   @override
   Future<MyHttpResponse> get(String path, {Map<String, dynamic>? headers}) async {
-    return _request(() => _dio.get(path));
+    return _request(() => _dio.get(path, options: Options(headers: headers)));
   }
 
   @override
   Future<MyHttpResponse> post(String path, dynamic data, {Map<String, dynamic>? headers}) async {
-    return _request(() => _dio.post(path, data: data));
+    return _request(() => _dio.post(path, options: Options(headers: headers), data: data));
   }
 
   Future<MyHttpResponse> _request(Future<Response<dynamic>> Function() request) async {

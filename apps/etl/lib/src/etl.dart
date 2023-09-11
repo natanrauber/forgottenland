@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:database_client/database_client.dart';
-import 'package:forgottenlandapi/utils/api_responses.dart';
-import 'package:forgottenlandapi/utils/paths.dart';
+import 'package:forgottenlandetl/utils/api_responses.dart';
+import 'package:forgottenlandetl/utils/paths.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';

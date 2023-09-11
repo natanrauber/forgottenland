@@ -91,7 +91,7 @@ packages:
       path: "../../packages/database_client"
       relative: true
     source: path
-    version: "1.0.0"
+    version: "23.09.11+1"
   device_info_plus:
     dependency: "direct main"
     description:
@@ -113,6 +113,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.1.1"
+  dotenv:
+    dependency: transitive
+    description:
+      name: dotenv
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.0"
   dropdown_search:
     dependency: "direct main"
     description:
@@ -510,7 +517,7 @@ packages:
       path: "../../packages/utils"
       relative: true
     source: path
-    version: "23.05.09+1"
+    version: "23.09.11+1"
   vector_math:
     dependency: transitive
     description:

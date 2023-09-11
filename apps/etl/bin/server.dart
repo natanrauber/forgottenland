@@ -1,9 +1,7 @@
 import 'dart:io';
 
 import 'package:database_client/database_client.dart';
-import 'package:forgottenlandapi/src/highscores_controller.dart';
-import 'package:forgottenlandapi/src/online_controller.dart';
-import 'package:forgottenlandapi/src/user_controller.dart';
+import 'package:forgottenlandetl/src/etl.dart';
 import 'package:http_client/http_client.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
@@ -14,12 +12,15 @@ final IHttpClient _httpClient = MyDioClient();
 
 // Configure routes.
 final _router = Router()
-  ..post('/login', UserController(_databaseClient).login)
-  ..post('/revive', UserController(_databaseClient).revive)
-  ..get('/highscores/<world>/<category>/<vocation>/<page>', HighscoresController(_databaseClient, _httpClient).get)
-  ..get('/rookmaster', HighscoresController(_databaseClient, _httpClient).rookmaster)
-  ..get('/online', OnlineController(_databaseClient).getOnlineNow)
-  ..get('/onlinetime/<date>', OnlineController(_databaseClient).getOnlineTime);
+  ..get('/exprecord', ETL(_databaseClient, _httpClient).expRecord)
+  ..get('/currentexp', ETL(_databaseClient, _httpClient).currentExp)
+  ..get('/expgain+today', ETL(_databaseClient, _httpClient).expGainedToday)
+  ..get('/expgain+yesterday', ETL(_databaseClient, _httpClient).expGainedYesterday)
+  ..get('/expgain+last7days', ETL(_databaseClient, _httpClient).expGainedLast7Days)
+  ..get('/expgain+last30days', ETL(_databaseClient, _httpClient).expGainedLast30Days)
+  ..get('/online', ETL(_databaseClient, _httpClient).registerOnlinePlayers)
+  ..get('/rookmaster', ETL(_databaseClient, _httpClient).rookmaster)
+  ..get('/skill/<name>/<value>', ETL(_databaseClient, _httpClient).calcSkillPoints);
 
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
