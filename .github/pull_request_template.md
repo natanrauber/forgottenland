@@ -1,8 +1,3 @@
-## Related issue
-Resolves #issueNumber
-
-
-## Versioning
-Updated apps/packages and corresponding new versions:
-- Package: year.month.day+buildNumber
-- App: year.month.day+buildNumber
+- [ ] Resolves #issue
+- [ ] Versioned
+- [ ] Web built or unchanged
