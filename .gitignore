@@ -24,3 +24,7 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 pubspec_overrides.yaml
+*.lock
+.DS_Store
+**/CHANGELOG.md
+!/CHANGELOG.md
