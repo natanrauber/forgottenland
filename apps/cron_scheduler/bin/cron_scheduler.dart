@@ -2,6 +2,7 @@ import 'package:cron_scheduler/cron_scheduler.dart';
 import 'package:http_client/http_client.dart';
 import 'package:utils/utils.dart';
 
+final Env _env = Env();
 final IHttpClient _httpClient = MyDioClient(
   baseOptions: MyDioClient.defaultBaseOptions.copyWith(
     sendTimeout: Duration(minutes: 5),
@@ -9,11 +10,10 @@ final IHttpClient _httpClient = MyDioClient(
     connectTimeout: Duration(minutes: 5),
   ),
 );
-final Env _env = Env();
 
 void main(List<String> arguments) {
-  _env;
-  _env;
+  _env.log();
+
   List cronList = <CronJob>[
     CronJob(time: '*/5 * * * *', name: 'online', task: () => _etlGet('/online')),
     CronJob(time: '50 * * * *', name: 'exp-record', task: () => _etlGet('/exprecord')),

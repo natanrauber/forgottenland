@@ -12,8 +12,11 @@ RUN dart pub get
 RUN dart pub global activate melos
 RUN dart pub run melos bs
 
+# Load env variables
+ARG PATH_TIBIA_DATA
+
 # compile API
-RUN dart compile exe apps/api/bin/server.dart -o apps/api/bin/server
+RUN dart compile exe --define=PATH_TIBIA_DATA=${PATH_TIBIA_DATA} apps/api/bin/server.dart -o apps/api/bin/server
 
 # Build minimal serving image from AOT-compiled `/server`
 # and the pre-built AOT-runtime in the `/runtime/` directory of the base image.

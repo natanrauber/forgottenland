@@ -1,6 +1,5 @@
 import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/utils/api_responses.dart';
-import 'package:forgottenlandapi/utils/paths.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
@@ -8,8 +7,9 @@ import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
 class HighscoresController {
-  HighscoresController(this.databaseClient, this.httpClient);
+  HighscoresController(this.env, this.databaseClient, this.httpClient);
 
+  final Env env;
   final IDatabaseClient databaseClient;
   final IHttpClient httpClient;
 
@@ -25,7 +25,7 @@ class HighscoresController {
     if (category.contains('rookmaster')) return _getRookmaster(page);
 
     try {
-      var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/$world/$category/$vocation/$page');
+      var response = await httpClient.get('${env['PATH_TIBIA_DATA']}/highscores/$world/$category/$vocation/$page');
       var record = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
       return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
