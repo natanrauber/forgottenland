@@ -8,7 +8,9 @@ import 'package:http_client/http_client.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:utils/utils.dart';
 
+final Env _env = Env();
 final IDatabaseClient _databaseClient = MySupabaseClient();
 final IHttpClient _httpClient = MyDioClient();
 
@@ -16,12 +18,17 @@ final IHttpClient _httpClient = MyDioClient();
 final _router = Router()
   ..post('/login', UserController(_databaseClient).login)
   ..post('/revive', UserController(_databaseClient).revive)
-  ..get('/highscores/<world>/<category>/<vocation>/<page>', HighscoresController(_databaseClient, _httpClient).get)
-  ..get('/rookmaster', HighscoresController(_databaseClient, _httpClient).rookmaster)
+  ..get(
+    '/highscores/<world>/<category>/<vocation>/<page>',
+    HighscoresController(_env, _databaseClient, _httpClient).get,
+  )
+  ..get('/rookmaster', HighscoresController(_env, _databaseClient, _httpClient).rookmaster)
   ..get('/online', OnlineController(_databaseClient).getOnlineNow)
   ..get('/onlinetime/<date>', OnlineController(_databaseClient).getOnlineTime);
 
 void main(List<String> args) async {
+  _env.log();
+
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
 

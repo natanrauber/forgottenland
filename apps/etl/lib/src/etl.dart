@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:database_client/database_client.dart';
 import 'package:forgottenlandetl/utils/api_responses.dart';
-import 'package:forgottenlandetl/utils/paths.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
@@ -23,8 +22,9 @@ abstract class IETL {
 
 // Extract, Transform, Load.
 class ETL implements IETL {
-  ETL(this.databaseClient, this.httpClient);
+  ETL(this.env, this.databaseClient, this.httpClient);
 
+  final Env env;
   final IDatabaseClient databaseClient;
   final IHttpClient httpClient;
 
@@ -74,7 +74,7 @@ class ETL implements IETL {
         }
 
         aux = null;
-        var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/$world/experience/none/$page');
+        var response = await httpClient.get('${env['PATH_TIBIA_DATA']}/highscores/$world/experience/none/$page');
 
         if (response.success) {
           aux = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
@@ -93,7 +93,7 @@ class ETL implements IETL {
   }
 
   Future<List<World>> _getWorlds() async {
-    final MyHttpResponse response = await httpClient.get('${PATH.tibiaDataApi}/worlds');
+    final MyHttpResponse response = await httpClient.get('${env['PATH_TIBIA_DATA']}/worlds');
 
     if (response.dataAsMap['worlds'] is! Map) return [];
     if (response.dataAsMap['worlds']['regular_worlds'] is! List) return [];
@@ -295,7 +295,7 @@ class ETL implements IETL {
       int i = 1;
 
       do {
-        response = await httpClient.get('${PATH.tibiaDataApi}/world/$world');
+        response = await httpClient.get('${env['PATH_TIBIA_DATA']}/world/$world');
         if (response.success) {
           Online aux = Online.fromJsonTibiaDataAPI(response.dataAsMap);
           aux.list.removeWhere((e) => e.vocation != 'None' || (e.level ?? 0) < 5);
@@ -505,7 +505,7 @@ class ETL implements IETL {
       }
 
       aux = null;
-      var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/all/experience/none/$page');
+      var response = await httpClient.get('${env['PATH_TIBIA_DATA']}/highscores/all/experience/none/$page');
 
       if (response.success) {
         aux = Record.fromJsonExpanded(response.dataAsMap['highscores'] as Map<String, dynamic>);
@@ -545,7 +545,7 @@ class ETL implements IETL {
       }
 
       aux = null;
-      var response = await httpClient.get('${PATH.tibiaDataApi}/highscores/all/$skill/none/$page');
+      var response = await httpClient.get('${env['PATH_TIBIA_DATA']}/highscores/all/$skill/none/$page');
 
       if (response.success) {
         aux = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);

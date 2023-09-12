@@ -6,23 +6,27 @@ import 'package:http_client/http_client.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:utils/utils.dart';
 
+final Env _env = Env();
 final IDatabaseClient _databaseClient = MySupabaseClient();
 final IHttpClient _httpClient = MyDioClient();
 
 // Configure routes.
 final _router = Router()
-  ..get('/exprecord', ETL(_databaseClient, _httpClient).expRecord)
-  ..get('/currentexp', ETL(_databaseClient, _httpClient).currentExp)
-  ..get('/expgain+today', ETL(_databaseClient, _httpClient).expGainedToday)
-  ..get('/expgain+yesterday', ETL(_databaseClient, _httpClient).expGainedYesterday)
-  ..get('/expgain+last7days', ETL(_databaseClient, _httpClient).expGainedLast7Days)
-  ..get('/expgain+last30days', ETL(_databaseClient, _httpClient).expGainedLast30Days)
-  ..get('/online', ETL(_databaseClient, _httpClient).registerOnlinePlayers)
-  ..get('/rookmaster', ETL(_databaseClient, _httpClient).rookmaster)
-  ..get('/skill/<name>/<value>', ETL(_databaseClient, _httpClient).calcSkillPoints);
+  ..get('/exprecord', ETL(_env, _databaseClient, _httpClient).expRecord)
+  ..get('/currentexp', ETL(_env, _databaseClient, _httpClient).currentExp)
+  ..get('/expgain+today', ETL(_env, _databaseClient, _httpClient).expGainedToday)
+  ..get('/expgain+yesterday', ETL(_env, _databaseClient, _httpClient).expGainedYesterday)
+  ..get('/expgain+last7days', ETL(_env, _databaseClient, _httpClient).expGainedLast7Days)
+  ..get('/expgain+last30days', ETL(_env, _databaseClient, _httpClient).expGainedLast30Days)
+  ..get('/online', ETL(_env, _databaseClient, _httpClient).registerOnlinePlayers)
+  ..get('/rookmaster', ETL(_env, _databaseClient, _httpClient).rookmaster)
+  ..get('/skill/<name>/<value>', ETL(_env, _databaseClient, _httpClient).calcSkillPoints);
 
 void main(List<String> args) async {
+  _env.log();
+
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
 
