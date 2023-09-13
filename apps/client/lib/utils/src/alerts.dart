@@ -163,9 +163,9 @@ class Alert {
           horizontal: (MediaQuery.of(context).size.width / 2) - 45,
         ),
         contentPadding: const EdgeInsets.all(25),
-        content: Stack(
+        content: const Stack(
           alignment: Alignment.center,
-          children: const <Widget>[
+          children: <Widget>[
             SizedBox(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(

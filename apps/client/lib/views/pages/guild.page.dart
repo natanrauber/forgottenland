@@ -116,9 +116,9 @@ class GuildPage extends StatelessWidget {
                 color: AppColors.bgPaper,
                 borderRadius: BorderRadius.circular(11),
               ),
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const <Widget>[
+                children: <Widget>[
                   Text(
                     'View on Tibia.com',
                     style: TextStyle(
@@ -129,7 +129,7 @@ class GuildPage extends StatelessWidget {
                     CupertinoIcons.arrow_up_right_square,
                     size: 18,
                     color: AppColors.primary,
-                  )
+                  ),
                 ],
               ),
             ),

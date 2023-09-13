@@ -139,7 +139,7 @@ class _CharacterPageState extends State<CharacterPage> {
                         child: SelectableText(
                           characterCtrl.data.value.data?.comment ?? '',
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -207,7 +207,7 @@ class _CharacterPageState extends State<CharacterPage> {
                               ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -227,9 +227,9 @@ class _CharacterPageState extends State<CharacterPage> {
                         color: AppColors.bgPaper,
                         borderRadius: BorderRadius.circular(11),
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const <Widget>[
+                        children: <Widget>[
                           Text(
                             'View on Tibia.com',
                             style: TextStyle(
@@ -240,7 +240,7 @@ class _CharacterPageState extends State<CharacterPage> {
                             CupertinoIcons.arrow_up_right_square,
                             size: 18,
                             color: AppColors.primary,
-                          )
+                          ),
                         ],
                       ),
                     ),

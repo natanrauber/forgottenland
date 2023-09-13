@@ -9,17 +9,12 @@ class AppFooter extends AppBar {
 
 class _AppFooterState extends State<AppFooter> {
   @override
-  Widget build(BuildContext context) => Column(
-        children: const <Widget>[
-          //
+  Widget build(BuildContext context) => const Column(
+        children: <Widget>[
           SizedBox(height: 20),
-
           CardDonate(),
-
           SizedBox(height: 20),
-
           CardAppInfo(),
-
           SizedBox(height: 20),
         ],
       );

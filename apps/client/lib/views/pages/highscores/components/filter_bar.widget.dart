@@ -70,7 +70,7 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
 
             _selectedFilters(),
 
-            _disclaimer()
+            _disclaimer(),
           ],
         ),
       );

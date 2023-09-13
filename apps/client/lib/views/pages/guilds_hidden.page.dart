@@ -98,7 +98,7 @@ class _GuildsHiddenPageState extends State<GuildsHiddenPage> {
                   const Icon(
                     CupertinoIcons.chevron_right,
                     size: 17,
-                  )
+                  ),
                 ],
               ),
             ),

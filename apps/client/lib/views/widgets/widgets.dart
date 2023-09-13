@@ -1,5 +1,3 @@
-library widgets;
-
 // buttons
 export 'src/buttons/buttons.widget.dart';
 // fields
