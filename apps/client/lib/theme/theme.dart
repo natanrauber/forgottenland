@@ -24,9 +24,6 @@ ThemeData appTheme() => ThemeData(
         brightness: Brightness.light,
       ),
 
-      errorColor: const Color(0xFFF31629),
-
-      backgroundColor: AppColors.bgDefault,
       scaffoldBackgroundColor: AppColors.bgDefault,
 
       iconTheme: const IconThemeData(color: AppColors.primary),

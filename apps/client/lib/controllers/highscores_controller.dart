@@ -176,7 +176,7 @@ class HighscoresController extends Controller {
 
     try {
       final dynamic response = await databaseClient.from('supporter').select();
-      for (final dynamic e in response) {
+      for (final dynamic e in response as List<dynamic>) {
         if (e is Map<String, dynamic>) supporters.add(Supporter.fromJson(e));
       }
     } catch (e) {
@@ -192,7 +192,7 @@ class HighscoresController extends Controller {
 
     try {
       final dynamic response = await databaseClient.from('hidden').select();
-      for (final dynamic e in response) {
+      for (final dynamic e in response as List<dynamic>) {
         if (e is Map<String, dynamic> && e['name'] is String) hidden.add(e['name'] as String);
       }
     } catch (e) {

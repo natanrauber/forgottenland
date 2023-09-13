@@ -26,5 +26,4 @@ doc/api/
 pubspec_overrides.yaml
 *.lock
 .DS_Store
-**/CHANGELOG.md
-!/CHANGELOG.md
+CHANGELOG.md

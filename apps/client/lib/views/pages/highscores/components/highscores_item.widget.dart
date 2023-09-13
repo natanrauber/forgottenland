@@ -299,7 +299,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
                   color: AppColors.black80,
                 ),
               ),
-            )
+            ),
           ],
         ),
       );

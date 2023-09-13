@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_positional_boolean_parameters
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,26 +50,29 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
             children: <Widget>[
               //
               DropdownSearch<T>(
-                focusNode: focusNode,
                 enabled: widget.enabled && !widget.loading,
                 filterFn: widget.filter ?? _filter,
                 itemAsString: widget.itemAsString,
-                showSearchBox: true,
                 selectedItem: widget.selectedItem,
-                dropdownSearchDecoration: _dropdownSearchDecoration,
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: _dropdownSearchDecoration,
+                ),
                 dropdownButtonProps: _dropdownButtonProps,
-                items: widget.itemList,
+                items: widget.itemList ?? <T>[],
                 dropdownBuilder: _dropdownBuilder,
-                dropdownBuilderSupportsNullItem: true,
-                dialogMaxWidth: 700,
-                popupItemBuilder: _popupItemBuilder,
-                popupBackgroundColor: AppColors.bgDefault,
-                searchFieldProps: _searchFieldProps,
+                popupProps: PopupProps<T>.dialog(
+                  showSearchBox: true,
+                  itemBuilder: _popupItemBuilder,
+                  dialogProps: const DialogProps(
+                    backgroundColor: AppColors.bgDefault,
+                  ),
+                  searchFieldProps: _searchFieldProps,
+                  emptyBuilder: _emptyBuilder,
+                ),
                 onChanged: widget.onChanged,
                 onSaved: widget.onSaved,
                 validator: widget.validator,
                 autoValidateMode: AutovalidateMode.onUserInteraction,
-                emptyBuilder: _emptyBuilder,
               ),
 
               IgnorePointer(
@@ -102,7 +107,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
         ),
       );
 
-  IconButtonProps get _dropdownButtonProps => IconButtonProps(
+  DropdownButtonProps get _dropdownButtonProps => DropdownButtonProps(
+        focusNode: focusNode,
         icon: widget.loading
             ? _loading()
             : Icon(

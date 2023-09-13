@@ -19,7 +19,7 @@ class ForgottenLand extends StatelessWidget {
             PointerDeviceKind.mouse,
             PointerDeviceKind.touch,
             PointerDeviceKind.stylus,
-            PointerDeviceKind.unknown
+            PointerDeviceKind.unknown,
           },
         ),
       );
