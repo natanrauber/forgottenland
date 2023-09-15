@@ -18,6 +18,11 @@ cd apps/client/
 flutter build web --web-renderer html --release
 cd ...
 ```
+```sh
+cd apps/client/
+flutter run -d chrome
+cd ...
+```
 
 Warning: For now, it is necessary to build the web client before commiting the changes, since the automatic build is not working on Vercel.
 
