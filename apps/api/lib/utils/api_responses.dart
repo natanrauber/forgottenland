@@ -20,6 +20,14 @@ class ApiResponseAccepted extends Response {
         );
 }
 
+class ApiResponseNoContent extends Response {
+  ApiResponseNoContent({dynamic data})
+      : super(
+          204,
+          headers: <String, Object>{"Content-Type": "application/json"},
+        );
+}
+
 class ApiResponseError extends Response {
   ApiResponseError(dynamic e)
       : super.internalServerError(

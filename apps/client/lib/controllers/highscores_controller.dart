@@ -81,10 +81,6 @@ class HighscoresController extends Controller {
           (response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{},
         );
         _onlineCtrl.onlineTimes = <HighscoresEntry>[].obs;
-        if (category.value == 'Experience gained') {
-          if (period.value == 'Today') await _onlineCtrl.getOnlineTimes(MyDateTime.today());
-          if (period.value == 'Yesterday') await _onlineCtrl.getOnlineTimes(MyDateTime.yesterday());
-        }
 
         if (aux.list.isEmpty == true) loadedAll = true.obs;
         _populateList(aux.list);
@@ -130,14 +126,6 @@ class HighscoresController extends Controller {
       bool valid = true;
 
       if (hidden.contains(item.name)) valid = false;
-
-      if (category.value == 'Experience gained' && world.value.name != 'All') {
-        if (world.value.name != item.world?.name) valid = false;
-      }
-
-      if (category.value == 'Online time' && world.value.name != 'All') {
-        if (world.value.name != item.world?.name) valid = false;
-      }
 
       if (category.value == 'Rook Master' && world.value.name != 'All') {
         if (world.value.name != item.world?.name) valid = false;

@@ -19,9 +19,10 @@ class HighscoresController {
     String? vocation = request.params['vocation'];
     int page = int.tryParse(request.params['page'] ?? '') ?? 1;
 
+    if (world == null) return ApiResponseError('Missing param "world"');
     if (category == null) return ApiResponseError('Missing param "category"');
-    if (category.contains('experiencegained')) return _getExpGain(category, page);
-    if (category.contains('onlinetime')) return _getOnlineTime(category, page);
+    if (category.contains('experiencegained')) return _getExpGain(world, category, page);
+    if (category.contains('onlinetime')) return _getOnlineTime(world, category, page);
     if (category.contains('rookmaster')) return _getRookmaster(page);
 
     try {
@@ -33,7 +34,7 @@ class HighscoresController {
     }
   }
 
-  Future<Response> _getExpGain(String category, int page) async {
+  Future<Response> _getExpGain(String world, String category, int page) async {
     if (page < 0) return ApiResponseError('Invalid page number');
 
     Map<String, String> tables = <String, String>{
@@ -57,6 +58,8 @@ class HighscoresController {
       var response = await databaseClient.from(table).select().eq('date', date).single();
       var record = Record.fromJson(response['data'] as Map<String, dynamic>);
 
+      if (world != 'all') record.list.removeWhere((e) => e.world?.name?.toLowerCase() != world);
+
       if ((page - 1) * 50 > record.list.length) {
         record.list = [];
       } else if (record.list.length > 50) {
@@ -67,6 +70,8 @@ class HighscoresController {
       }
 
       _recordAddMissingRank(record, page);
+
+      if (record.list.isEmpty) return ApiResponseNoContent();
       return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
       return ApiResponseError(e);
@@ -74,14 +79,14 @@ class HighscoresController {
   }
 
   void _recordAddMissingRank(Record record, int page) {
-    if (record.list.first.rank != null) return;
+    if (record.list.isNotEmpty && record.list.first.rank != null) return;
     int offset = 50 * (page - 1);
     for (var e in record.list) {
       e.rank = record.list.indexOf(e) + 1 + offset;
     }
   }
 
-  Future<Response> _getOnlineTime(String category, int page) async {
+  Future<Response> _getOnlineTime(String world, String category, int page) async {
     if (page < 0) return ApiResponseError('Invalid page number');
 
     Map<String, String> tables = <String, String>{
@@ -105,6 +110,8 @@ class HighscoresController {
       var response = await databaseClient.from(table).select().eq('date', date).single();
       var online = Online.fromJson(response['data'] as Map<String, dynamic>);
 
+      if (world != 'all') online.list.removeWhere((e) => e.world?.toLowerCase() != world);
+
       if ((page - 1) * 50 > online.list.length) {
         online.list = [];
       } else {
@@ -115,6 +122,8 @@ class HighscoresController {
       }
 
       _onlineAddMissingRank(online, page);
+
+      if (online.list.isEmpty) return ApiResponseNoContent();
       return ApiResponseSuccess(data: online.toJson());
     } catch (e) {
       return ApiResponseError(e);
