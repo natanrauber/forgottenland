@@ -126,7 +126,7 @@ class HomeScreenGrid extends StatelessWidget {
 
   Future<void> _getToHighscoresPage() async {
     final String c = highscoresCtrl.category.value;
-    final String p = highscoresCtrl.period.value;
+    final String p = highscoresCtrl.timeframe.value;
     String route = '${Routes.highscores.name}/$c';
     if (c == 'Experience gained' || c == 'Online time') route = '$route/$p';
 

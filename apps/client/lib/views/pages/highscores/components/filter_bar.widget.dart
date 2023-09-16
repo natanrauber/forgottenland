@@ -45,7 +45,7 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
                   //
                   _category(),
 
-                  _period(),
+                  _timeframe(),
 
                   _world(),
 
@@ -226,8 +226,8 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
   String get _selectedFiltersText {
     String? text = 'Filter: ${highscoresCtrl.category.value}';
 
-    if (highscoresCtrl.category.value == 'Experience gained') text = '$text, ${highscoresCtrl.period.value}';
-    if (highscoresCtrl.category.value == 'Online time') text = '$text, ${highscoresCtrl.period.value}';
+    if (highscoresCtrl.category.value == 'Experience gained') text = '$text, ${highscoresCtrl.timeframe.value}';
+    if (highscoresCtrl.category.value == 'Online time') text = '$text, ${highscoresCtrl.timeframe.value}';
     if (highscoresCtrl.world.value.name != 'All') return '$text, ${highscoresCtrl.world.value}.';
     if (highscoresCtrl.battleyeType.value != 'All') text = '$text, Battleye ${highscoresCtrl.battleyeType.value}';
     if (highscoresCtrl.location.value != 'All') text = '$text, ${highscoresCtrl.location.value}';
@@ -245,26 +245,26 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
           if (value is! String) return;
           if (value == 'Experience gained' || value == 'Online time') {
             final String category = value.toLowerCase().replaceAll(' ', '');
-            final String period = highscoresCtrl.period.value.toLowerCase().replaceAll(' ', '');
-            return Get.offAndToNamed('/highscores/$category/$period');
+            final String timeframe = highscoresCtrl.timeframe.value.toLowerCase().replaceAll(' ', '');
+            return Get.offAndToNamed('/highscores/$category/$timeframe');
           }
           return Get.offAndToNamed('/highscores/${value.toLowerCase().replaceAll(' ', '')}');
         },
       );
 
-  Widget _period() => Obx(
+  Widget _timeframe() => Obx(
         () {
           final String category = highscoresCtrl.category.value;
           if (category != 'Experience gained' && category != 'Online time') return Container();
           return _dropdown<String>(
-            labelText: 'Period',
-            selectedItem: highscoresCtrl.period.value,
-            itemList: LIST.period,
+            labelText: 'Timeframe',
+            selectedItem: highscoresCtrl.timeframe.value,
+            itemList: LIST.timeframe,
             onChanged: (String? value) async {
               if (value is! String) return;
               final String category = highscoresCtrl.category.value.toLowerCase().replaceAll(' ', '');
-              final String period = value.toLowerCase().replaceAll(' ', '');
-              Get.offAndToNamed('/highscores/$category/$period');
+              final String timeframe = value.toLowerCase().replaceAll(' ', '');
+              Get.offAndToNamed('/highscores/$category/$timeframe');
             },
           );
         },

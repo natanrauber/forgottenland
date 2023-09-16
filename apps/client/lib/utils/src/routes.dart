@@ -46,9 +46,9 @@ class Routes {
       Widget page = HighscoresPage(category: c);
 
       if (c == 'Experience gained' || c == 'Online time') {
-        for (final String p in LIST.period) {
+        for (final String p in LIST.timeframe) {
           name = '/highscores/$c/$p'.toLowerCase().replaceAll(' ', '');
-          page = HighscoresPage(category: c, period: p);
+          page = HighscoresPage(category: c, timeframe: p);
           final MyPage route = MyPage(name, page);
           list.add(route);
         }
