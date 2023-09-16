@@ -17,7 +17,7 @@ class LIST {
     'Rook Master',
   ];
 
-  static const List<String> period = <String>[
+  static const List<String> timeframe = <String>[
     'Today',
     'Yesterday',
     'Last 7 days',

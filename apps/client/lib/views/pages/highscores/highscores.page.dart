@@ -14,10 +14,10 @@ import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
 class HighscoresPage extends StatefulWidget {
-  const HighscoresPage({this.category, this.period});
+  const HighscoresPage({this.category, this.timeframe});
 
   final String? category;
-  final String? period;
+  final String? timeframe;
 
   @override
   State<HighscoresPage> createState() => _HighscoresPageState();
@@ -32,13 +32,13 @@ class _HighscoresPageState extends State<HighscoresPage> {
     super.initState();
 
     final String c = widget.category ?? LIST.category.first;
-    final String p = widget.period ?? LIST.period.first;
+    final String p = widget.timeframe ?? LIST.timeframe.first;
     if (_alreadyLoaded(c, p)) return;
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
         highscoresCtrl.category.value = c;
-        highscoresCtrl.period.value = p;
+        highscoresCtrl.timeframe.value = p;
         _loadHighscores();
       },
     );
@@ -46,7 +46,7 @@ class _HighscoresPageState extends State<HighscoresPage> {
 
   bool _alreadyLoaded(String c, String p) {
     if (highscoresCtrl.category.value != c) return false;
-    if (highscoresCtrl.period.value != p) return false;
+    if (highscoresCtrl.timeframe.value != p) return false;
     if (highscoresCtrl.rawList.isEmpty) return false;
     return true;
   }

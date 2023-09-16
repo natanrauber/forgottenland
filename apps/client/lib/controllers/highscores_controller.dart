@@ -30,7 +30,7 @@ class HighscoresController extends Controller {
   TextController searchController = TextController();
   RxList<HighscoresEntry> filteredList = <HighscoresEntry>[].obs;
   RxString category = LIST.category.first.obs;
-  RxString period = LIST.period.first.obs;
+  RxString timeframe = LIST.timeframe.first.obs;
   RxWorld world = World(name: 'All').obs;
   RxString battleyeType = LIST.battleyeType.first.obs;
   RxString location = LIST.location.first.obs;
@@ -69,8 +69,8 @@ class HighscoresController extends Controller {
 
     try {
       String cat = category.value;
-      if (cat == 'Experience gained') cat = '$cat+$period';
-      if (cat == 'Online time') cat = '$cat+$period';
+      if (cat == 'Experience gained') cat = '$cat+$timeframe';
+      if (cat == 'Online time') cat = '$cat+$timeframe';
 
       response = await httpClient.get(
         '${PATH.forgottenLandApi}/highscores/$world/$cat/none/$pageCtrl'.toLowerCase().replaceAll(' ', ''),
