@@ -1,5 +1,6 @@
 import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/utils/api_responses.dart';
+import 'package:forgottenlandapi/utils/error_handler.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
@@ -30,7 +31,7 @@ class HighscoresController {
       var record = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
       return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
-      return ApiResponseError(e);
+      return handleError(e);
     }
   }
 
@@ -74,7 +75,7 @@ class HighscoresController {
       if (record.list.isEmpty) return ApiResponseNoContent();
       return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
-      return ApiResponseError(e);
+      return handleError(e);
     }
   }
 
@@ -126,7 +127,7 @@ class HighscoresController {
       if (online.list.isEmpty) return ApiResponseNoContent();
       return ApiResponseSuccess(data: online.toJson());
     } catch (e) {
-      return ApiResponseError(e);
+      return handleError(e);
     }
   }
 
@@ -161,7 +162,7 @@ class HighscoresController {
       if (record.list.isEmpty) return ApiResponseNoContent();
       return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
-      return ApiResponseError(e);
+      return handleError(e);
     }
   }
 
@@ -171,7 +172,7 @@ class HighscoresController {
       var record = Record.fromJsonExpanded(response['data'] as Map<String, dynamic>);
       return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
-      return ApiResponseError(e);
+      return handleError(e);
     }
   }
 }
