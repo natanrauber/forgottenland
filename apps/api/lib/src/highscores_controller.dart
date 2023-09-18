@@ -35,42 +35,86 @@ class HighscoresController {
     }
   }
 
-  Future<Response> _getExpGain(String world, String category, int page) async {
-    if (page < 0) return ApiResponseError('Invalid page number');
-
+  String? _getTableFromCategory(String category) {
     Map<String, String> tables = <String, String>{
       'experiencegained+today': 'exp-gain-today',
       'experiencegained+yesterday': 'exp-gain-last-day',
       'experiencegained+last7days': 'exp-gain-last-7-days',
       'experiencegained+last30days': 'exp-gain-last-30-days',
+      'onlinetime+today': 'onlinetime',
+      'onlinetime+yesterday': 'onlinetime',
+      'onlinetime+last7days': 'onlinetime-last7days',
+      'onlinetime+last30days': 'onlinetime-last30days',
     };
+    return tables[category];
+  }
 
+  String? _getDateFromCategory(String category) {
     Map<String, String> dates = <String, String>{
       'experiencegained+today': MyDateTime.today(),
       'experiencegained+yesterday': MyDateTime.yesterday(),
       'experiencegained+last7days': MyDateTime.yesterday(),
       'experiencegained+last30days': MyDateTime.yesterday(),
+      'onlinetime+today': MyDateTime.today(),
+      'onlinetime+yesterday': MyDateTime.yesterday(),
+      'onlinetime+last7days': MyDateTime.yesterday(),
+      'onlinetime+last30days': MyDateTime.yesterday(),
     };
+    return dates[category];
+  }
 
-    String table = tables[category] ?? '';
-    String date = dates[category] ?? '';
+  List<T> _getPageRange<T>(int page, List<T> list) {
+    if ((page - 1) * 50 > list.length) return [];
+    if (list.length <= 50) return list;
+
+    int start = (page - 1) * 50;
+    int end = page * 50;
+    if (end > list.length) end = list.length;
+    return list.getRange(start, end).toList();
+  }
+
+  List<T> _filterWorld<T>(String world, List<T> list) {
+    if (world == 'all') return list;
+    if (list is List<OnlineEntry>) {
+      list.removeWhere((e) => (e as OnlineEntry).world?.toLowerCase() != world);
+    } else if (list is List<HighscoresEntry>) {
+      list.removeWhere((e) => (e as HighscoresEntry).world?.name?.toLowerCase() != world);
+    }
+    return list;
+  }
+
+  List<T> _addMissingRank<T>(int page, List<T> list) {
+    if (list.isEmpty) return list;
+    if (list is List<HighscoresEntry> && (list.first as HighscoresEntry).rank != null) return list;
+    if (list is List<OnlineEntry> && (list.first as OnlineEntry).rank != null) return list;
+
+    int offset = 50 * (page - 1);
+    if (list is List<HighscoresEntry>) {
+      for (var e in list) {
+        (e as HighscoresEntry).rank = list.indexOf(e) + 1 + offset;
+      }
+    } else if (list is List<OnlineEntry>) {
+      for (var e in list) {
+        (e as OnlineEntry).rank = list.indexOf(e) + 1 + offset;
+      }
+    }
+    return list;
+  }
+
+  Future<Response> _getExpGain(String world, String category, int page) async {
+    String? table = _getTableFromCategory(category);
+    String? date = _getDateFromCategory(category);
+
+    if (page <= 0) return ApiResponseError('Invalid page number');
+    if (table == null || date == null) return ApiResponseError('Invalid category');
 
     try {
       var response = await databaseClient.from(table).select().eq('date', date).single();
       var record = Record.fromJson(response['data'] as Map<String, dynamic>);
 
-      if (world != 'all') record.list.removeWhere((e) => e.world?.name?.toLowerCase() != world);
-
-      if ((page - 1) * 50 > record.list.length) {
-        record.list = [];
-      } else if (record.list.length > 50) {
-        int start = (page - 1) * 50;
-        int end = page * 50;
-        if (end > record.list.length) end = record.list.length;
-        record.list = record.list.getRange(start, end).toList();
-      }
-
-      _recordAddMissingRank(record, page);
+      record.list = _filterWorld<HighscoresEntry>(world, record.list);
+      record.list = _getPageRange<HighscoresEntry>(page, record.list);
+      record.list = _addMissingRank<HighscoresEntry>(page, record.list);
 
       if (record.list.isEmpty) return ApiResponseNoContent();
       return ApiResponseSuccess(data: record.toJson());
@@ -79,63 +123,25 @@ class HighscoresController {
     }
   }
 
-  void _recordAddMissingRank(Record record, int page) {
-    if (record.list.isNotEmpty && record.list.first.rank != null) return;
-    int offset = 50 * (page - 1);
-    for (var e in record.list) {
-      e.rank = record.list.indexOf(e) + 1 + offset;
-    }
-  }
-
   Future<Response> _getOnlineTime(String world, String category, int page) async {
-    if (page < 0) return ApiResponseError('Invalid page number');
+    String? table = _getTableFromCategory(category);
+    String? date = _getDateFromCategory(category);
 
-    Map<String, String> tables = <String, String>{
-      'onlinetime+today': 'onlinetime',
-      'onlinetime+yesterday': 'onlinetime',
-      'onlinetime+last7days': 'onlinetime-last7days',
-      'onlinetime+last30days': 'onlinetime-last30days',
-    };
-
-    Map<String, String> dates = <String, String>{
-      'onlinetime+today': MyDateTime.today(),
-      'onlinetime+yesterday': MyDateTime.yesterday(),
-      'onlinetime+last7days': MyDateTime.yesterday(),
-      'onlinetime+last30days': MyDateTime.yesterday(),
-    };
-
-    String table = tables[category] ?? '';
-    String date = dates[category] ?? '';
+    if (page <= 0) return ApiResponseError('Invalid page number');
+    if (table == null || date == null) return ApiResponseError('Invalid category');
 
     try {
       var response = await databaseClient.from(table).select().eq('date', date).single();
       var online = Online.fromJson(response['data'] as Map<String, dynamic>);
 
-      if (world != 'all') online.list.removeWhere((e) => e.world?.toLowerCase() != world);
-
-      if ((page - 1) * 50 > online.list.length) {
-        online.list = [];
-      } else {
-        int start = (page - 1) * 50;
-        int end = page * 50;
-        if (end > online.list.length) end = online.list.length;
-        online.list = online.list.getRange(start, end).toList();
-      }
-
-      _onlineAddMissingRank(online, page);
+      online.list = _filterWorld<OnlineEntry>(world, online.list);
+      online.list = _getPageRange<OnlineEntry>(page, online.list);
+      online.list = _addMissingRank<OnlineEntry>(page, online.list);
 
       if (online.list.isEmpty) return ApiResponseNoContent();
       return ApiResponseSuccess(data: online.toJson());
     } catch (e) {
       return handleError(e);
-    }
-  }
-
-  void _onlineAddMissingRank(Online online, int page) {
-    if (online.list.isNotEmpty && online.list.first.rank != null) return;
-    int offset = 50 * (page - 1);
-    for (var e in online.list) {
-      e.rank = online.list.indexOf(e) + 1 + offset;
     }
   }
 
@@ -146,30 +152,11 @@ class HighscoresController {
       var response = await databaseClient.from('rook-master').select().order('date').limit(1).single();
       var record = Record.fromJson(response['data'] as Map<String, dynamic>);
 
-      if (world != 'all') record.list.removeWhere((e) => e.world?.name?.toLowerCase() != world);
-
-      if ((page - 1) * 50 > record.list.length) {
-        record.list = [];
-      } else if (record.list.length > 50) {
-        int start = (page - 1) * 50;
-        int end = page * 50;
-        if (end > record.list.length) end = record.list.length;
-        record.list = record.list.getRange(start, end).toList();
-      }
-
-      _recordAddMissingRank(record, page);
+      record.list = _filterWorld<HighscoresEntry>(world, record.list);
+      record.list = _getPageRange<HighscoresEntry>(page, record.list);
+      record.list = _addMissingRank<HighscoresEntry>(page, record.list);
 
       if (record.list.isEmpty) return ApiResponseNoContent();
-      return ApiResponseSuccess(data: record.toJson());
-    } catch (e) {
-      return handleError(e);
-    }
-  }
-
-  Future<Response> rookmaster(Request request) async {
-    try {
-      var response = await databaseClient.from('rook-master').select().limit(1).single();
-      var record = Record.fromJsonExpanded(response['data'] as Map<String, dynamic>);
       return ApiResponseSuccess(data: record.toJson());
     } catch (e) {
       return handleError(e);

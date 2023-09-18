@@ -22,7 +22,6 @@ final _router = Router()
     '/highscores/<world>/<category>/<vocation>/<page>',
     HighscoresController(_env, _databaseClient, _httpClient).get,
   )
-  ..get('/rookmaster', HighscoresController(_env, _databaseClient, _httpClient).rookmaster)
   ..get('/online', OnlineController(_databaseClient).getOnlineNow)
   ..get('/onlinetime/<date>', OnlineController(_databaseClient).getOnlineTime);
 
