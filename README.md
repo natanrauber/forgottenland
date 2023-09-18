@@ -9,55 +9,37 @@ Since environment variables are not trivial in Dart/Flutter, we decided on a hyb
 
    Warning: For now, environment variables are configured only for the backend with Dart + Railway.
 
-## Building
+## Run and Build
 
 ### Client
-
 ```sh
-cd apps/client/
-flutter build web --web-renderer html --release
-cd ...
+cd apps/client/ && flutter run -d chrome && cd ...
 ```
 ```sh
-cd apps/client/
-flutter run -d chrome
-cd ...
+cd apps/client/ && flutter build web --web-renderer html --release && cd ...
 ```
-
 Warning: For now, it is necessary to build the web client before commiting the changes, since the automatic build is not working on Vercel.
 
 ### API
-
+```sh
+cd apps/api/ && dart run bin/server.dart && cd ...
+```
 ```sh
 docker build . -t forgottenland-api -f ./Dockerfile.api
 ```
 
-```sh
-cd apps/api/
-dart run bin/server.dart
-cd ...
-```
-
 ### ETL
-
+```sh
+cd apps/etl/ && dart run bin/server.dart && cd ...
+```
 ```sh
 docker build . -t forgottenland-etl -f ./Dockerfile.etl
 ```
 
-```sh
-cd apps/etl/
-dart run bin/server.dart
-cd ...
-```
-
 ### Cron Scheduler
-
+```sh
+cd apps/cron_scheduler/ && dart run bin/cron_scheduler.dart && cd ...
+```
 ```sh
 docker build . -t forgottenland-cron -f ./Dockerfile.cron --build-arg="PATH_ETL=https://..."
-```
-
-```sh
-cd apps/cron_scheduler/
-dart run bin/cron_scheduler.dart
-cd ...
 ```
