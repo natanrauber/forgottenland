@@ -160,6 +160,7 @@ class _HighscoresPageState extends State<HighscoresPage> {
 
     if (highscoresCtrl.pageCtrl.value >= 20) return Container(height: 100);
     if (hideData && highscoresCtrl.filteredList.length > 3) return Container(height: 100);
+    if (highscoresCtrl.loadedAll.value) return Container(height: 100);
 
     return GestureDetector(
       onTap: () => _loadHighscores(newPage: true),

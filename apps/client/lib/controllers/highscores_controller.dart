@@ -76,13 +76,15 @@ class HighscoresController extends Controller {
         '${PATH.forgottenLandApi}/highscores/$world/$cat/none/$pageCtrl'.toLowerCase().replaceAll(' ', ''),
       );
 
-      if (response.success) {
+      if (response.statusCode == 204) {
+        loadedAll.value = true;
+      } else if (response.success) {
         final Record aux = Record.fromJson(
           (response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{},
         );
         _onlineCtrl.onlineTimes = <HighscoresEntry>[].obs;
 
-        if (aux.list.isEmpty == true) loadedAll = true.obs;
+        if (aux.list.length < 50 == true) loadedAll.value = true;
         _populateList(aux.list);
       } else {
         pageCtrl = pageCtrl--;
