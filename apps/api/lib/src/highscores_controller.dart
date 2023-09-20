@@ -22,7 +22,7 @@ class HighscoresController {
 
     if (world == null) return ApiResponseError('Missing param "world"');
     if (category == null) return ApiResponseError('Missing param "category"');
-    if (category.contains('experiencegained')) return _getExpGain(world, category, page);
+    if (category.contains('experiencegained')) return getExpGain(world, category, page);
     if (category.contains('onlinetime')) return _getOnlineTime(world, category, page);
     if (category.contains('rookmaster')) return _getRookmaster(world, page);
 
@@ -101,11 +101,11 @@ class HighscoresController {
     return list;
   }
 
-  Future<Response> _getExpGain(String world, String category, int page) async {
+  Future<Response> getExpGain(String world, String category, int? page) async {
     String? table = _getTableFromCategory(category);
     String? date = _getDateFromCategory(category);
 
-    if (page <= 0) return ApiResponseError('Invalid page number');
+    if (page != null && page <= 0) return ApiResponseError('Invalid page number');
     if (table == null || date == null) return ApiResponseError('Invalid category');
 
     try {
@@ -113,8 +113,8 @@ class HighscoresController {
       var record = Record.fromJson(response['data'] as Map<String, dynamic>);
 
       record.list = _filterWorld<HighscoresEntry>(world, record.list);
-      record.list = _getPageRange<HighscoresEntry>(page, record.list);
-      record.list = _addMissingRank<HighscoresEntry>(page, record.list);
+      if (page != null) record.list = _getPageRange<HighscoresEntry>(page, record.list);
+      record.list = _addMissingRank<HighscoresEntry>(page ?? 0, record.list);
 
       if (record.list.isEmpty) return ApiResponseNoContent();
       return ApiResponseSuccess(data: record.toJson());

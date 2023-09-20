@@ -15,11 +15,11 @@ class CharacterController extends Controller {
     isLoading.value = true;
     data.value = Character();
 
-    final MyHttpResponse response = await httpClient.get('${PATH.tibiaDataApi}/character/$name');
+    final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/character/$name');
 
     if (response.success) {
-      if (response.dataAsMap['characters'] is Map<String, dynamic>) {
-        data.value = Character.fromJson(response.dataAsMap['characters'] as Map<String, dynamic>);
+      if (response.dataAsMap['data'] is Map<String, dynamic>) {
+        data.value = Character.fromJson(response.dataAsMap['data'] as Map<String, dynamic>);
       }
     }
 

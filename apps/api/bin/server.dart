@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:database_client/database_client.dart';
+import 'package:forgottenlandapi/src/character_controller.dart';
 import 'package:forgottenlandapi/src/highscores_controller.dart';
 import 'package:forgottenlandapi/src/online_controller.dart';
 import 'package:forgottenlandapi/src/user_controller.dart';
@@ -14,16 +15,19 @@ final Env _env = Env();
 final IDatabaseClient _databaseClient = MySupabaseClient();
 final IHttpClient _httpClient = MyDioClient();
 
+final CharacterController _characterCtrl = CharacterController(_env, _databaseClient, _httpClient, _highscoresCtrl);
+final HighscoresController _highscoresCtrl = HighscoresController(_env, _databaseClient, _httpClient);
+final OnlineController _onlineCtrl = OnlineController(_databaseClient);
+final UserController _userCtrl = UserController(_databaseClient);
+
 // Configure routes.
 final _router = Router()
-  ..post('/login', UserController(_databaseClient).login)
-  ..post('/revive', UserController(_databaseClient).revive)
-  ..get(
-    '/highscores/<world>/<category>/<vocation>/<page>',
-    HighscoresController(_env, _databaseClient, _httpClient).get,
-  )
-  ..get('/online', OnlineController(_databaseClient).getOnlineNow)
-  ..get('/onlinetime/<date>', OnlineController(_databaseClient).getOnlineTime);
+  ..get('/character/<name>', _characterCtrl.get)
+  ..get('/highscores/<world>/<category>/<vocation>/<page>', _highscoresCtrl.get)
+  ..get('/online/<date>', _onlineCtrl.getOnlineTime)
+  ..get('/online/now', _onlineCtrl.getOnlineNow)
+  ..post('/user/login', _userCtrl.login)
+  ..post('/user/revive', _userCtrl.revive);
 
 void main(List<String> args) async {
   _env.log();

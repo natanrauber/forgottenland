@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:utils/utils.dart';
 
 class Character {
@@ -30,6 +31,9 @@ class Character {
         otherCharacters?.add(OtherCharacters.fromJson(v));
       }
     }
+    if (json['experiencegained'] is Map<String, dynamic>) {
+      experienceGained = ExperienceGained.fromJson(json['experiencegained'] as Map<String, dynamic>);
+    }
   }
 
   CharacterData? data;
@@ -37,6 +41,7 @@ class Character {
   List<Deaths>? deaths;
   AccountInformation? accountInformation;
   List<OtherCharacters>? otherCharacters;
+  ExperienceGained? experienceGained;
 }
 
 class CharacterData {
@@ -179,4 +184,48 @@ class OtherCharacters {
   String? name;
   String? world;
   String? status;
+}
+
+class ExperienceGained {
+  ExperienceGained({
+    this.today,
+    this.yesterday,
+    this.last7days,
+    this.last30days,
+  });
+
+  ExperienceGained.fromJson(Map<String, dynamic> json) {
+    if (json['today'] is Map<String, dynamic>) {
+      today = ExperienceGainedEntry.fromJson(json['today'] as Map<String, dynamic>);
+    }
+    if (json['yesterday'] is Map<String, dynamic>) {
+      yesterday = ExperienceGainedEntry.fromJson(json['yesterday'] as Map<String, dynamic>);
+    }
+    if (json['last7days'] is Map<String, dynamic>) {
+      last7days = ExperienceGainedEntry.fromJson(json['last7days'] as Map<String, dynamic>);
+    }
+    if (json['last30days'] is Map<String, dynamic>) {
+      last30days = ExperienceGainedEntry.fromJson(json['last30days'] as Map<String, dynamic>);
+    }
+  }
+
+  ExperienceGainedEntry? today;
+  ExperienceGainedEntry? yesterday;
+  ExperienceGainedEntry? last7days;
+  ExperienceGainedEntry? last30days;
+}
+
+class ExperienceGainedEntry {
+  ExperienceGainedEntry({
+    this.rank,
+    this.value,
+  });
+
+  ExperienceGainedEntry.fromJson(Map<String, dynamic> json) {
+    if (json['rank'] is int) rank = json['rank'] as int;
+    if (json['value'] is int) value = NumberFormat().format(json['value'] as int);
+  }
+
+  int? rank;
+  String? value;
 }
