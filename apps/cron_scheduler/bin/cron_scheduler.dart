@@ -14,6 +14,11 @@ final IHttpClient _httpClient = MyDioClient(
 void main(List<String> arguments) {
   _env.log();
 
+  if (_missingEnvVar) {
+    print('Missing required environment variable');
+    return;
+  }
+
   List cronList = <CronJob>[
     CronJob(time: '*/5 * * * *', name: 'online', task: () => _etlGet('/online')),
     CronJob(time: '50 * * * *', name: 'exp-record', task: () => _etlGet('/exprecord')),
@@ -31,6 +36,14 @@ void main(List<String> arguments) {
     print('\t[${i + 1}/${cronList.length}] (${e.time}) ${e.name}');
     e.start();
   }
+}
+
+bool get _missingEnvVar {
+  List<String> varList = ['PATH_ETL', 'DATABASE_URL', 'DATABASE_KEY'];
+  for (String v in varList) {
+    if (_env[v] == null || _env[v] == '') return true;
+  }
+  return false;
 }
 
 Future<void> _etlGet(String path) => _httpClient.get(
