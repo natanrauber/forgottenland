@@ -1,6 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 
 void printJson(Map<String, dynamic> data) {
   const JsonEncoder encoder = JsonEncoder.withIndent(' ');
-  print(encoder.convert(data));
+  log(encoder.convert(data));
 }

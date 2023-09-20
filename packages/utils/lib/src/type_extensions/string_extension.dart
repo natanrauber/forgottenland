@@ -1,5 +1,5 @@
 extension StringExtension on String {
-  String capitalize() {
+  String capitalizeString() {
     if (!contains(RegExp('[A-Z]')) && !contains(RegExp('[a-z]'))) {
       return this;
     }

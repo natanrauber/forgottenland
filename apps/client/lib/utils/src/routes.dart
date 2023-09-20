@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forgottenland/modules/splash/splash_page.dart';
-import 'package:forgottenland/views/pages/character.page.dart';
+import 'package:forgottenland/views/pages/character_page.dart';
 import 'package:forgottenland/views/pages/guild.page.dart';
 import 'package:forgottenland/views/pages/highscores/highscores.page.dart';
 import 'package:forgottenland/views/pages/home/home.page.dart';

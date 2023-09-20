@@ -150,7 +150,7 @@ class _NewsWidgetState extends State<NewsWidget> {
             const SizedBox(height: 5),
 
             Text(
-              'Category: ${item.category?.capitalize() ?? ''}',
+              'Category: ${item.category?.capitalizeString() ?? ''}',
               style: const TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,
