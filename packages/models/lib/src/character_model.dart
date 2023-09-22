@@ -1,14 +1,8 @@
-import 'package:intl/intl.dart';
+import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
 class Character {
-  Character({
-    this.data,
-    this.achievements,
-    this.deaths,
-    this.accountInformation,
-    this.otherCharacters,
-  });
+  Character();
 
   Character.fromJson(Map<String, dynamic> json) {
     json.clean();
@@ -32,7 +26,13 @@ class Character {
       }
     }
     if (json['experiencegained'] is Map<String, dynamic>) {
-      experienceGained = ExperienceGained.fromJson(json['experiencegained'] as Map<String, dynamic>);
+      experienceGained = HighscoresEntryTimeframes.fromJson(json['experiencegained'] as Map<String, dynamic>);
+    }
+    if (json['onlinetime'] is Map<String, dynamic>) {
+      onlinetime = HighscoresEntryTimeframes.fromJson(json['onlinetime'] as Map<String, dynamic>);
+    }
+    if (json['rookmaster'] is Map<String, dynamic>) {
+      rookmaster = HighscoresEntry.fromJson(json['rookmaster'] as Map<String, dynamic>);
     }
   }
 
@@ -41,7 +41,9 @@ class Character {
   List<Deaths>? deaths;
   AccountInformation? accountInformation;
   List<OtherCharacters>? otherCharacters;
-  ExperienceGained? experienceGained;
+  HighscoresEntryTimeframes? experienceGained;
+  HighscoresEntryTimeframes? onlinetime;
+  HighscoresEntry? rookmaster;
 }
 
 class CharacterData {
@@ -186,46 +188,17 @@ class OtherCharacters {
   String? status;
 }
 
-class ExperienceGained {
-  ExperienceGained({
-    this.today,
-    this.yesterday,
-    this.last7days,
-    this.last30days,
-  });
-
-  ExperienceGained.fromJson(Map<String, dynamic> json) {
-    if (json['today'] is Map<String, dynamic>) {
-      today = ExperienceGainedEntry.fromJson(json['today'] as Map<String, dynamic>);
-    }
-    if (json['yesterday'] is Map<String, dynamic>) {
-      yesterday = ExperienceGainedEntry.fromJson(json['yesterday'] as Map<String, dynamic>);
-    }
-    if (json['last7days'] is Map<String, dynamic>) {
-      last7days = ExperienceGainedEntry.fromJson(json['last7days'] as Map<String, dynamic>);
-    }
-    if (json['last30days'] is Map<String, dynamic>) {
-      last30days = ExperienceGainedEntry.fromJson(json['last30days'] as Map<String, dynamic>);
-    }
+class HighscoresEntryTimeframes {
+  HighscoresEntryTimeframes.fromJson(Map<String, dynamic> json) {
+    json.clean();
+    if (json['today'] is Map) today = HighscoresEntry.fromJson(json['today'] as Map<String, dynamic>);
+    if (json['yesterday'] is Map) yesterday = HighscoresEntry.fromJson(json['yesterday'] as Map<String, dynamic>);
+    if (json['last7days'] is Map) last7days = HighscoresEntry.fromJson(json['last7days'] as Map<String, dynamic>);
+    if (json['last30days'] is Map) last30days = HighscoresEntry.fromJson(json['last30days'] as Map<String, dynamic>);
   }
 
-  ExperienceGainedEntry? today;
-  ExperienceGainedEntry? yesterday;
-  ExperienceGainedEntry? last7days;
-  ExperienceGainedEntry? last30days;
-}
-
-class ExperienceGainedEntry {
-  ExperienceGainedEntry({
-    this.rank,
-    this.value,
-  });
-
-  ExperienceGainedEntry.fromJson(Map<String, dynamic> json) {
-    if (json['rank'] is int) rank = json['rank'] as int;
-    if (json['value'] is int) value = NumberFormat().format(json['value'] as int);
-  }
-
-  int? rank;
-  String? value;
+  HighscoresEntry? today;
+  HighscoresEntry? yesterday;
+  HighscoresEntry? last7days;
+  HighscoresEntry? last30days;
 }

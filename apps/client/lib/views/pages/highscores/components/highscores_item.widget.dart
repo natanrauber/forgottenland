@@ -6,7 +6,6 @@ import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/better_text.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
@@ -30,7 +29,6 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
   @override
   Widget build(BuildContext context) {
-    final NumberFormat formatter = NumberFormat.decimalPattern();
     final bool hideData =
         LIST.premiumCategories.contains(highscoresCtrl.category.value) && userCtrl.isLoggedIn.value != true;
 
@@ -71,9 +69,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
                     if (widget.item.onlineTime != null) _info('Online time: ${widget.item.onlineTime ?? ''}'),
 
                     if (widget.item.value != null)
-                      _info(
-                        '$_rankName: ${hideData ? '<primary>???<primary>' : formatter.format(widget.item.value)}',
-                      ),
+                      _info('$_rankName: ${hideData ? '<primary>???<primary>' : widget.item.stringValue ?? '---'}'),
 
                     if (highscoresCtrl.category.value == 'Rook Master') _skillsPosition(widget.item),
 

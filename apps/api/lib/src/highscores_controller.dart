@@ -23,8 +23,8 @@ class HighscoresController {
     if (world == null) return ApiResponseError('Missing param "world"');
     if (category == null) return ApiResponseError('Missing param "category"');
     if (category.contains('experiencegained')) return getExpGain(world, category, page);
-    if (category.contains('onlinetime')) return _getOnlineTime(world, category, page);
-    if (category.contains('rookmaster')) return _getRookmaster(world, page);
+    if (category.contains('onlinetime')) return getOnlineTime(world, category, page);
+    if (category.contains('rookmaster')) return getRookmaster(world, page);
 
     try {
       var response = await httpClient.get('${env['PATH_TIBIA_DATA']}/highscores/$world/$category/$vocation/$page');
@@ -83,12 +83,9 @@ class HighscoresController {
     return list;
   }
 
-  List<T> _addMissingRank<T>(int page, List<T> list) {
+  List<T> _addMissingRank<T>(int? page, List<T> list) {
     if (list.isEmpty) return list;
-    if (list is List<HighscoresEntry> && (list.first as HighscoresEntry).rank != null) return list;
-    if (list is List<OnlineEntry> && (list.first as OnlineEntry).rank != null) return list;
-
-    int offset = 50 * (page - 1);
+    int offset = page == null ? 0 : 50 * (page - 1);
     if (list is List<HighscoresEntry>) {
       for (var e in list) {
         (e as HighscoresEntry).rank = list.indexOf(e) + 1 + offset;
@@ -114,7 +111,7 @@ class HighscoresController {
 
       record.list = _filterWorld<HighscoresEntry>(world, record.list);
       if (page != null) record.list = _getPageRange<HighscoresEntry>(page, record.list);
-      record.list = _addMissingRank<HighscoresEntry>(page ?? 0, record.list);
+      record.list = _addMissingRank<HighscoresEntry>(page, record.list);
 
       if (record.list.isEmpty) return ApiResponseNoContent();
       return ApiResponseSuccess(data: record.toJson());
@@ -123,11 +120,11 @@ class HighscoresController {
     }
   }
 
-  Future<Response> _getOnlineTime(String world, String category, int page) async {
+  Future<Response> getOnlineTime(String world, String category, int? page) async {
     String? table = _getTableFromCategory(category);
     String? date = _getDateFromCategory(category);
 
-    if (page <= 0) return ApiResponseError('Invalid page number');
+    if (page != null && page <= 0) return ApiResponseError('Invalid page number');
     if (table == null || date == null) return ApiResponseError('Invalid category');
 
     try {
@@ -135,7 +132,7 @@ class HighscoresController {
       var online = Online.fromJson(response['data'] as Map<String, dynamic>);
 
       online.list = _filterWorld<OnlineEntry>(world, online.list);
-      online.list = _getPageRange<OnlineEntry>(page, online.list);
+      if (page != null) online.list = _getPageRange<OnlineEntry>(page, online.list);
       online.list = _addMissingRank<OnlineEntry>(page, online.list);
 
       if (online.list.isEmpty) return ApiResponseNoContent();
@@ -145,15 +142,15 @@ class HighscoresController {
     }
   }
 
-  Future<Response> _getRookmaster(String world, int page) async {
-    if (page < 0) return ApiResponseError('Invalid page number');
+  Future<Response> getRookmaster(String world, int? page) async {
+    if (page != null && page < 0) return ApiResponseError('Invalid page number');
 
     try {
       var response = await databaseClient.from('rook-master').select().order('date').limit(1).single();
       var record = Record.fromJson(response['data'] as Map<String, dynamic>);
 
       record.list = _filterWorld<HighscoresEntry>(world, record.list);
-      record.list = _getPageRange<HighscoresEntry>(page, record.list);
+      if (page != null) record.list = _getPageRange<HighscoresEntry>(page, record.list);
       record.list = _addMissingRank<HighscoresEntry>(page, record.list);
 
       if (record.list.isEmpty) return ApiResponseNoContent();

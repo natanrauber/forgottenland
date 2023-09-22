@@ -2,6 +2,7 @@ import 'package:cron_scheduler/cron_scheduler.dart';
 import 'package:http_client/http_client.dart';
 import 'package:utils/utils.dart';
 
+final List<String> _requiredVar = ['PATH_ETL', 'DATABASE_URL', 'DATABASE_KEY'];
 final Env _env = Env();
 final IHttpClient _httpClient = MyDioClient(
   baseOptions: MyDioClient.defaultBaseOptions.copyWith(
@@ -13,11 +14,7 @@ final IHttpClient _httpClient = MyDioClient(
 
 void main(List<String> arguments) {
   _env.log();
-
-  if (_missingEnvVar) {
-    print('Missing required environment variable');
-    return;
-  }
+  if (_env.isMissingAny(_requiredVar)) return print('Missing required environment variable');
 
   List cronList = <CronJob>[
     CronJob(time: '*/5 * * * *', name: 'online', task: () => _etlGet('/online')),
@@ -36,14 +33,6 @@ void main(List<String> arguments) {
     print('\t[${i + 1}/${cronList.length}] (${e.time}) ${e.name}');
     e.start();
   }
-}
-
-bool get _missingEnvVar {
-  List<String> varList = ['PATH_ETL', 'DATABASE_URL', 'DATABASE_KEY'];
-  for (String v in varList) {
-    if (_env[v] == null || _env[v] == '') return true;
-  }
-  return false;
 }
 
 Future<void> _etlGet(String path) => _httpClient.get(

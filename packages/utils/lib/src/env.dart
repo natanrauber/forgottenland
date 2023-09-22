@@ -44,4 +44,11 @@ class Env {
     print(setEvs);
     print(notSetEvs);
   }
+
+  bool isMissingAny(List<String> list) {
+    for (String v in list) {
+      if (map[v] == null || map[v] == '') return true;
+    }
+    return false;
+  }
 }

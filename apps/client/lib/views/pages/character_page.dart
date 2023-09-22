@@ -8,7 +8,6 @@ import 'package:forgottenland/views/widgets/src/other/app_page.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:utils/utils.dart';
 
 class CharacterPage extends StatefulWidget {
   @override
@@ -20,6 +19,7 @@ class _CharacterPageState extends State<CharacterPage> {
 
   final TextController controller = TextController();
   Timer timer = Timer(Duration.zero, () {});
+  bool expandRookMaster = false;
 
   Future<void> _getCharacter(String name) async => characterCtrl.get(name);
 
@@ -33,7 +33,9 @@ class _CharacterPageState extends State<CharacterPage> {
               if (characterCtrl.data.value.data?.name != null) _about(),
               if (characterCtrl.data.value.data?.comment != null) _comment(),
               if (characterCtrl.data.value.achievements?.isNotEmpty ?? false) _achievements(),
-              if (characterCtrl.data.value.data != null) _experienceGained(),
+              if (characterCtrl.data.value.experienceGained != null) _experienceGained(),
+              if (characterCtrl.data.value.onlinetime != null) _onlineTime(),
+              if (characterCtrl.data.value.rookmaster != null) _rookMaster(),
               if (characterCtrl.data.value.data?.name != null) _buttonViewOfficialWebsite(),
             ],
           ),
@@ -65,7 +67,7 @@ class _CharacterPageState extends State<CharacterPage> {
         ),
       );
 
-  Container _about() => Container(
+  Widget _section({required String title, required Widget child}) => Container(
         width: double.maxFinite,
         padding: const EdgeInsets.all(20),
         margin: const EdgeInsets.only(top: 25),
@@ -74,235 +76,242 @@ class _CharacterPageState extends State<CharacterPage> {
           borderRadius: BorderRadius.circular(11),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SelectableText(
-              'Character information',
-              style: TextStyle(fontWeight: FontWeight.w600),
+            _title(title),
+            _divider(),
+            child,
+          ],
+        ),
+      );
+
+  Widget _title(String text) => Center(
+        child: SelectableText(
+          text,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+      );
+
+  Widget _divider() => const Divider(
+        height: 26,
+        thickness: 1,
+        color: AppColors.bgDefault,
+      );
+
+  Widget _info(String text) => Container(
+        margin: const EdgeInsets.only(top: 5),
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+          ),
+        ),
+      );
+
+  Widget _about() => _section(
+        title: 'Character information',
+        child: Row(
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _info('Name:'),
+                _info('Sex:'),
+                _info('World:'),
+                _info('Level:'),
+              ],
             ),
-            const SizedBox(height: 5),
-            const Divider(
-              thickness: 1,
-              color: AppColors.bgDefault,
-            ),
-            SizedBox(
-              width: double.maxFinite,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  //
-                  SelectableText(
-                    characterCtrl.data.value.data?.name ?? '',
-                    style: const TextStyle(color: AppColors.primary),
-                  ),
-                  const SizedBox(height: 5),
-                  SelectableText(
-                    characterCtrl.data.value.data?.sex?.capitalizeString() ?? '',
-                  ),
-                  const SizedBox(height: 5),
-                  SelectableText(
-                    'Level ${characterCtrl.data.value.data?.level ?? ''}',
-                  ),
-                  const SizedBox(height: 5),
-                  SelectableText(
-                    '${characterCtrl.data.value.data?.achievementPoints ?? ''} Achievement Points',
-                  ),
-                  const SizedBox(height: 5),
-                  SelectableText(
-                    'Inhabitant of ${characterCtrl.data.value.data?.world ?? ''}',
-                  ),
-                  const SizedBox(height: 5),
-                  if (characterCtrl.data.value.data?.guild?.name != null)
-                    SelectableText(
-                      '${characterCtrl.data.value.data?.guild?.rank ?? ''} of the ${characterCtrl.data.value.data?.guild?.name ?? ''}',
-                    ),
-                ],
-              ),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _info(characterCtrl.data.value.data?.name ?? '---'),
+                _info(characterCtrl.data.value.data?.sex ?? '---'),
+                _info(characterCtrl.data.value.data?.world ?? '---'),
+                _info(characterCtrl.data.value.data?.level?.toString() ?? '---'),
+              ],
             ),
           ],
         ),
       );
 
-  Container _comment() => Container(
-        width: double.maxFinite,
-        padding: const EdgeInsets.all(20),
-        margin: const EdgeInsets.only(top: 15),
-        decoration: BoxDecoration(
-          color: AppColors.bgPaper,
-          borderRadius: BorderRadius.circular(11),
-        ),
+  Widget _comment() => _section(
+        title: 'Comment',
+        child: _info(characterCtrl.data.value.data?.comment ?? ''),
+      );
+
+  Widget _achievements() => _section(
+        title: 'Account achievements',
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SelectableText(
-              'Comment',
-              style: TextStyle(fontWeight: FontWeight.w600),
+            if ((characterCtrl.data.value.achievements?.length ?? 0) >= 1)
+              _info(characterCtrl.data.value.achievements?[0].name ?? '---'),
+            if ((characterCtrl.data.value.achievements?.length ?? 0) >= 2)
+              _info(characterCtrl.data.value.achievements?[1].name ?? '---'),
+            if ((characterCtrl.data.value.achievements?.length ?? 0) >= 3)
+              _info(characterCtrl.data.value.achievements?[2].name ?? '---'),
+            if ((characterCtrl.data.value.achievements?.length ?? 0) >= 4)
+              _info(characterCtrl.data.value.achievements?[3].name ?? '---'),
+            if ((characterCtrl.data.value.achievements?.length ?? 0) >= 5)
+              _info(characterCtrl.data.value.achievements?[4].name ?? '---'),
+          ],
+        ),
+      );
+
+  Widget _experienceGained() => _section(
+        title: 'Experience gained',
+        child: Row(
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _info('Today: '),
+                _info('Yesterday:'),
+                _info('7 days:'),
+                _info('30 days:'),
+              ],
             ),
-            const SizedBox(height: 5),
-            const Divider(
-              thickness: 1,
-              color: AppColors.bgDefault,
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                _info(characterCtrl.data.value.experienceGained?.today?.stringValue ?? '---'),
+                _info(characterCtrl.data.value.experienceGained?.yesterday?.stringValue ?? '---'),
+                _info(characterCtrl.data.value.experienceGained?.last7days?.stringValue ?? '---'),
+                _info(characterCtrl.data.value.experienceGained?.last30days?.stringValue ?? '---'),
+              ],
             ),
-            SizedBox(
-              width: double.maxFinite,
-              child: SelectableText(
-                characterCtrl.data.value.data?.comment ?? '',
-              ),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _info('#${characterCtrl.data.value.experienceGained?.today?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.data.value.experienceGained?.yesterday?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.data.value.experienceGained?.last7days?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.data.value.experienceGained?.last30days?.rank?.toString() ?? '---'}'),
+              ],
             ),
           ],
         ),
       );
 
-  Container _achievements() => Container(
-        width: double.maxFinite,
-        padding: const EdgeInsets.all(20),
-        margin: const EdgeInsets.only(top: 15),
-        decoration: BoxDecoration(
-          color: AppColors.bgPaper,
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: Column(
+  Widget _onlineTime() => _section(
+        title: 'Online Time',
+        child: Row(
           children: <Widget>[
-            const SelectableText(
-              'Account achievements',
-              style: TextStyle(fontWeight: FontWeight.w600),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _info('Today: '),
+                _info('Yesterday:'),
+                _info('7 days:'),
+                _info('30 days:'),
+              ],
             ),
-            const SizedBox(height: 5),
-            const Divider(
-              thickness: 1,
-              color: AppColors.bgDefault,
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                _info(characterCtrl.data.value.onlinetime?.today?.onlineTime ?? '---'),
+                _info(characterCtrl.data.value.onlinetime?.yesterday?.onlineTime ?? '---'),
+                _info(characterCtrl.data.value.onlinetime?.last7days?.onlineTime ?? '---'),
+                _info(characterCtrl.data.value.onlinetime?.last30days?.onlineTime ?? '---'),
+              ],
             ),
-            SizedBox(
-              width: double.maxFinite,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  if ((characterCtrl.data.value.achievements?.length ?? 0) >= 1)
-                    SelectableText(
-                      characterCtrl.data.value.achievements?[0].name ?? 'achievementName',
-                    ),
-                  if ((characterCtrl.data.value.achievements?.length ?? 0) >= 2)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: SelectableText(
-                        characterCtrl.data.value.achievements?[1].name ?? 'achievementName',
-                      ),
-                    ),
-                  if ((characterCtrl.data.value.achievements?.length ?? 0) >= 3)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: SelectableText(
-                        characterCtrl.data.value.achievements?[2].name ?? 'achievementName',
-                      ),
-                    ),
-                  if ((characterCtrl.data.value.achievements?.length ?? 0) >= 4)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: SelectableText(
-                        characterCtrl.data.value.achievements?[3].name ?? 'achievementName',
-                      ),
-                    ),
-                  if ((characterCtrl.data.value.achievements?.length ?? 0) >= 5)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: SelectableText(
-                        characterCtrl.data.value.achievements?[4].name ?? 'achievementName',
-                      ),
-                    ),
-                ],
-              ),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _info('#${characterCtrl.data.value.onlinetime?.today?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.data.value.onlinetime?.yesterday?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.data.value.onlinetime?.last7days?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.data.value.onlinetime?.last30days?.rank?.toString() ?? '---'}'),
+              ],
             ),
           ],
         ),
       );
 
-  Widget _experienceGained() => Container(
-        width: double.maxFinite,
-        padding: const EdgeInsets.all(20),
-        margin: const EdgeInsets.only(top: 15),
-        decoration: BoxDecoration(
-          color: AppColors.bgPaper,
-          borderRadius: BorderRadius.circular(11),
-        ),
+  Widget _rookMaster() => _section(
+        title: 'Rook Master',
         child: Column(
           children: <Widget>[
-            const SelectableText(
-              'Experience gained',
-              style: TextStyle(fontWeight: FontWeight.w600),
-            ),
-            const Divider(
-              height: 26,
-              thickness: 1,
-              color: AppColors.bgDefault,
-            ),
             Row(
               children: <Widget>[
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    SelectableText(
-                      'Today: ',
-                    ),
-                    SizedBox(height: 5),
-                    SelectableText(
-                      'Yesterday:',
-                    ),
-                    SizedBox(height: 5),
-                    SelectableText(
-                      '7 days:',
-                    ),
-                    SizedBox(height: 5),
-                    SelectableText(
-                      '30 days:',
-                    ),
+                    _info('Rank:'),
+                    _info('Points:'),
+                  ],
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _info('#${characterCtrl.data.value.rookmaster?.rank ?? '---'}'),
+                    _info(characterCtrl.data.value.rookmaster?.stringValue ?? '---'),
+                  ],
+                ),
+              ],
+            ),
+            _divider(),
+            Row(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _info('Level:'),
+                    _info('Fist:'),
+                    _info('Axe:'),
+                    _info('Club:'),
+                    _info('Sword:'),
+                    _info('Distance:'),
+                    _info('Shielding:'),
+                    _info('Fishing:'),
                   ],
                 ),
                 const SizedBox(width: 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    SelectableText(
-                      characterCtrl.data.value.experienceGained?.today?.value ?? '---',
-                    ),
-                    const SizedBox(height: 5),
-                    SelectableText(
-                      characterCtrl.data.value.experienceGained?.yesterday?.value ?? '---',
-                    ),
-                    const SizedBox(height: 5),
-                    SelectableText(
-                      characterCtrl.data.value.experienceGained?.last7days?.value ?? '---',
-                    ),
-                    const SizedBox(height: 5),
-                    SelectableText(
-                      characterCtrl.data.value.experienceGained?.last30days?.value ?? '---',
-                    ),
+                    _info('${characterCtrl.data.value.rookmaster?.level ?? '---'}'),
+                    _info('${characterCtrl.data.value.rookmaster?.expanded?.fist.value ?? '---'}'),
+                    _info('${characterCtrl.data.value.rookmaster?.expanded?.axe.value ?? '---'}'),
+                    _info('${characterCtrl.data.value.rookmaster?.expanded?.club.value ?? '---'}'),
+                    _info('${characterCtrl.data.value.rookmaster?.expanded?.sword.value ?? '---'}'),
+                    _info('${characterCtrl.data.value.rookmaster?.expanded?.distance.value ?? '---'}'),
+                    _info('${characterCtrl.data.value.rookmaster?.expanded?.shielding.value ?? '---'}'),
+                    _info('${characterCtrl.data.value.rookmaster?.expanded?.fishing.value ?? '---'}'),
                   ],
                 ),
                 const SizedBox(width: 8),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    SelectableText(
-                      characterCtrl.data.value.experienceGained?.today?.rank != null
-                          ? '#${characterCtrl.data.value.experienceGained?.today?.rank?.toString() ?? ''}'
-                          : '---',
-                    ),
-                    const SizedBox(height: 5),
-                    SelectableText(
-                      characterCtrl.data.value.experienceGained?.yesterday?.rank != null
-                          ? '#${characterCtrl.data.value.experienceGained?.yesterday?.rank?.toString() ?? ''}'
-                          : '---',
-                    ),
-                    const SizedBox(height: 5),
-                    SelectableText(
-                      characterCtrl.data.value.experienceGained?.last7days?.rank != null
-                          ? '#${characterCtrl.data.value.experienceGained?.last7days?.rank?.toString() ?? ''}'
-                          : '---',
-                    ),
-                    const SizedBox(height: 5),
-                    SelectableText(
-                      characterCtrl.data.value.experienceGained?.last30days?.rank != null
-                          ? '#${characterCtrl.data.value.experienceGained?.last30days?.rank?.toString() ?? ''}'
-                          : '---',
-                    ),
+                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.experience.position ?? '---'}'),
+                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.fist.position ?? '---'}'),
+                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.axe.position ?? '---'}'),
+                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.club.position ?? '---'}'),
+                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.sword.position ?? '---'}'),
+                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.distance.position ?? '---'}'),
+                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.shielding.position ?? '---'}'),
+                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.fishing.position ?? '---'}'),
+                  ],
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.experience.points ?? '---'}'),
+                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.fist.points ?? '---'}'),
+                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.axe.points ?? '---'}'),
+                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.club.points ?? '---'}'),
+                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.sword.points ?? '---'}'),
+                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.distance.points ?? '---'}'),
+                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.shielding.points ?? '---'}'),
+                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.fishing.points ?? '---'}'),
                   ],
                 ),
               ],

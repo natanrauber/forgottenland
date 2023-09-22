@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
@@ -52,6 +53,8 @@ class HighscoresEntry {
   String? supporterTitle;
   String? onlineTime;
   ExpandedData? expanded;
+
+  String? get stringValue => value == null ? null : NumberFormat.decimalPattern().format(value);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

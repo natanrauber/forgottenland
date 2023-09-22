@@ -11,6 +11,7 @@ import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
+final List<String> _requiredVar = ['PATH_TIBIA_DATA'];
 final Env _env = Env();
 final IDatabaseClient _databaseClient = MySupabaseClient();
 final IHttpClient _httpClient = MyDioClient();
@@ -31,6 +32,7 @@ final _router = Router()
 
 void main(List<String> args) async {
   _env.log();
+  if (_env.isMissingAny(_requiredVar)) return print('Missing required environment variable');
 
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
