@@ -1,5 +1,4 @@
 import 'package:database_client/database_client.dart';
-import 'package:forgottenlandapi/utils/api_responses.dart';
 import 'package:forgottenlandapi/utils/error_handler.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
@@ -20,8 +19,8 @@ class HighscoresController {
     String? vocation = request.params['vocation']?.toLowerCase();
     int page = int.tryParse(request.params['page'] ?? '') ?? 1;
 
-    if (world == null) return ApiResponseError('Missing param "world"');
-    if (category == null) return ApiResponseError('Missing param "category"');
+    if (world == null) return ApiResponse.error('Missing param "world"');
+    if (category == null) return ApiResponse.error('Missing param "category"');
     if (category.contains('experiencegained')) return getExpGain(world, category, page);
     if (category.contains('onlinetime')) return getOnlineTime(world, category, page);
     if (category.contains('rookmaster')) return getRookmaster(world, page);
@@ -29,7 +28,7 @@ class HighscoresController {
     try {
       var response = await httpClient.get('${env['PATH_TIBIA_DATA']}/highscores/$world/$category/$vocation/$page');
       var record = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
-      return ApiResponseSuccess(data: record.toJson());
+      return ApiResponse.success(data: record.toJson());
     } catch (e) {
       return handleError(e);
     }
@@ -102,8 +101,8 @@ class HighscoresController {
     String? table = _getTableFromCategory(category);
     String? date = _getDateFromCategory(category);
 
-    if (page != null && page <= 0) return ApiResponseError('Invalid page number');
-    if (table == null || date == null) return ApiResponseError('Invalid category');
+    if (page != null && page <= 0) return ApiResponse.error('Invalid page number');
+    if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
       var response = await databaseClient.from(table).select().eq('date', date).single();
@@ -113,8 +112,8 @@ class HighscoresController {
       if (page != null) record.list = _getPageRange<HighscoresEntry>(page, record.list);
       record.list = _addMissingRank<HighscoresEntry>(page, record.list);
 
-      if (record.list.isEmpty) return ApiResponseNoContent();
-      return ApiResponseSuccess(data: record.toJson());
+      if (record.list.isEmpty) return ApiResponse.noContent();
+      return ApiResponse.success(data: record.toJson());
     } catch (e) {
       return handleError(e);
     }
@@ -124,8 +123,8 @@ class HighscoresController {
     String? table = _getTableFromCategory(category);
     String? date = _getDateFromCategory(category);
 
-    if (page != null && page <= 0) return ApiResponseError('Invalid page number');
-    if (table == null || date == null) return ApiResponseError('Invalid category');
+    if (page != null && page <= 0) return ApiResponse.error('Invalid page number');
+    if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
       var response = await databaseClient.from(table).select().eq('date', date).single();
@@ -135,15 +134,15 @@ class HighscoresController {
       if (page != null) online.list = _getPageRange<OnlineEntry>(page, online.list);
       online.list = _addMissingRank<OnlineEntry>(page, online.list);
 
-      if (online.list.isEmpty) return ApiResponseNoContent();
-      return ApiResponseSuccess(data: online.toJson());
+      if (online.list.isEmpty) return ApiResponse.noContent();
+      return ApiResponse.success(data: online.toJson());
     } catch (e) {
       return handleError(e);
     }
   }
 
   Future<Response> getRookmaster(String world, int? page) async {
-    if (page != null && page < 0) return ApiResponseError('Invalid page number');
+    if (page != null && page < 0) return ApiResponse.error('Invalid page number');
 
     try {
       var response = await databaseClient.from('rook-master').select().order('date').limit(1).single();
@@ -153,8 +152,8 @@ class HighscoresController {
       if (page != null) record.list = _getPageRange<HighscoresEntry>(page, record.list);
       record.list = _addMissingRank<HighscoresEntry>(page, record.list);
 
-      if (record.list.isEmpty) return ApiResponseNoContent();
-      return ApiResponseSuccess(data: record.toJson());
+      if (record.list.isEmpty) return ApiResponse.noContent();
+      return ApiResponse.success(data: record.toJson());
     } catch (e) {
       return handleError(e);
     }

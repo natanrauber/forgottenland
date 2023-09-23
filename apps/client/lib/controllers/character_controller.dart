@@ -1,6 +1,7 @@
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/rxmodels/character_rxmodel.dart';
 import 'package:forgottenland/utils/src/paths.dart';
+import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 
@@ -9,22 +10,24 @@ class CharacterController extends Controller {
 
   final IHttpClient httpClient;
 
-  RxCharacter data = Character().obs;
+  final TextController searchCtrl = TextController();
+  RxCharacter character = Character().obs;
+  MyHttpResponse searchResponse = MyHttpResponse();
 
-  Future<MyHttpResponse> get(String name) async {
+  Future<MyHttpResponse> searchCharacter() async {
     isLoading.value = true;
-    data.value = Character();
+    character.value = Character();
 
-    final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/character/$name');
+    searchResponse = await httpClient.get('${PATH.forgottenLandApi}/character/${searchCtrl.text}');
 
-    if (response.success) {
-      if (response.dataAsMap['data'] is Map<String, dynamic>) {
-        data.value = Character.fromJson(response.dataAsMap['data'] as Map<String, dynamic>);
+    if (searchResponse.success) {
+      if (searchResponse.dataAsMap['data'] is Map<String, dynamic>) {
+        character.value = Character.fromJson(searchResponse.dataAsMap['data'] as Map<String, dynamic>);
       }
     }
 
     isLoading.value = false;
     update();
-    return response;
+    return searchResponse;
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
+import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get.dart';
@@ -17,11 +18,8 @@ class CharacterPage extends StatefulWidget {
 class _CharacterPageState extends State<CharacterPage> {
   final CharacterController characterCtrl = Get.find<CharacterController>();
 
-  final TextController controller = TextController();
   Timer timer = Timer(Duration.zero, () {});
   bool expandRookMaster = false;
-
-  Future<void> _getCharacter(String name) async => characterCtrl.get(name);
 
   @override
   Widget build(BuildContext context) => Obx(
@@ -29,14 +27,7 @@ class _CharacterPageState extends State<CharacterPage> {
           body: Column(
             children: <Widget>[
               _searchField(),
-              if (characterCtrl.isLoading.value) _loading(),
-              if (characterCtrl.data.value.data?.name != null) _about(),
-              if (characterCtrl.data.value.data?.comment != null) _comment(),
-              if (characterCtrl.data.value.achievements?.isNotEmpty ?? false) _achievements(),
-              if (characterCtrl.data.value.experienceGained != null) _experienceGained(),
-              if (characterCtrl.data.value.onlinetime != null) _onlineTime(),
-              if (characterCtrl.data.value.rookmaster != null) _rookMaster(),
-              if (characterCtrl.data.value.data?.name != null) _buttonViewOfficialWebsite(),
+              _body(),
             ],
           ),
         ),
@@ -44,17 +35,26 @@ class _CharacterPageState extends State<CharacterPage> {
 
   CustomTextField _searchField() => CustomTextField(
         label: 'Character Name',
-        controller: controller,
+        controller: characterCtrl.searchCtrl,
         onChanged: (String? value) {
           if (timer.isActive) timer.cancel();
           if (value != null && value != '') {
             timer = Timer(
               const Duration(seconds: 1),
-              () => _getCharacter(value),
+              () {
+                dismissKeyboard(context);
+                characterCtrl.searchCharacter();
+              },
             );
           }
         },
       );
+
+  Widget _body() {
+    if (characterCtrl.isLoading.value) return _loading();
+    if (characterCtrl.searchResponse.error) return _errorBuilder();
+    return _characterData();
+  }
 
   Widget _loading() => Container(
         height: 110,
@@ -62,9 +62,27 @@ class _CharacterPageState extends State<CharacterPage> {
         padding: const EdgeInsets.all(30),
         child: const Center(
           child: CircularProgressIndicator(
-            color: AppColors.bgPaper,
+            color: AppColors.textSecondary,
           ),
         ),
+      );
+
+  Widget _errorBuilder() {
+    if (characterCtrl.searchResponse.statusCode == 404) return ErrorBuilder.notFound();
+    if (characterCtrl.searchResponse.statusCode == 406) return ErrorBuilder.notAcceptable();
+    return ErrorBuilder.serverError(onTapRetry: characterCtrl.searchCharacter);
+  }
+
+  Widget _characterData() => Column(
+        children: <Widget>[
+          if (characterCtrl.character.value.data?.name != null) _about(),
+          if (characterCtrl.character.value.data?.comment != null) _comment(),
+          if (characterCtrl.character.value.achievements?.isNotEmpty ?? false) _achievements(),
+          if (characterCtrl.character.value.experienceGained != null) _experienceGained(),
+          if (characterCtrl.character.value.onlinetime != null) _onlineTime(),
+          if (characterCtrl.character.value.rookmaster != null) _rookMaster(),
+          if (characterCtrl.character.value.data?.name != null) _buttonViewOfficialWebsite(),
+        ],
       );
 
   Widget _section({required String title, required Widget child}) => Container(
@@ -100,7 +118,7 @@ class _CharacterPageState extends State<CharacterPage> {
 
   Widget _info(String text) => Container(
         margin: const EdgeInsets.only(top: 5),
-        child: Text(
+        child: SelectableText(
           text,
           style: const TextStyle(
             color: AppColors.textSecondary,
@@ -125,10 +143,10 @@ class _CharacterPageState extends State<CharacterPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _info(characterCtrl.data.value.data?.name ?? '---'),
-                _info(characterCtrl.data.value.data?.sex ?? '---'),
-                _info(characterCtrl.data.value.data?.world ?? '---'),
-                _info(characterCtrl.data.value.data?.level?.toString() ?? '---'),
+                _info(characterCtrl.character.value.data?.name ?? '---'),
+                _info(characterCtrl.character.value.data?.sex ?? '---'),
+                _info(characterCtrl.character.value.data?.world ?? '---'),
+                _info(characterCtrl.character.value.data?.level?.toString() ?? '---'),
               ],
             ),
           ],
@@ -137,7 +155,7 @@ class _CharacterPageState extends State<CharacterPage> {
 
   Widget _comment() => _section(
         title: 'Comment',
-        child: _info(characterCtrl.data.value.data?.comment ?? ''),
+        child: _info(characterCtrl.character.value.data?.comment ?? ''),
       );
 
   Widget _achievements() => _section(
@@ -145,16 +163,16 @@ class _CharacterPageState extends State<CharacterPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            if ((characterCtrl.data.value.achievements?.length ?? 0) >= 1)
-              _info(characterCtrl.data.value.achievements?[0].name ?? '---'),
-            if ((characterCtrl.data.value.achievements?.length ?? 0) >= 2)
-              _info(characterCtrl.data.value.achievements?[1].name ?? '---'),
-            if ((characterCtrl.data.value.achievements?.length ?? 0) >= 3)
-              _info(characterCtrl.data.value.achievements?[2].name ?? '---'),
-            if ((characterCtrl.data.value.achievements?.length ?? 0) >= 4)
-              _info(characterCtrl.data.value.achievements?[3].name ?? '---'),
-            if ((characterCtrl.data.value.achievements?.length ?? 0) >= 5)
-              _info(characterCtrl.data.value.achievements?[4].name ?? '---'),
+            if ((characterCtrl.character.value.achievements?.length ?? 0) >= 1)
+              _info(characterCtrl.character.value.achievements?[0].name ?? '---'),
+            if ((characterCtrl.character.value.achievements?.length ?? 0) >= 2)
+              _info(characterCtrl.character.value.achievements?[1].name ?? '---'),
+            if ((characterCtrl.character.value.achievements?.length ?? 0) >= 3)
+              _info(characterCtrl.character.value.achievements?[2].name ?? '---'),
+            if ((characterCtrl.character.value.achievements?.length ?? 0) >= 4)
+              _info(characterCtrl.character.value.achievements?[3].name ?? '---'),
+            if ((characterCtrl.character.value.achievements?.length ?? 0) >= 5)
+              _info(characterCtrl.character.value.achievements?[4].name ?? '---'),
           ],
         ),
       );
@@ -176,20 +194,20 @@ class _CharacterPageState extends State<CharacterPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                _info(characterCtrl.data.value.experienceGained?.today?.stringValue ?? '---'),
-                _info(characterCtrl.data.value.experienceGained?.yesterday?.stringValue ?? '---'),
-                _info(characterCtrl.data.value.experienceGained?.last7days?.stringValue ?? '---'),
-                _info(characterCtrl.data.value.experienceGained?.last30days?.stringValue ?? '---'),
+                _info(characterCtrl.character.value.experienceGained?.today?.stringValue ?? '---'),
+                _info(characterCtrl.character.value.experienceGained?.yesterday?.stringValue ?? '---'),
+                _info(characterCtrl.character.value.experienceGained?.last7days?.stringValue ?? '---'),
+                _info(characterCtrl.character.value.experienceGained?.last30days?.stringValue ?? '---'),
               ],
             ),
             const SizedBox(width: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _info('#${characterCtrl.data.value.experienceGained?.today?.rank?.toString() ?? '---'}'),
-                _info('#${characterCtrl.data.value.experienceGained?.yesterday?.rank?.toString() ?? '---'}'),
-                _info('#${characterCtrl.data.value.experienceGained?.last7days?.rank?.toString() ?? '---'}'),
-                _info('#${characterCtrl.data.value.experienceGained?.last30days?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.character.value.experienceGained?.today?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.character.value.experienceGained?.yesterday?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.character.value.experienceGained?.last7days?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.character.value.experienceGained?.last30days?.rank?.toString() ?? '---'}'),
               ],
             ),
           ],
@@ -213,20 +231,20 @@ class _CharacterPageState extends State<CharacterPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                _info(characterCtrl.data.value.onlinetime?.today?.onlineTime ?? '---'),
-                _info(characterCtrl.data.value.onlinetime?.yesterday?.onlineTime ?? '---'),
-                _info(characterCtrl.data.value.onlinetime?.last7days?.onlineTime ?? '---'),
-                _info(characterCtrl.data.value.onlinetime?.last30days?.onlineTime ?? '---'),
+                _info(characterCtrl.character.value.onlinetime?.today?.onlineTime ?? '---'),
+                _info(characterCtrl.character.value.onlinetime?.yesterday?.onlineTime ?? '---'),
+                _info(characterCtrl.character.value.onlinetime?.last7days?.onlineTime ?? '---'),
+                _info(characterCtrl.character.value.onlinetime?.last30days?.onlineTime ?? '---'),
               ],
             ),
             const SizedBox(width: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _info('#${characterCtrl.data.value.onlinetime?.today?.rank?.toString() ?? '---'}'),
-                _info('#${characterCtrl.data.value.onlinetime?.yesterday?.rank?.toString() ?? '---'}'),
-                _info('#${characterCtrl.data.value.onlinetime?.last7days?.rank?.toString() ?? '---'}'),
-                _info('#${characterCtrl.data.value.onlinetime?.last30days?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.character.value.onlinetime?.today?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.character.value.onlinetime?.yesterday?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.character.value.onlinetime?.last7days?.rank?.toString() ?? '---'}'),
+                _info('#${characterCtrl.character.value.onlinetime?.last30days?.rank?.toString() ?? '---'}'),
               ],
             ),
           ],
@@ -250,8 +268,8 @@ class _CharacterPageState extends State<CharacterPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    _info('#${characterCtrl.data.value.rookmaster?.rank ?? '---'}'),
-                    _info(characterCtrl.data.value.rookmaster?.stringValue ?? '---'),
+                    _info('#${characterCtrl.character.value.rookmaster?.rank ?? '---'}'),
+                    _info(characterCtrl.character.value.rookmaster?.stringValue ?? '---'),
                   ],
                 ),
               ],
@@ -276,42 +294,42 @@ class _CharacterPageState extends State<CharacterPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    _info('${characterCtrl.data.value.rookmaster?.level ?? '---'}'),
-                    _info('${characterCtrl.data.value.rookmaster?.expanded?.fist.value ?? '---'}'),
-                    _info('${characterCtrl.data.value.rookmaster?.expanded?.axe.value ?? '---'}'),
-                    _info('${characterCtrl.data.value.rookmaster?.expanded?.club.value ?? '---'}'),
-                    _info('${characterCtrl.data.value.rookmaster?.expanded?.sword.value ?? '---'}'),
-                    _info('${characterCtrl.data.value.rookmaster?.expanded?.distance.value ?? '---'}'),
-                    _info('${characterCtrl.data.value.rookmaster?.expanded?.shielding.value ?? '---'}'),
-                    _info('${characterCtrl.data.value.rookmaster?.expanded?.fishing.value ?? '---'}'),
+                    _info('${characterCtrl.character.value.rookmaster?.level ?? '---'}'),
+                    _info('${characterCtrl.character.value.rookmaster?.expanded?.fist.value ?? '---'}'),
+                    _info('${characterCtrl.character.value.rookmaster?.expanded?.axe.value ?? '---'}'),
+                    _info('${characterCtrl.character.value.rookmaster?.expanded?.club.value ?? '---'}'),
+                    _info('${characterCtrl.character.value.rookmaster?.expanded?.sword.value ?? '---'}'),
+                    _info('${characterCtrl.character.value.rookmaster?.expanded?.distance.value ?? '---'}'),
+                    _info('${characterCtrl.character.value.rookmaster?.expanded?.shielding.value ?? '---'}'),
+                    _info('${characterCtrl.character.value.rookmaster?.expanded?.fishing.value ?? '---'}'),
                   ],
                 ),
                 const SizedBox(width: 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.experience.position ?? '---'}'),
-                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.fist.position ?? '---'}'),
-                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.axe.position ?? '---'}'),
-                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.club.position ?? '---'}'),
-                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.sword.position ?? '---'}'),
-                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.distance.position ?? '---'}'),
-                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.shielding.position ?? '---'}'),
-                    _info('#${characterCtrl.data.value.rookmaster?.expanded?.fishing.position ?? '---'}'),
+                    _info('#${characterCtrl.character.value.rookmaster?.expanded?.experience.position ?? '---'}'),
+                    _info('#${characterCtrl.character.value.rookmaster?.expanded?.fist.position ?? '---'}'),
+                    _info('#${characterCtrl.character.value.rookmaster?.expanded?.axe.position ?? '---'}'),
+                    _info('#${characterCtrl.character.value.rookmaster?.expanded?.club.position ?? '---'}'),
+                    _info('#${characterCtrl.character.value.rookmaster?.expanded?.sword.position ?? '---'}'),
+                    _info('#${characterCtrl.character.value.rookmaster?.expanded?.distance.position ?? '---'}'),
+                    _info('#${characterCtrl.character.value.rookmaster?.expanded?.shielding.position ?? '---'}'),
+                    _info('#${characterCtrl.character.value.rookmaster?.expanded?.fishing.position ?? '---'}'),
                   ],
                 ),
                 const SizedBox(width: 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.experience.points ?? '---'}'),
-                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.fist.points ?? '---'}'),
-                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.axe.points ?? '---'}'),
-                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.club.points ?? '---'}'),
-                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.sword.points ?? '---'}'),
-                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.distance.points ?? '---'}'),
-                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.shielding.points ?? '---'}'),
-                    _info('+${characterCtrl.data.value.rookmaster?.expanded?.fishing.points ?? '---'}'),
+                    _info('+${characterCtrl.character.value.rookmaster?.expanded?.experience.points ?? '---'}'),
+                    _info('+${characterCtrl.character.value.rookmaster?.expanded?.fist.points ?? '---'}'),
+                    _info('+${characterCtrl.character.value.rookmaster?.expanded?.axe.points ?? '---'}'),
+                    _info('+${characterCtrl.character.value.rookmaster?.expanded?.club.points ?? '---'}'),
+                    _info('+${characterCtrl.character.value.rookmaster?.expanded?.sword.points ?? '---'}'),
+                    _info('+${characterCtrl.character.value.rookmaster?.expanded?.distance.points ?? '---'}'),
+                    _info('+${characterCtrl.character.value.rookmaster?.expanded?.shielding.points ?? '---'}'),
+                    _info('+${characterCtrl.character.value.rookmaster?.expanded?.fishing.points ?? '---'}'),
                   ],
                 ),
               ],
@@ -324,7 +342,7 @@ class _CharacterPageState extends State<CharacterPage> {
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: () => launchUrlString(
-            'https://www.tibia.com/community/?subtopic=characters&name=${characterCtrl.data.value.data?.name}',
+            'https://www.tibia.com/community/?subtopic=characters&name=${characterCtrl.character.value.data?.name}',
           ),
           child: Container(
             padding: const EdgeInsets.all(20),

@@ -1,8 +1,8 @@
 import 'package:database_client/database_client.dart';
-import 'package:forgottenlandapi/utils/api_responses.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:utils/utils.dart';
 
 abstract class IOnlineController {
   Future<Response> getOnlineNow(Request request);
@@ -19,9 +19,9 @@ class OnlineController implements IOnlineController {
     try {
       dynamic response = await databaseClient.from('online').select().single();
       Online online = Online.fromJson((response['data'] as Map<String, dynamic>));
-      return ApiResponseSuccess(data: online.toJson());
+      return ApiResponse.success(data: online.toJson());
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 
@@ -31,9 +31,9 @@ class OnlineController implements IOnlineController {
       String? date = request.params['date'];
       dynamic response = await databaseClient.from('onlinetime').select().eq('date', date).single();
       Online online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
-      return ApiResponseSuccess(data: online.toJson());
+      return ApiResponse.success(data: online.toJson());
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 }

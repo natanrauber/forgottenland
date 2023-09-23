@@ -1,5 +1,6 @@
 library utils;
 
+export 'src/api_responses.dart';
 export 'src/data/lists.dart';
 export 'src/data/maps.dart';
 export 'src/datetime.dart';

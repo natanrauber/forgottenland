@@ -99,7 +99,8 @@ class _CardDonateState extends State<CardDonate> {
       );
 
   Future<void> _pushCharacterPage() async {
-    await characterCtrl.get('Awkn');
+    characterCtrl.searchCtrl.text = 'Awkn';
     Get.toNamed(Routes.character.name);
+    characterCtrl.searchCharacter();
   }
 }

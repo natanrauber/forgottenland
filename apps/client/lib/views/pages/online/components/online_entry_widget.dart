@@ -133,7 +133,8 @@ class _OnlineEntryWidgetState extends State<OnlineEntryWidget> {
 
   Future<void> _loadCharacter() async {
     if (widget.item.name == null) return;
-    await characterCtrl.get(widget.item.name!);
+    characterCtrl.searchCtrl.text = widget.item.name!;
     Get.toNamed(Routes.character.name);
+    characterCtrl.searchCharacter();
   }
 }

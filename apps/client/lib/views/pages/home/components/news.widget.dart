@@ -91,7 +91,7 @@ class _NewsWidgetState extends State<NewsWidget> {
         padding: const EdgeInsets.all(30),
         child: const Center(
           child: CircularProgressIndicator(
-            color: AppColors.bgPaper,
+            color: AppColors.textSecondary,
           ),
         ),
       );
@@ -111,7 +111,7 @@ class _NewsWidgetState extends State<NewsWidget> {
       );
 
   Widget _listBuilder() {
-    final int maxCount = (height - 50) ~/ 120;
+    final int maxCount = (height - 75) ~/ 120;
 
     return Expanded(
       child: ListView.builder(

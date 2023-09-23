@@ -312,7 +312,8 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
   Future<void> _loadCharacter(BuildContext context) async {
     if (widget.item.name == null) return;
-    await characterCtrl.get(widget.item.name!);
+    characterCtrl.searchCtrl.text = widget.item.name!;
     Get.toNamed(Routes.character.name);
+    characterCtrl.searchCharacter();
   }
 }

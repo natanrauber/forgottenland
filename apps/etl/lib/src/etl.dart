@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:database_client/database_client.dart';
-import 'package:forgottenlandetl/utils/api_responses.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
@@ -33,7 +32,7 @@ class ETL implements IETL {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     databaseClient.setup(supabaseUrl, supabaseKey);
-    if (await _exists('exp-record', MyDateTime.today())) return ApiResponseAccepted();
+    if (await _exists('exp-record', MyDateTime.today())) return ApiResponse.accepted();
     return _getCurrentExp('exp-record', 'insert');
   }
 
@@ -49,9 +48,9 @@ class ETL implements IETL {
     try {
       Record record = await _loadCurrentExp();
       await _saveCurrentExp(record, table, operation);
-      return ApiResponseSuccess();
+      return ApiResponse.success();
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 
@@ -134,9 +133,9 @@ class ETL implements IETL {
       Record result = await _calcExpGainToday();
       _recordAddMissingRank(result);
       await _saveExpGain('exp-gain-today', MyDateTime.today(), result, canUpdate: true);
-      return ApiResponseSuccess();
+      return ApiResponse.success();
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 
@@ -156,15 +155,15 @@ class ETL implements IETL {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     databaseClient.setup(supabaseUrl, supabaseKey);
 
-    if (await _exists('exp-gain-last-day', MyDateTime.yesterday())) return ApiResponseAccepted();
+    if (await _exists('exp-gain-last-day', MyDateTime.yesterday())) return ApiResponse.accepted();
 
     try {
       Record result = await _getExpGainRange(MyDateTime.yesterday(), MyDateTime.today());
       _recordAddMissingRank(result);
       await _saveExpGain('exp-gain-last-day', MyDateTime.yesterday(), result);
-      return ApiResponseSuccess();
+      return ApiResponse.success();
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 
@@ -174,15 +173,15 @@ class ETL implements IETL {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     databaseClient.setup(supabaseUrl, supabaseKey);
 
-    if (await _exists('exp-gain-last-7-days', MyDateTime.yesterday())) return ApiResponseAccepted();
+    if (await _exists('exp-gain-last-7-days', MyDateTime.yesterday())) return ApiResponse.accepted();
 
     try {
       Record result = await _getExpGainRange(MyDateTime.aWeekAgo(), MyDateTime.today());
       _recordAddMissingRank(result);
       await _saveExpGain('exp-gain-last-7-days', MyDateTime.yesterday(), result);
-      return ApiResponseSuccess();
+      return ApiResponse.success();
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 
@@ -192,15 +191,15 @@ class ETL implements IETL {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     databaseClient.setup(supabaseUrl, supabaseKey);
 
-    if (await _exists('exp-gain-last-30-days', MyDateTime.yesterday())) return ApiResponseAccepted();
+    if (await _exists('exp-gain-last-30-days', MyDateTime.yesterday())) return ApiResponse.accepted();
 
     try {
       Record result = await _getExpGainRange(MyDateTime.aMonthAgo(), MyDateTime.today());
       _recordAddMissingRank(result);
       await _saveExpGain('exp-gain-last-30-days', MyDateTime.yesterday(), result);
-      return ApiResponseSuccess();
+      return ApiResponse.success();
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 
@@ -280,9 +279,9 @@ class ETL implements IETL {
       await _saveOnlineTimeLast7days(await _getOnlineTimeLast7days());
       await _saveOnlineTimeLast30days(await _getOnlineTimeLast30days());
 
-      return ApiResponseSuccess();
+      return ApiResponse.success();
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 
@@ -444,7 +443,7 @@ class ETL implements IETL {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     databaseClient.setup(supabaseUrl, supabaseKey);
-    if (await _exists('rook-master', MyDateTime.today())) return ApiResponseAccepted();
+    if (await _exists('rook-master', MyDateTime.today())) return ApiResponse.accepted();
     return _getRookMaster('rook-master', 'insert');
   }
 
@@ -453,9 +452,9 @@ class ETL implements IETL {
       Record record = await _calcRookMaster();
       _recordAddMissingRank(record);
       await _saveCurrentExp(record, table, operation);
-      return ApiResponseSuccess();
+      return ApiResponse.success();
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 
@@ -628,9 +627,9 @@ class ETL implements IETL {
       String? name = request.params['name'] ?? '';
       int value = int.tryParse(request.params['value'] ?? '') ?? 0;
       int points = _calcSkillPoints(name, value);
-      return ApiResponseSuccess(data: points);
+      return ApiResponse.success(data: points);
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 

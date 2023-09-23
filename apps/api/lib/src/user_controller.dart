@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:database_client/database_client.dart';
-import 'package:forgottenlandapi/utils/api_responses.dart';
 import 'package:shelf/shelf.dart';
 import 'package:utils/utils.dart';
 
@@ -21,15 +20,15 @@ class UserController {
       String token = utf8.fuse(base64).encode('Basic $email:$password');
       List<dynamic> response = await databaseClient.from('account').select().eq('secret', token);
 
-      if (response.isEmpty) return ApiResponseError('Invalid credentials');
+      if (response.isEmpty) return ApiResponse.error('Invalid credentials');
 
       var account = response.first;
       var values = {'id': sid, 'account_id': account['id']};
       await databaseClient.from('session').insert(values);
       var data = {"session_id": sid, "char_name": account["char_name"], "subscriber": account["subscriber"]};
-      return ApiResponseSuccess(data: data);
+      return ApiResponse.success(data: data);
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 
@@ -40,9 +39,9 @@ class UserController {
       var responseA = await databaseClient.from('session').select().eq('id', sessionId).single();
       var responseB = await databaseClient.from('account').select().eq('id', responseA['account_id']).single();
       var data = {"session_id": sessionId, "char_name": responseB["char_name"], "subscriber": responseB["subscriber"]};
-      return ApiResponseSuccess(data: data);
+      return ApiResponse.success(data: data);
     } catch (e) {
-      return ApiResponseError(e);
+      return ApiResponse.error(e);
     }
   }
 }

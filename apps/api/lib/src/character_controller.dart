@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/src/highscores_controller.dart';
-import 'package:forgottenlandapi/utils/api_responses.dart';
 import 'package:forgottenlandapi/utils/error_handler.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
@@ -25,17 +24,27 @@ class CharacterController {
   Future<Response> get(Request request) async {
     String? name = request.params['name']?.toLowerCase().replaceAll('%20', ' ');
 
-    if (name == null) return ApiResponseError('Missing param "name"');
+    if (name == null) return ApiResponse.error('Missing param "name"');
 
     try {
       final MyHttpResponse response = await httpClient.get('$pathTibiaData/character/$name');
+      if (_notFound(name, response)) return ApiResponse.notFound();
+      if (_notOnRookgaard(response)) return ApiResponse.notAcceptable();
       await _getExpGain(name, response);
       await _getOnlineTime(name, response);
       await _getRookmaster(name, response);
-      return ApiResponseSuccess(data: response.dataAsMap['characters']);
+      return ApiResponse.success(data: response.dataAsMap['characters']);
     } catch (e) {
       return handleError(e);
     }
+  }
+
+  bool _notFound(String name, MyHttpResponse response) {
+    return response.dataAsMap['characters']['character']['name']?.toString().toLowerCase() != name;
+  }
+
+  bool _notOnRookgaard(MyHttpResponse response) {
+    return response.dataAsMap['characters']['character']['residence']?.toString().toLowerCase() != 'rookgaard';
   }
 
   Future<void> _getExpGain(String name, MyHttpResponse httpResponse) async {

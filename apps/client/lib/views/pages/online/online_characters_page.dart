@@ -55,7 +55,7 @@ class _OnlineCharactersPageState extends State<OnlineCharactersPage> {
         padding: const EdgeInsets.all(30),
         child: const Center(
           child: CircularProgressIndicator(
-            color: AppColors.bgPaper,
+            color: AppColors.textSecondary,
           ),
         ),
       );

@@ -20,6 +20,12 @@ class MyHttpResponse {
 
   bool get success => <int>[200, 201, 204].contains(statusCode);
 
+  bool get error {
+    if (success) return false;
+    if (statusCode == null) return false;
+    return true;
+  }
+
   bool get hasData {
     if (data is Map<String, dynamic> || data is List<dynamic>) return true;
     return false;
