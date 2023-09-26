@@ -77,8 +77,6 @@ class GuildPage extends StatelessWidget {
   Widget _text(String text) => SelectableText(
         text,
         style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
           color: AppColors.textSecondary,
         ),
         textAlign: TextAlign.justify,
@@ -122,6 +120,7 @@ class GuildPage extends StatelessWidget {
                   Text(
                     'View on Tibia.com',
                     style: TextStyle(
+                      fontSize: 13,
                       color: AppColors.primary,
                     ),
                   ),

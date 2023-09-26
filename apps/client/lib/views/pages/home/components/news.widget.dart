@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/news_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
+import 'package:forgottenland/theme/theme.dart';
 import 'package:forgottenland/views/widgets/src/buttons/card_button.widget.dart';
 import 'package:forgottenland/views/widgets/src/other/app_header.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -74,7 +75,10 @@ class _NewsWidgetState extends State<NewsWidget> {
         ),
       );
 
-  Widget _title() => const SelectableText('Latest news');
+  Widget _title() => SelectableText(
+        'Latest news',
+        style: appTheme().textTheme.titleMedium,
+      );
 
   Widget _body() => Obx(
         () {

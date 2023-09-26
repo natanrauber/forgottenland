@@ -71,7 +71,7 @@ class CustomTextField extends StatelessWidget {
   Color get _color => enabled && !loading ? AppColors.textPrimary : AppColors.textSecondary;
 
   TextStyle get _textStyle => TextStyle(
-        fontSize: 16,
+        fontSize: 14,
         height: 1,
         color: _color,
       );

@@ -62,7 +62,7 @@ class _CardAppInfoState extends State<CardAppInfo> {
             ),
 
             const TextSpan(
-              text: ' and some images contained on this site are property of ',
+              text: ' and some images contained on this website are property of ',
             ),
 
             TextSpan(

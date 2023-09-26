@@ -3,7 +3,7 @@ description: forgottenland
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 23.09.25+1
+version: 23.09.26+1
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -104,11 +104,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: NunitoSans
+    - family: MartianMono
       fonts:
-        - asset: assets/fonts/NunitoSans/NunitoSans_Regular.ttf
-        - asset: assets/fonts/NunitoSans/NunitoSans_Bold.ttf
-        - asset: assets/fonts/NunitoSans/NunitoSans_Light.ttf
+        - asset: assets/fonts/MartianMono/MartianMono.ttf
 
   #
   # For details regarding fonts from package dependencies,

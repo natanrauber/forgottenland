@@ -29,7 +29,7 @@ class PrimaryButton extends StatelessWidget {
             child: Text(
               text,
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 height: 1,
                 fontWeight: FontWeight.w700,
                 color: AppColors.bgDefault,

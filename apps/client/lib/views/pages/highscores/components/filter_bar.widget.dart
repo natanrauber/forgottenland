@@ -137,6 +137,7 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
   Widget _popupItemText(dynamic value, dynamic selectedItem) => Text(
         value.toString(),
         style: TextStyle(
+          fontSize: 14,
           color: _popupItemTextColor(value, selectedItem),
         ),
       );
@@ -217,7 +218,7 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
         child: Text(
           _selectedFiltersText,
           style: const TextStyle(
-            fontSize: 12,
+            fontSize: 11,
             color: AppColors.textSecondary,
           ),
         ),
@@ -399,8 +400,8 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
             child: const Text(
               'Characters that were connected at server save time might have the experience gained (before server save) counted for the next day (after server save).',
               style: TextStyle(
-                fontSize: 14,
-                height: 1.2,
+                fontSize: 11,
+                // height: 1.2,
                 color: Colors.orange,
               ),
             ),

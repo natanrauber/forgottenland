@@ -16,7 +16,7 @@ Map<String, Map<String, dynamic>> _tags = <String, Map<String, dynamic>>{
   },
   '<small>': <String, dynamic>{
     'regex': '<small>(.*?)<small>',
-    'style': const TextStyle(fontSize: 16),
+    'style': const TextStyle(fontSize: 12),
   },
   '<error>': <String, dynamic>{
     'regex': '<error>(.*?)<error>',

@@ -82,8 +82,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     (widget.selectedItem ?? '').toString(),
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 16,
-                      height: 1,
+                      fontSize: 14,
+                      height: 16 / 14,
                       color: widget.enabled && !widget.loading ? AppColors.textPrimary : AppColors.textSecondary,
                     ),
                   ),
@@ -132,8 +132,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
         child: Text(
           (value ?? '').toString(),
           style: const TextStyle(
-            fontSize: 16,
-            height: 1,
+            fontSize: 14,
+            height: 16 / 14,
             color: Colors.transparent,
           ),
         ),
@@ -149,6 +149,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
             child: Text(
               value.toString(),
               style: TextStyle(
+                fontSize: 14,
                 color: value == widget.selectedItem ? AppColors.primary : AppColors.textPrimary,
               ),
             ),

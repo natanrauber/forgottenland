@@ -57,7 +57,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
                           const SizedBox(width: 4),
 
-                          _name(),
+                          Expanded(child: _name()),
                         ],
                       ),
                     ),
@@ -78,6 +78,8 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
                   ],
                 ),
               ),
+
+              const SizedBox(width: 4),
 
               _infoIcons(context),
             ],
@@ -109,9 +111,10 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
             Text(
               _rankValue ?? '',
               style: const TextStyle(
-                fontSize: 12,
+                fontSize: 11,
+                height: 13 / 11,
                 fontWeight: FontWeight.w600,
-                color: AppColors.black80,
+                color: AppColors.bgDefault,
               ),
             ),
           ],
@@ -128,8 +131,8 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
   Widget _name() => Text(
         widget.item.name ?? '',
         style: const TextStyle(
-          fontWeight: FontWeight.w500,
           height: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       );
 
@@ -290,9 +293,10 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
               child: Text(
                 _globalRankValue ?? '',
                 style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: 11,
+                  height: 13 / 11,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.black80,
+                  color: AppColors.bgDefault,
                 ),
               ),
             ),

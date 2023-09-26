@@ -75,7 +75,6 @@ class _CardButtonState extends State<CardButton> {
   Widget _cardButtonTitle() => Text(
         widget.title ?? '',
         style: const TextStyle(
-          fontWeight: FontWeight.w500,
           overflow: TextOverflow.ellipsis,
         ),
       );
@@ -91,7 +90,6 @@ class _CardButtonState extends State<CardButton> {
         maxLines: widget.descriptionMaxLines,
         style: widget.descriptionStyle ??
             const TextStyle(
-              fontSize: 14,
               color: AppColors.primary,
               overflow: TextOverflow.ellipsis,
             ),

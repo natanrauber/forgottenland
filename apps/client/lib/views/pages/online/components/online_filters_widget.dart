@@ -141,6 +141,7 @@ class _OnlineFiltersState extends State<OnlineFilters> {
   Widget _popupItemText(dynamic value, dynamic selectedItem) => Text(
         value.toString(),
         style: TextStyle(
+          fontSize: 14,
           color: _popupItemTextColor(value, selectedItem),
         ),
       );
@@ -246,7 +247,7 @@ class _OnlineFiltersState extends State<OnlineFilters> {
           child: Text(
             _selectedFiltersText,
             style: const TextStyle(
-              fontSize: 12,
+              fontSize: 11,
               color: AppColors.textSecondary,
             ),
           ),
@@ -270,7 +271,7 @@ class _OnlineFiltersState extends State<OnlineFilters> {
         child: Text(
           _amountText,
           style: const TextStyle(
-            fontSize: 12,
+            fontSize: 11,
             color: AppColors.textSecondary,
           ),
         ),

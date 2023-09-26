@@ -51,7 +51,7 @@ class _OnlineEntryWidgetState extends State<OnlineEntryWidget> {
 
                             const SizedBox(width: 4),
 
-                            _name(),
+                            Expanded(child: _name()),
                           ],
                         ),
                       ),
@@ -87,8 +87,8 @@ class _OnlineEntryWidgetState extends State<OnlineEntryWidget> {
   Widget _name() => Text(
         widget.item.name ?? '',
         style: const TextStyle(
-          fontWeight: FontWeight.w500,
           height: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       );
 

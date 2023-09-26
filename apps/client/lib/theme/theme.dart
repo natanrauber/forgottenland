@@ -5,7 +5,7 @@ import 'package:forgottenland/theme/colors.dart';
 ThemeData appTheme() => ThemeData(
       brightness: Brightness.light,
 
-      fontFamily: 'NunitoSans',
+      fontFamily: 'MartianMono',
 
       primaryColor: AppColors.primary,
       primaryColorLight: AppColors.primary,
@@ -33,30 +33,22 @@ ThemeData appTheme() => ThemeData(
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
         backgroundColor: AppColors.primary,
-        titleTextStyle: TextStyle(
-          fontFamily: 'NunitoSans',
-          letterSpacing: 1,
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-          color: AppColors.black80,
-        ),
       ),
 
       /// text theme
       textTheme: const TextTheme(
         //
         titleMedium: TextStyle(
-          fontFamily: 'NunitoSans',
-          fontWeight: FontWeight.w500,
-          letterSpacing: 1,
+          fontSize: 16,
+          height: 22 / 16,
+          fontWeight: FontWeight.w400,
           color: AppColors.textPrimary,
         ),
 
         bodyMedium: TextStyle(
-          fontFamily: 'NunitoSans',
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 1,
+          fontSize: 14,
+          height: 22 / 14,
+          fontWeight: FontWeight.w400,
           color: AppColors.textPrimary,
         ),
       ),

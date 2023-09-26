@@ -104,10 +104,7 @@ class _CharacterPageState extends State<CharacterPage> {
       );
 
   Widget _title(String text) => Center(
-        child: SelectableText(
-          text,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
+        child: SelectableText(text),
       );
 
   Widget _divider() => const Divider(
@@ -121,6 +118,7 @@ class _CharacterPageState extends State<CharacterPage> {
         child: SelectableText(
           text,
           style: const TextStyle(
+            fontSize: 13,
             color: AppColors.textSecondary,
           ),
         ),
@@ -357,6 +355,7 @@ class _CharacterPageState extends State<CharacterPage> {
                 Text(
                   'View on Tibia.com',
                   style: TextStyle(
+                    fontSize: 13,
                     color: AppColors.primary,
                   ),
                 ),

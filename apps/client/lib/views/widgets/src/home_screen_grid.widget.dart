@@ -110,9 +110,9 @@ class HomeScreenGrid extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 1,
           style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
+            fontSize: 11,
             height: 1,
+            fontWeight: FontWeight.w500,
             overflow: TextOverflow.ellipsis,
           ),
         ),

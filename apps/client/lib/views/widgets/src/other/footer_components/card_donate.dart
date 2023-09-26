@@ -33,69 +33,63 @@ class _CardDonateState extends State<CardDonate> {
         ),
       );
 
-  Widget _body() => Flex(
-        direction: expanded ? Axis.vertical : Axis.horizontal,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          //
-          SelectableText.rich(
-            TextSpan(
-              style: const TextStyle(
-                fontSize: 12,
-                height: 1.5,
-                fontWeight: FontWeight.w200,
-                color: AppColors.textSecondary,
-              ),
-              children: <InlineSpan>[
-                //
-                const TextSpan(
-                  text: 'Please consider supporting us.',
-                ),
-
-                if (expanded)
-                  const TextSpan(
-                    text: ' You can do this by donating Tibia Coins to the character ',
-                  ),
-
-                if (expanded)
-                  TextSpan(
-                    text: 'Awkn',
-                    style: const TextStyle(
-                      color: AppColors.blue,
-                      decoration: TextDecoration.underline,
-                    ),
-                    recognizer: TapGestureRecognizer()..onTap = _pushCharacterPage,
-                  ),
-
-                if (expanded)
-                  const TextSpan(
-                    text:
-                        '. Any donation is appreciated and will be put toward the costs of maintaining our website. Your character will also display a supporter badge on our website. Thank you!',
-                  ),
-              ],
-            ),
-            textAlign: TextAlign.center,
+  Widget _body() => SelectableText.rich(
+        TextSpan(
+          style: const TextStyle(
+            fontSize: 12,
+            height: 1.5,
+            fontWeight: FontWeight.w200,
+            color: AppColors.textSecondary,
           ),
+          children: <InlineSpan>[
+            //
+            const TextSpan(
+              text: 'Please consider supporting us.',
+            ),
 
-          if (expanded) const SizedBox(height: 10),
-
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () => setState(() => expanded = !expanded),
-              child: Text(
-                !expanded ? 'See more' : 'See less',
+            if (!expanded)
+              TextSpan(
+                text: '\nSee more',
                 style: const TextStyle(
-                  fontSize: 12,
-                  height: 1.5,
-                  fontWeight: FontWeight.w200,
                   color: AppColors.blue,
                   decoration: TextDecoration.underline,
                 ),
+                recognizer: TapGestureRecognizer()..onTap = () => setState(() => expanded = true),
               ),
-            ),
-          ),
-        ],
+
+            if (expanded)
+              const TextSpan(
+                text: ' You can do this by donating Tibia Coins to the character ',
+              ),
+
+            if (expanded)
+              TextSpan(
+                text: 'Awkn',
+                style: const TextStyle(
+                  color: AppColors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+                recognizer: TapGestureRecognizer()..onTap = _pushCharacterPage,
+              ),
+
+            if (expanded)
+              const TextSpan(
+                text:
+                    '. Any donation is appreciated and will be put toward the costs of maintaining our website. Your character will also display a supporter badge on our website. Thank you!',
+              ),
+
+            if (expanded)
+              TextSpan(
+                text: '\nSee less',
+                style: const TextStyle(
+                  color: AppColors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+                recognizer: TapGestureRecognizer()..onTap = () => setState(() => expanded = false),
+              ),
+          ],
+        ),
+        textAlign: TextAlign.center,
       );
 
   Future<void> _pushCharacterPage() async {
