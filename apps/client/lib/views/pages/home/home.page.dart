@@ -14,11 +14,8 @@ class _HomePageState extends State<HomePage> {
         canPop: false,
         body: Column(
           children: <Widget>[
-            //
             const NewsWidget(),
-
             const SizedBox(height: 20),
-
             HomeScreenGrid(),
           ],
         ),

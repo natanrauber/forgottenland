@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:database_client/database_client.dart';
+import 'package:forgottenlandapi/src/bazaar_controller.dart';
 import 'package:forgottenlandapi/src/character_controller.dart';
 import 'package:forgottenlandapi/src/highscores_controller.dart';
 import 'package:forgottenlandapi/src/online_controller.dart';
@@ -16,17 +17,19 @@ final Env _env = Env();
 final IDatabaseClient _databaseClient = MySupabaseClient();
 final IHttpClient _httpClient = MyDioClient();
 
-final CharacterController _characterCtrl = CharacterController(_env, _databaseClient, _httpClient, _highscoresCtrl);
 final HighscoresController _highscoresCtrl = HighscoresController(_env, _databaseClient, _httpClient);
-final OnlineController _onlineCtrl = OnlineController(_databaseClient);
+final CharacterController _characterCtrl = CharacterController(_env, _databaseClient, _httpClient, _highscoresCtrl);
+final IBazaarController _bazaarCtrl = BazaarController(_databaseClient);
+final IOnlineController _onlineCtrl = OnlineController(_databaseClient);
 final UserController _userCtrl = UserController(_databaseClient);
 
 // Configure routes.
 final _router = Router()
   ..get('/character/<name>', _characterCtrl.get)
   ..get('/highscores/<world>/<category>/<vocation>/<page>', _highscoresCtrl.get)
-  ..get('/online/time/<date>', _onlineCtrl.getOnlineTime)
   ..get('/online/now', _onlineCtrl.getOnlineNow)
+  ..get('/online/time/<date>', _onlineCtrl.getOnlineTime)
+  ..get('/bazaar', _bazaarCtrl.get)
   ..post('/user/login', _userCtrl.login)
   ..post('/user/revive', _userCtrl.revive);
 

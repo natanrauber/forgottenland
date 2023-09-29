@@ -6,6 +6,7 @@ import 'package:forgottenland/controllers/news_controller.dart';
 import 'package:forgottenland/controllers/online_controller.dart';
 import 'package:forgottenland/controllers/user_controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
+import 'package:forgottenland/modules/bazaar/controllers/bazaar_controller.dart';
 import 'package:get/get.dart';
 import 'package:http_client/http_client.dart';
 
@@ -22,5 +23,6 @@ class MainBinding implements Bindings {
     Get.put(GuildsController(_httpClient));
     Get.put(OnlineController(_httpClient));
     Get.put(HighscoresController(_databaseClient, _httpClient));
+    Get.put(BazaarController(httpClient: _httpClient, worldsCtrl: Get.find<WorldsController>()));
   }
 }

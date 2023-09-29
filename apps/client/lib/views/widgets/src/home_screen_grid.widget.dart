@@ -32,6 +32,8 @@ class HomeScreenGrid extends StatelessWidget {
     _buttonList.add(_highscores(context));
     _buttonList.add(_onlineCharacters(context));
     _buttonList.add(_characters(context));
+    _buttonList.add(_bazaar(context));
+    _buttonList.add(_rookmaster(context));
     _buttonList.add(_about(context));
   }
 
@@ -44,7 +46,7 @@ class HomeScreenGrid extends StatelessWidget {
     screenWidth = screenWidth > 800 ? 800 : screenWidth;
     final double spacing = (crossAxisCount - 1) * crossAxisSpacing;
     final double buttonWidth = (screenWidth - spacing - 40) / crossAxisCount;
-    final double buttonHeight = buttonWidth + 32;
+    final double buttonHeight = buttonWidth + 52;
 
     _configureButtonGrid(context);
 
@@ -54,7 +56,7 @@ class HomeScreenGrid extends StatelessWidget {
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
         crossAxisSpacing: crossAxisSpacing,
-        childAspectRatio: buttonWidth / (buttonHeight < 132 ? buttonHeight : 132),
+        childAspectRatio: buttonWidth / (buttonHeight < 152 ? buttonHeight : 152),
       ),
       itemCount: _buttonList.length,
       itemBuilder: _gridItemBuilder,
@@ -71,9 +73,11 @@ class HomeScreenGrid extends StatelessWidget {
               //
               _buttonBody(context, index),
 
-              const SizedBox(height: 8),
+              SizedBox(height: _buttonList[index].name.contains('\n') ? 4 : 8),
 
               _buttonName(index),
+
+              SizedBox(height: _buttonList[index].name.contains('\n') ? 16 : 12),
             ],
           ),
         ),
@@ -103,15 +107,15 @@ class HomeScreenGrid extends StatelessWidget {
 
   /// [button name]
   Container _buttonName(int index) => Container(
-        alignment: Alignment.center,
-        height: 24,
+        alignment: Alignment.topCenter,
+        height: 32,
         child: SelectableText(
           _buttonList[index].name,
           textAlign: TextAlign.center,
-          maxLines: 1,
+          maxLines: _buttonList[index].name.contains('\n') ? 2 : 1,
           style: const TextStyle(
             fontSize: 11,
-            height: 1,
+            height: 16 / 11,
             fontWeight: FontWeight.w500,
             overflow: TextOverflow.ellipsis,
           ),
@@ -143,6 +147,18 @@ class HomeScreenGrid extends StatelessWidget {
         name: 'Characters',
         icon: CupertinoIcons.person_fill,
         onTap: () => Get.toNamed(Routes.character.name),
+      );
+
+  GridButtonModel _bazaar(BuildContext context) => GridButtonModel(
+        name: 'Char\nBazaar',
+        icon: CupertinoIcons.money_dollar_circle_fill,
+        onTap: () => Get.toNamed(Routes.bazaar.name),
+      );
+
+  GridButtonModel _rookmaster(BuildContext context) => GridButtonModel(
+        name: 'Rook\nMaster',
+        icon: CupertinoIcons.shield_lefthalf_fill,
+        onTap: () => Get.toNamed('${Routes.highscores.name}/rookmaster'),
       );
 
   GridButtonModel _about(BuildContext context) => GridButtonModel(

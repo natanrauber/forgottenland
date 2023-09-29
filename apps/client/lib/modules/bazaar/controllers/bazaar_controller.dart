@@ -2,24 +2,21 @@ import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/rxmodels/world_rxmodel.dart';
 import 'package:forgottenland/utils/src/paths.dart';
-import 'package:forgottenland/views/widgets/widgets.dart';
+import 'package:forgottenland/views/widgets/src/fields/custom_text_field.widget.dart';
 import 'package:get/get_rx/get_rx.dart';
-import 'package:get/instance_manager.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
-class OnlineController extends Controller {
-  OnlineController(this.httpClient);
+class BazaarController extends Controller {
+  BazaarController({required this.httpClient, required this.worldsCtrl});
 
   final IHttpClient httpClient;
+  final WorldsController worldsCtrl;
 
-  WorldsController worldsCtrl = Get.find<WorldsController>();
+  RxList<Auction> auctionList = <Auction>[].obs;
+  RxList<Auction> filteredList = <Auction>[].obs;
 
-  RxList<Supporter> supporters = <Supporter>[].obs;
-  RxList<HighscoresEntry> rawList = <HighscoresEntry>[].obs;
-  RxList<HighscoresEntry> filteredList = <HighscoresEntry>[].obs;
-  RxList<HighscoresEntry> onlineTimes = <HighscoresEntry>[].obs;
   TextController searchController = TextController();
   RxWorld world = World(name: 'All').obs;
   RxString battleyeType = LIST.battleyeType.first.obs;
@@ -31,30 +28,29 @@ class OnlineController extends Controller {
   RxBool enablePvpType = true.obs;
   RxBool enableWorldType = true.obs;
 
-  Future<void> getOnlineCharacters() async {
+  Future<void> getAuctions() async {
     if (isLoading.isTrue) return;
     isLoading.value = true;
-    rawList.clear();
+    auctionList.clear();
 
     if (worldsCtrl.list.isEmpty) await worldsCtrl.load();
 
-    final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/online/now');
-    if (response.success) _populateList(rawList, response);
+    final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/bazaar');
+    if (response.success) _populateList(auctionList, response);
 
     await filterList();
     isLoading.value = false;
   }
 
-  void _populateList(RxList<HighscoresEntry> list, MyHttpResponse response) {
-    final Online online = Online.fromJson(
+  void _populateList(RxList<Auction> list, MyHttpResponse response) {
+    final Bazaar bazaar = Bazaar.fromJson(
       (response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{},
     );
 
-    for (final OnlineEntry e in online.list) {
-      final HighscoresEntry entry = HighscoresEntry.fromOnlineEntry(e);
-      final World? world = worldsCtrl.list.getByName(e.world);
-      if (world != null) entry.world = world;
-      list.add(entry);
+    for (final Auction e in bazaar.auctions) {
+      final World? world = worldsCtrl.list.getByName(e.world?.name);
+      if (world != null) e.world = world;
+      list.add(e);
     }
   }
 
@@ -63,7 +59,7 @@ class OnlineController extends Controller {
 
     filteredList.clear();
 
-    for (final HighscoresEntry item in rawList) {
+    for (final Auction item in auctionList) {
       bool valid = true;
 
       if (world.value.name != 'All') {
@@ -92,19 +88,6 @@ class OnlineController extends Controller {
 
       if (valid) filteredList.add(item);
     }
-
-    isLoading.value = false;
-  }
-
-  Future<void> getOnlineTimes(String day) async {
-    if (isLoading.isTrue) return;
-    isLoading.value = true;
-    onlineTimes.clear();
-
-    if (worldsCtrl.list.isEmpty) await worldsCtrl.load();
-
-    final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/online/time/$day');
-    if (response.success) _populateList(onlineTimes, response);
 
     isLoading.value = false;
   }

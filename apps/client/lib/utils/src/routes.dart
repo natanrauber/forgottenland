@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forgottenland/modules/bazaar/views/bazaar_page.dart';
 import 'package:forgottenland/modules/splash/splash_page.dart';
 import 'package:forgottenland/views/pages/character_page.dart';
 import 'package:forgottenland/views/pages/guild.page.dart';
@@ -22,6 +23,7 @@ class MyPage extends GetPage<dynamic> {
 }
 
 class Routes {
+  static final MyPage bazaar = MyPage('/bazaar', BazaarPage());
   static final MyPage character = MyPage('/character', CharacterPage());
   static final MyPage guild = MyPage('/guild', GuildPage());
   static final MyPage highscores = MyPage('/highscores', const HighscoresPage());
@@ -32,6 +34,7 @@ class Routes {
 
   static List<MyPage> getPages() {
     final List<MyPage> list = <MyPage>[
+      bazaar,
       character,
       guild,
       highscores,
