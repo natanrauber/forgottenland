@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:forgottenland/modules/main/controllers/main_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/app_footer.dart';
 import 'package:forgottenland/views/widgets/src/other/app_header.dart';
+import 'package:get/get.dart';
 
 class AppPage extends StatefulWidget {
   const AppPage({
@@ -25,6 +27,14 @@ class AppPage extends StatefulWidget {
 }
 
 class _AppPageState extends State<AppPage> {
+  MainController mainCtrl = Get.find<MainController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => mainCtrl.ensureSplashIsVisited());
+  }
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;

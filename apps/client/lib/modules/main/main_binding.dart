@@ -7,6 +7,7 @@ import 'package:forgottenland/controllers/online_controller.dart';
 import 'package:forgottenland/controllers/user_controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/modules/bazaar/controllers/bazaar_controller.dart';
+import 'package:forgottenland/modules/main/controllers/main_controller.dart';
 import 'package:get/get.dart';
 import 'package:http_client/http_client.dart';
 
@@ -16,6 +17,7 @@ class MainBinding implements Bindings {
 
   @override
   void dependencies() {
+    Get.put(MainController());
     Get.put(UserController(_httpClient));
     Get.put(NewsController(_httpClient));
     Get.put(CharacterController(_httpClient));

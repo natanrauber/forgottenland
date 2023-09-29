@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:forgottenland/modules/main/controllers/main_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/app_header.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+class SplashPageArguments {
+  const SplashPageArguments({required this.redirectRoute});
+  final String redirectRoute;
+}
 
 class SplashPage extends StatefulWidget {
   @override
@@ -11,6 +17,9 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  SplashPageArguments? args;
+  MainController mainCtrl = Get.find<MainController>();
+
   bool _visible = false;
 
   @override
@@ -18,9 +27,10 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
+        args = Get.arguments as SplashPageArguments?;
         visible = true;
         await Future<dynamic>.delayed(const Duration(seconds: 2), () => visible = false);
-        await Future<dynamic>.delayed(const Duration(seconds: 1), _pushHomeScreen);
+        await Future<dynamic>.delayed(const Duration(seconds: 1), _redirect);
       },
     );
   }
@@ -28,7 +38,10 @@ class _SplashPageState extends State<SplashPage> {
   bool get visible => _visible;
   set visible(bool value) => setState(() => _visible = value);
 
-  void _pushHomeScreen() => Get.toNamed(Routes.home.name);
+  void _redirect() {
+    mainCtrl.visitedSplash = true;
+    Get.offNamed(args?.redirectRoute ?? Routes.home.name);
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
