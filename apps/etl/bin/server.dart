@@ -15,12 +15,13 @@ final IHttpClient _httpClient = MyDioClient();
 
 // Configure routes.
 final _router = Router()
-  ..get('/exprecord', ETL(_env, _databaseClient, _httpClient).expRecord)
+  ..get('/bazaar', ETL(_env, _databaseClient, _httpClient).bazaar)
   ..get('/currentexp', ETL(_env, _databaseClient, _httpClient).currentExp)
+  ..get('/expgain+last30days', ETL(_env, _databaseClient, _httpClient).expGainedLast30Days)
+  ..get('/expgain+last7days', ETL(_env, _databaseClient, _httpClient).expGainedLast7Days)
   ..get('/expgain+today', ETL(_env, _databaseClient, _httpClient).expGainedToday)
   ..get('/expgain+yesterday', ETL(_env, _databaseClient, _httpClient).expGainedYesterday)
-  ..get('/expgain+last7days', ETL(_env, _databaseClient, _httpClient).expGainedLast7Days)
-  ..get('/expgain+last30days', ETL(_env, _databaseClient, _httpClient).expGainedLast30Days)
+  ..get('/exprecord', ETL(_env, _databaseClient, _httpClient).expRecord)
   ..get('/online', ETL(_env, _databaseClient, _httpClient).registerOnlinePlayers)
   ..get('/rookmaster', ETL(_env, _databaseClient, _httpClient).rookmaster)
   ..get('/skill/<name>/<value>', ETL(_env, _databaseClient, _httpClient).calcSkillPoints);

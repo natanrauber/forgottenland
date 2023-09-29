@@ -5,6 +5,7 @@ import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:universal_html/controller.dart';
 import 'package:utils/utils.dart';
 
 abstract class IETL {
@@ -17,6 +18,7 @@ abstract class IETL {
   Future<Response> registerOnlinePlayers(Request request);
   Future<Response> rookmaster(Request request);
   Future<Response> calcSkillPoints(Request request);
+  Future<Response> bazaar(Request request);
 }
 
 // Extract, Transform, Load.
@@ -637,5 +639,47 @@ class ETL implements IETL {
     for (var e in record.list) {
       e.rank = record.list.indexOf(e) + 1;
     }
+  }
+
+  @override
+  Future<Response> bazaar(Request request) async {
+    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
+    String supabaseKey = request.headers['supabaseKey'] ?? '';
+    databaseClient.setup(supabaseUrl, supabaseKey);
+
+    try {
+      int page = 1;
+      Bazaar bazaar = Bazaar();
+      List<dynamic> auctions = [];
+      List<dynamic> auxList = [];
+
+      final controller = WindowController();
+
+      do {
+        auxList.clear();
+        await controller.openUri(
+          Uri.parse(
+            'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&filter_profession=1&currentpage=$page',
+          ),
+        );
+        auxList.addAll(controller.window.document.querySelectorAll("div.Auction").toList());
+        auctions.addAll(auxList.toList());
+        page++;
+      } while (auctions.length % 25 == 0 && auxList.isNotEmpty);
+
+      bazaar = Bazaar.fromListDivElement(auctions);
+      await _saveBazaar(bazaar);
+      return ApiResponse.success();
+    } catch (e) {
+      return ApiResponse.error(e);
+    }
+  }
+
+  Future<void> _saveBazaar(Bazaar bazaar) async {
+    var values = <String, dynamic>{
+      'data': bazaar.toJson(),
+      'timestamp': MyDateTime.timeStamp(),
+    };
+    await databaseClient.from('bazaar').update(values).match(<String, dynamic>{'world': 'All'});
   }
 }

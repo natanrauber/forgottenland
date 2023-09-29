@@ -41,7 +41,7 @@ class _NewsWidgetState extends State<NewsWidget> {
     appBarHeight = AppHeader().preferredSize.height;
     topMargin = screenHeight > 700 ? screenHeight - 700 : 0;
     if (topMargin > screenHeight * 0.18) topMargin = screenHeight * 0.18;
-    buttonsHeight = 152;
+    buttonsHeight = 162;
     paddings = 20 + 20;
     height = screenHeight - appBarHeight - topMargin - buttonsHeight - paddings;
 

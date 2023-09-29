@@ -18,6 +18,7 @@ void main(List<String> arguments) {
 
   List cronList = <CronJob>[
     CronJob(time: '*/5 * * * *', name: 'online', task: () => _etlGet('/online')),
+    CronJob(time: '50 * * * *', name: 'bazaar', task: () => _etlGet('/bazaar')),
     CronJob(time: '50 * * * *', name: 'exp-record', task: () => _etlGet('/exprecord')),
     CronJob(time: '50 * * * *', name: 'current-exp', task: () => _etlGet('/currentexp')),
     CronJob(time: '55 * * * *', name: 'expgain+today', task: () => _etlGet('/expgain+today')),
