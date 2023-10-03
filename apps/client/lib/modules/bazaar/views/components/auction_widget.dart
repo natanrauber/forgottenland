@@ -6,6 +6,7 @@ import 'package:forgottenland/views/widgets/src/other/better_text.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:models/models.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class AuctionWidget extends StatefulWidget {
   const AuctionWidget(this.item);
@@ -72,7 +73,7 @@ class _AuctionWidgetState extends State<AuctionWidget> {
 
   void _onTap() {
     dismissKeyboard(context);
-    _loadCharacter();
+    _openAuctionExternal();
   }
 
   BoxDecoration _decoration(BuildContext context) => BoxDecoration(
@@ -126,10 +127,8 @@ class _AuctionWidgetState extends State<AuctionWidget> {
         ),
       );
 
-  Future<void> _loadCharacter() async {
-    if (widget.item.name == null) return;
-    characterCtrl.searchCtrl.text = widget.item.name!;
-    Get.toNamed(Routes.character.name);
-    characterCtrl.searchCharacter();
+  Future<void> _openAuctionExternal() async {
+    if (widget.item.url == null) return;
+    launchUrlString(widget.item.url!);
   }
 }
