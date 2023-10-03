@@ -45,6 +45,7 @@ class Auction {
     currentBid = int.tryParse(
       divE.text?.split('Current Bid:').lastOrNull?.split('My Bid Limit').firstOrNull?.replaceAll(',', '').trim() ?? '',
     );
+    url = divE.children.first.children[1].children.first.attributes['href'];
   }
 
   Auction.fromJson(Map<String, dynamic> json) {
@@ -55,6 +56,7 @@ class Auction {
     if (json['level'] is int) level = json['level'] as int;
     if (json['minimum_bid'] is int) minimumBid = json['minimum_bid'] as int;
     if (json['current_bid'] is int) currentBid = json['current_bid'] as int;
+    if (json['url'] is String) url = json['url'] as String;
   }
 
   String? name;
@@ -63,6 +65,7 @@ class Auction {
   int? level;
   int? minimumBid;
   int? currentBid;
+  String? url;
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -72,6 +75,7 @@ class Auction {
     json['level'] = level;
     json['minimum_bid'] = minimumBid;
     json['current_bid'] = currentBid;
+    json['url'] = url;
     return json.clean();
   }
 }
