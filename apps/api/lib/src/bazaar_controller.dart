@@ -18,10 +18,10 @@ class BazaarController implements IBazaarController {
     try {
       int page = 1;
       Bazaar bazaar = Bazaar();
-      List<dynamic> auctions = [];
-      List<dynamic> auxList = [];
+      List<dynamic> auctions = <dynamic>[];
+      List<dynamic> auxList = <dynamic>[];
 
-      final controller = WindowController();
+      final WindowController controller = WindowController();
 
       do {
         auxList.clear();
@@ -31,7 +31,7 @@ class BazaarController implements IBazaarController {
             'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&filter_profession=1&currentpage=$page',
           ),
         );
-        auxList.addAll(controller.window.document.querySelectorAll("div.Auction").toList());
+        auxList.addAll(controller.window.document.querySelectorAll('div.Auction').toList());
         auctions.addAll(auxList.toList());
         page++;
       } while (auctions.length % 25 == 0 && auxList.isNotEmpty);
