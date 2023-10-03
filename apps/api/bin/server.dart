@@ -9,6 +9,7 @@ import 'package:forgottenlandapi/src/user_controller.dart';
 import 'package:http_client/http_client.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
+import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
@@ -40,18 +41,8 @@ void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
   final InternetAddress ip = InternetAddress.anyIPv4;
 
-  // fix CORS
-  const Map<String, String> corsHeaders = <String, String>{
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': '*',
-  };
-  Response? options(Request request) => (request.method == 'OPTIONS') ? Response.ok(null, headers: corsHeaders) : null;
-  Response cors(Response response) => response.change(headers: corsHeaders);
-  final Middleware fixCORS = createMiddleware(requestHandler: options, responseHandler: cors);
-
   // Configure a pipeline that logs requests.
-  final Handler handler = Pipeline().addMiddleware(fixCORS).addMiddleware(logRequests()).addHandler(_router);
+  final Handler handler = Pipeline().addMiddleware(corsHeaders()).addMiddleware(logRequests()).addHandler(_router);
 
   // For running in containers, we respect the PORT environment variable.
   final int port = int.parse(Platform.environment['PORT'] ?? '8080');
