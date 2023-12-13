@@ -9,10 +9,11 @@ import 'package:forgottenlandapi/src/user_controller.dart';
 import 'package:http_client/http_client.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
+import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
-final List<String> _requiredVar = ['PATH_TIBIA_DATA'];
+final List<String> _requiredVar = <String>['PATH_TIBIA_DATA'];
 final Env _env = Env();
 final IDatabaseClient _databaseClient = MySupabaseClient();
 final IHttpClient _httpClient = MyDioClient();
@@ -24,7 +25,7 @@ final IOnlineController _onlineCtrl = OnlineController(_databaseClient);
 final UserController _userCtrl = UserController(_databaseClient);
 
 // Configure routes.
-final _router = Router()
+final Router _router = Router()
   ..get('/character/<name>', _characterCtrl.get)
   ..get('/highscores/<world>/<category>/<vocation>/<page>', _highscoresCtrl.get)
   ..get('/online/now', _onlineCtrl.getOnlineNow)
@@ -38,23 +39,13 @@ void main(List<String> args) async {
   if (_env.isMissingAny(_requiredVar)) return print('Missing required environment variable');
 
   // Use any available host or container IP (usually `0.0.0.0`).
-  final ip = InternetAddress.anyIPv4;
-
-  // fix CORS
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "*",
-  };
-  Response? options(Request request) => (request.method == "OPTIONS") ? Response.ok(null, headers: corsHeaders) : null;
-  Response cors(Response response) => response.change(headers: corsHeaders);
-  final fixCORS = createMiddleware(requestHandler: options, responseHandler: cors);
+  final InternetAddress ip = InternetAddress.anyIPv4;
 
   // Configure a pipeline that logs requests.
-  final handler = Pipeline().addMiddleware(fixCORS).addMiddleware(logRequests()).addHandler(_router);
+  final Handler handler = Pipeline().addMiddleware(corsHeaders()).addMiddleware(logRequests()).addHandler(_router);
 
   // For running in containers, we respect the PORT environment variable.
-  final port = int.parse(Platform.environment['PORT'] ?? '8080');
-  final server = await serve(handler, ip, port);
+  final int port = int.parse(Platform.environment['PORT'] ?? '8080');
+  final HttpServer server = await serve(handler, ip, port);
   print('Server listening on port ${server.port}');
 }

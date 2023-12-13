@@ -39,13 +39,11 @@ class CharacterController {
     }
   }
 
-  bool _notFound(String name, MyHttpResponse response) {
-    return response.dataAsMap['characters']['character']['name']?.toString().toLowerCase() != name;
-  }
+  bool _notFound(String name, MyHttpResponse response) =>
+      response.dataAsMap['characters']['character']['name']?.toString().toLowerCase() != name;
 
-  bool _notOnRookgaard(MyHttpResponse response) {
-    return response.dataAsMap['characters']['character']['residence']?.toString().toLowerCase() != 'rookgaard';
-  }
+  bool _notOnRookgaard(MyHttpResponse response) =>
+      response.dataAsMap['characters']['character']['residence']?.toString().toLowerCase() != 'rookgaard';
 
   Future<void> _getExpGain(String name, MyHttpResponse httpResponse) async {
     httpResponse.dataAsMap['characters']['experiencegained'] = <String, dynamic>{};

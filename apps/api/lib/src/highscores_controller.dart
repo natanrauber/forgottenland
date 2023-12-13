@@ -26,8 +26,10 @@ class HighscoresController {
     if (category.contains('rookmaster')) return getRookmaster(world, page);
 
     try {
-      var response = await httpClient.get('${env['PATH_TIBIA_DATA']}/highscores/$world/$category/$vocation/$page');
-      var record = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
+      MyHttpResponse response = await httpClient.get(
+        '${env['PATH_TIBIA_DATA']}/highscores/$world/$category/$vocation/$page',
+      );
+      Record record = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
       return ApiResponse.success(data: record.toJson());
     } catch (e) {
       return handleError(e);
@@ -63,7 +65,7 @@ class HighscoresController {
   }
 
   List<T> _getPageRange<T>(int page, List<T> list) {
-    if ((page - 1) * 50 > list.length) return [];
+    if ((page - 1) * 50 > list.length) return <T>[];
     if (list.length <= 50) return list;
 
     int start = (page - 1) * 50;
@@ -75,9 +77,9 @@ class HighscoresController {
   List<T> _filterWorld<T>(String world, List<T> list) {
     if (world == 'all') return list;
     if (list is List<OnlineEntry>) {
-      list.removeWhere((e) => (e as OnlineEntry).world?.toLowerCase() != world);
+      list.removeWhere((T e) => (e as OnlineEntry).world?.toLowerCase() != world);
     } else if (list is List<HighscoresEntry>) {
-      list.removeWhere((e) => (e as HighscoresEntry).world?.name?.toLowerCase() != world);
+      list.removeWhere((T e) => (e as HighscoresEntry).world?.name?.toLowerCase() != world);
     }
     return list;
   }
@@ -86,11 +88,11 @@ class HighscoresController {
     if (list.isEmpty) return list;
     int offset = page == null ? 0 : 50 * (page - 1);
     if (list is List<HighscoresEntry>) {
-      for (var e in list) {
+      for (T e in list) {
         (e as HighscoresEntry).rank = list.indexOf(e) + 1 + offset;
       }
     } else if (list is List<OnlineEntry>) {
-      for (var e in list) {
+      for (T e in list) {
         (e as OnlineEntry).rank = list.indexOf(e) + 1 + offset;
       }
     }
@@ -105,8 +107,8 @@ class HighscoresController {
     if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
-      var response = await databaseClient.from(table).select().eq('date', date).single();
-      var record = Record.fromJson(response['data'] as Map<String, dynamic>);
+      dynamic response = await databaseClient.from(table).select().eq('date', date).single();
+      Record record = Record.fromJson(response['data'] as Map<String, dynamic>);
 
       record.list = _filterWorld<HighscoresEntry>(world, record.list);
       if (page != null) record.list = _getPageRange<HighscoresEntry>(page, record.list);
@@ -127,8 +129,8 @@ class HighscoresController {
     if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
-      var response = await databaseClient.from(table).select().eq('date', date).single();
-      var online = Online.fromJson(response['data'] as Map<String, dynamic>);
+      dynamic response = await databaseClient.from(table).select().eq('date', date).single();
+      Online online = Online.fromJson(response['data'] as Map<String, dynamic>);
 
       online.list = _filterWorld<OnlineEntry>(world, online.list);
       if (page != null) online.list = _getPageRange<OnlineEntry>(page, online.list);
@@ -145,8 +147,8 @@ class HighscoresController {
     if (page != null && page < 0) return ApiResponse.error('Invalid page number');
 
     try {
-      var response = await databaseClient.from('rook-master').select().order('date').limit(1).single();
-      var record = Record.fromJson(response['data'] as Map<String, dynamic>);
+      dynamic response = await databaseClient.from('rook-master').select().order('date').limit(1).single();
+      Record record = Record.fromJson(response['data'] as Map<String, dynamic>);
 
       record.list = _filterWorld<HighscoresEntry>(world, record.list);
       if (page != null) record.list = _getPageRange<HighscoresEntry>(page, record.list);

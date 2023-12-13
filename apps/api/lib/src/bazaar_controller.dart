@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:database_client/database_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
@@ -20,10 +18,10 @@ class BazaarController implements IBazaarController {
     try {
       int page = 1;
       Bazaar bazaar = Bazaar();
-      List<dynamic> auctions = [];
-      List<dynamic> auxList = [];
+      List<dynamic> auctions = <dynamic>[];
+      List<dynamic> auxList = <dynamic>[];
 
-      final controller = WindowController();
+      final WindowController controller = WindowController();
 
       do {
         auxList.clear();
@@ -32,19 +30,8 @@ class BazaarController implements IBazaarController {
           uri: Uri.parse(
             'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&filter_profession=1&currentpage=$page',
           ),
-          onRequest: (HttpClientRequest request) {
-            request.cookies.addAll(
-              [
-                Cookie('DM_LandingPage', 'visited'),
-                Cookie(
-                  'CookieConsentPreferences',
-                  '%7B%22consent%22%3Atrue%2C%22advertising%22%3Atrue%2C%22socialmedia%22%3Atrue%7D',
-                ),
-              ],
-            );
-          },
         );
-        auxList.addAll(controller.window.document.querySelectorAll("div.Auction").toList());
+        auxList.addAll(controller.window.document.querySelectorAll('div.Auction').toList());
         auctions.addAll(auxList.toList());
         page++;
       } while (auctions.length % 25 == 0 && auxList.isNotEmpty);
