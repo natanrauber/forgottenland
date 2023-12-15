@@ -27,3 +27,4 @@ pubspec_overrides.yaml
 *.lock
 .DS_Store
 CHANGELOG.md
+.idea
