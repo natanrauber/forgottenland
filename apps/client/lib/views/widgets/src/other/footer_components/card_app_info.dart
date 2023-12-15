@@ -40,7 +40,7 @@ class _CardAppInfoState extends State<CardAppInfo> {
           children: <InlineSpan>[
             //
             TextSpan(
-              text: 'Forgotten Land App © 2021 - ${MyDateTime.now().year}',
+              text: 'Forgotten Land App © 2021 - ${DT.tibia.now().year}',
             ),
 
             TextSpan(
@@ -57,6 +57,7 @@ class _CardAppInfoState extends State<CardAppInfo> {
               style: const TextStyle(
                 color: AppColors.blue,
                 decoration: TextDecoration.underline,
+                decorationColor: AppColors.blue,
               ),
               recognizer: TapGestureRecognizer()..onTap = () => launchUrlString('https://www.tibia.com/'),
             ),
@@ -70,6 +71,7 @@ class _CardAppInfoState extends State<CardAppInfo> {
               style: const TextStyle(
                 color: AppColors.blue,
                 decoration: TextDecoration.underline,
+                decorationColor: AppColors.blue,
               ),
               recognizer: TapGestureRecognizer()..onTap = () => launchUrlString('https://www.cipsoft.com/'),
             ),

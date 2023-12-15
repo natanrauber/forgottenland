@@ -33,7 +33,7 @@ class MyDioClient implements IHttpClient {
     MyHttpResponse? response;
     try {
       response = MyHttpResponse.fromResponse(await request.call());
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return HttpErrorHandler.dio(e);
     } on SocketException catch (e) {
       return HttpErrorHandler.socket(e);

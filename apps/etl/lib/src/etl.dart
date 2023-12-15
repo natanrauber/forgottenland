@@ -32,7 +32,7 @@ class ETL implements IETL {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     databaseClient.setup(supabaseUrl, supabaseKey);
-    if (await _exists('exp-record', MyDateTime.today())) return ApiResponse.accepted();
+    if (await _exists('exp-record', DT.tibia.today())) return ApiResponse.accepted();
     return _getCurrentExp('exp-record', 'insert');
   }
 
@@ -110,15 +110,15 @@ class ETL implements IETL {
     if (operation == 'update') {
       var values = <String, dynamic>{
         'data': record.toJson(),
-        'timestamp': MyDateTime.timeStamp(),
+        'timestamp': DT.germany.timeStamp(),
       };
       return databaseClient.from(table).update(values).match(<String, dynamic>{'world': 'All'});
     }
     var values = <String, dynamic>{
-      'date': MyDateTime.today(),
+      'date': DT.tibia.today(),
       'world': 'All',
       'data': record.toJson(),
-      'timestamp': MyDateTime.timeStamp(),
+      'timestamp': DT.germany.timeStamp(),
     };
     return databaseClient.from(table).insert(values);
   }
@@ -132,7 +132,7 @@ class ETL implements IETL {
     try {
       Record result = await _calcExpGainToday();
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-today', MyDateTime.today(), result, canUpdate: true);
+      await _saveExpGain('exp-gain-today', DT.tibia.today(), result, canUpdate: true);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -140,7 +140,7 @@ class ETL implements IETL {
   }
 
   Future<Record> _calcExpGainToday() async {
-    Record start = await _getWhere('exp-record', MyDateTime.today());
+    Record start = await _getWhere('exp-record', DT.tibia.today());
     dynamic response = await databaseClient.from('current-exp').select().single();
     Record end = Record.fromJson(response['data']);
     Record result = Record(list: <HighscoresEntry>[]);
@@ -155,12 +155,12 @@ class ETL implements IETL {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     databaseClient.setup(supabaseUrl, supabaseKey);
 
-    if (await _exists('exp-gain-last-day', MyDateTime.yesterday())) return ApiResponse.accepted();
+    if (await _exists('exp-gain-last-day', DT.tibia.yesterday())) return ApiResponse.accepted();
 
     try {
-      Record result = await _getExpGainRange(MyDateTime.yesterday(), MyDateTime.today());
+      Record result = await _getExpGainRange(DT.tibia.yesterday(), DT.tibia.today());
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-last-day', MyDateTime.yesterday(), result);
+      await _saveExpGain('exp-gain-last-day', DT.tibia.yesterday(), result);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -173,12 +173,12 @@ class ETL implements IETL {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     databaseClient.setup(supabaseUrl, supabaseKey);
 
-    if (await _exists('exp-gain-last-7-days', MyDateTime.yesterday())) return ApiResponse.accepted();
+    if (await _exists('exp-gain-last-7-days', DT.tibia.yesterday())) return ApiResponse.accepted();
 
     try {
-      Record result = await _getExpGainRange(MyDateTime.aWeekAgo(), MyDateTime.today());
+      Record result = await _getExpGainRange(DT.tibia.aWeekAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-last-7-days', MyDateTime.yesterday(), result);
+      await _saveExpGain('exp-gain-last-7-days', DT.tibia.yesterday(), result);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -191,12 +191,12 @@ class ETL implements IETL {
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     databaseClient.setup(supabaseUrl, supabaseKey);
 
-    if (await _exists('exp-gain-last-30-days', MyDateTime.yesterday())) return ApiResponse.accepted();
+    if (await _exists('exp-gain-last-30-days', DT.tibia.yesterday())) return ApiResponse.accepted();
 
     try {
-      Record result = await _getExpGainRange(MyDateTime.aMonthAgo(), MyDateTime.today());
+      Record result = await _getExpGainRange(DT.tibia.aMonthAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-last-30-days', MyDateTime.yesterday(), result);
+      await _saveExpGain('exp-gain-last-30-days', DT.tibia.yesterday(), result);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -250,7 +250,7 @@ class ETL implements IETL {
         'date': date,
         'world': 'All',
         'data': data.toJson(),
-        'timestamp': MyDateTime.timeStamp(),
+        'timestamp': DT.germany.timeStamp(),
       };
       return databaseClient.from(table).upsert(values);
     }
@@ -258,7 +258,7 @@ class ETL implements IETL {
       'date': date,
       'world': 'All',
       'data': data.toJson(),
-      'timestamp': MyDateTime.timeStamp(),
+      'timestamp': DT.germany.timeStamp(),
     };
     return databaseClient.from(table).insert(values);
   }
@@ -311,13 +311,13 @@ class ETL implements IETL {
   }
 
   Future<dynamic> _saveOnlineNow(Online online) async {
-    var values = <String, dynamic>{'data': online.toJson(), 'timestamp': MyDateTime.timeStamp()};
+    var values = <String, dynamic>{'data': online.toJson(), 'timestamp': DT.germany.timeStamp()};
     return databaseClient.from('online').update(values).match(<String, dynamic>{'world': 'All'});
   }
 
   Future<Online> _getOnlineTimeToday(Online onlineNow) async {
     onlineNow.list.removeWhere((e) => (e.level ?? 0) < 10);
-    List<dynamic> response = await databaseClient.from('onlinetime').select().eq('date', MyDateTime.today());
+    List<dynamic> response = await databaseClient.from('onlinetime').select().eq('date', DT.tibia.today());
     Online result;
 
     if (response.isEmpty) {
@@ -353,21 +353,21 @@ class ETL implements IETL {
 
   Future<dynamic> _saveOnlineTimeToday(Online online) async {
     var values = <String, dynamic>{
-      'date': MyDateTime.today(),
+      'date': DT.tibia.today(),
       'data': online.toJson(),
-      'timestamp': MyDateTime.timeStamp(),
+      'timestamp': DT.germany.timeStamp(),
     };
-    return databaseClient.from('onlinetime').upsert(values).match(<String, dynamic>{'date': MyDateTime.now()});
+    return databaseClient.from('onlinetime').upsert(values).match(<String, dynamic>{'date': DT.tibia.now()});
   }
 
   Future<Online?> _getOnlineTimeLast7days() async {
-    if (await _exists('onlinetime-last7days', MyDateTime.yesterday())) return null;
+    if (await _exists('onlinetime-last7days', DT.tibia.yesterday())) return null;
 
-    DateTime start = MyDateTime.now().subtract(Duration(days: 7));
-    DateTime end = MyDateTime.now().subtract(Duration(days: 1));
+    DateTime start = DT.tibia.now().subtract(Duration(days: 7));
+    DateTime end = DT.tibia.now().subtract(Duration(days: 1));
     Online result = Online(list: <OnlineEntry>[]);
 
-    for (String date in MyDateTime.range(start, end)) {
+    for (String date in DT.tibia.range(start, end)) {
       List<dynamic> response = await databaseClient.from('onlinetime').select().eq('date', date);
 
       if (response.isNotEmpty) {
@@ -392,21 +392,21 @@ class ETL implements IETL {
   Future<dynamic> _saveOnlineTimeLast7days(Online? onlineTime) async {
     if (onlineTime == null) return;
     var values = <String, dynamic>{
-      'date': MyDateTime.yesterday(),
+      'date': DT.tibia.yesterday(),
       'data': onlineTime.toJson(),
-      'timestamp': MyDateTime.timeStamp(),
+      'timestamp': DT.germany.timeStamp(),
     };
     return databaseClient.from('onlinetime-last7days').insert(values);
   }
 
   Future<Online?> _getOnlineTimeLast30days() async {
-    if (await _exists('onlinetime-last30days', MyDateTime.yesterday())) return null;
+    if (await _exists('onlinetime-last30days', DT.tibia.yesterday())) return null;
 
-    DateTime start = MyDateTime.now().subtract(Duration(days: 30));
-    DateTime end = MyDateTime.now().subtract(Duration(days: 1));
+    DateTime start = DT.tibia.now().subtract(Duration(days: 30));
+    DateTime end = DT.tibia.now().subtract(Duration(days: 1));
     Online result = Online(list: <OnlineEntry>[]);
 
-    for (String date in MyDateTime.range(start, end)) {
+    for (String date in DT.tibia.range(start, end)) {
       List<dynamic> response = await databaseClient.from('onlinetime').select().eq('date', date);
 
       if (response.isNotEmpty) {
@@ -431,9 +431,9 @@ class ETL implements IETL {
   Future<dynamic> _saveOnlineTimeLast30days(Online? onlineTime) async {
     if (onlineTime == null) return;
     var values = <String, dynamic>{
-      'date': MyDateTime.yesterday(),
+      'date': DT.tibia.yesterday(),
       'data': onlineTime.toJson(),
-      'timestamp': MyDateTime.timeStamp(),
+      'timestamp': DT.germany.timeStamp(),
     };
     return databaseClient.from('onlinetime-last30days').insert(values);
   }
@@ -443,7 +443,7 @@ class ETL implements IETL {
     String supabaseUrl = request.headers['supabaseUrl'] ?? '';
     String supabaseKey = request.headers['supabaseKey'] ?? '';
     databaseClient.setup(supabaseUrl, supabaseKey);
-    if (await _exists('rook-master', MyDateTime.today())) return ApiResponse.accepted();
+    if (await _exists('rook-master', DT.tibia.today())) return ApiResponse.accepted();
     return _getRookMaster('rook-master', 'insert');
   }
 
