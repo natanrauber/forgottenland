@@ -31,8 +31,8 @@ class Alert {
           Timer(duration, () => Navigator.pop(context));
         }
 
-        return WillPopScope(
-          onWillPop: () async => false,
+        return PopScope(
+          canPop: false,
           child: AlertDialog(
             backgroundColor: Colors.white,
             insetPadding: const EdgeInsets.all(32),

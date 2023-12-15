@@ -192,6 +192,7 @@ class _HighscoresPageState extends State<HighscoresPage> {
                 style: const TextStyle(
                   color: AppColors.blue,
                   decoration: TextDecoration.underline,
+                  decorationColor: AppColors.blue,
                 ),
                 recognizer: TapGestureRecognizer()..onTap = () => Get.toNamed(Routes.login.name),
               ),

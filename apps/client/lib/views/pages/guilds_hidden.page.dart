@@ -33,40 +33,33 @@ class _GuildsHiddenPageState extends State<GuildsHiddenPage> {
   }
 
   @override
-  Widget build(BuildContext context) => WillPopScope(
-        onWillPop: () async => true,
-        child: Scaffold(
-          appBar: AppHeader(),
-          body: Center(
-            child: RefreshIndicator(
-              onRefresh: () async {},
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: <Widget>[
-                    /// highscores list view
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child: ListView.builder(
-                        padding: EdgeInsets.fromLTRB(
-                          MediaQuery.of(context).size.width > 1000
-                              ? ((MediaQuery.of(context).size.width / 2) - 400)
-                              : 20,
-                          20,
-                          MediaQuery.of(context).size.width > 1000
-                              ? ((MediaQuery.of(context).size.width / 2) - 400)
-                              : 20,
-                          270,
-                        ),
-                        itemCount: guildsCtrl.list.length,
-                        itemBuilder: _itemBuilder,
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppHeader(),
+        body: Center(
+          child: RefreshIndicator(
+            onRefresh: () async {},
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: <Widget>[
+                  /// highscores list view
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                      padding: EdgeInsets.fromLTRB(
+                        MediaQuery.of(context).size.width > 1000 ? ((MediaQuery.of(context).size.width / 2) - 400) : 20,
+                        20,
+                        MediaQuery.of(context).size.width > 1000 ? ((MediaQuery.of(context).size.width / 2) - 400) : 20,
+                        270,
                       ),
+                      itemCount: guildsCtrl.list.length,
+                      itemBuilder: _itemBuilder,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

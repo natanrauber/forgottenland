@@ -53,6 +53,7 @@ class _CardDonateState extends State<CardDonate> {
                 style: const TextStyle(
                   color: AppColors.blue,
                   decoration: TextDecoration.underline,
+                  decorationColor: AppColors.blue,
                 ),
                 recognizer: TapGestureRecognizer()..onTap = () => setState(() => expanded = true),
               ),
@@ -68,6 +69,7 @@ class _CardDonateState extends State<CardDonate> {
                 style: const TextStyle(
                   color: AppColors.blue,
                   decoration: TextDecoration.underline,
+                  decorationColor: AppColors.blue,
                 ),
                 recognizer: TapGestureRecognizer()..onTap = _pushCharacterPage,
               ),
@@ -84,6 +86,7 @@ class _CardDonateState extends State<CardDonate> {
                 style: const TextStyle(
                   color: AppColors.blue,
                   decoration: TextDecoration.underline,
+                  decorationColor: AppColors.blue,
                 ),
                 recognizer: TapGestureRecognizer()..onTap = () => setState(() => expanded = false),
               ),

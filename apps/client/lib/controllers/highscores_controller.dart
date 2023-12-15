@@ -20,6 +20,8 @@ class HighscoresController extends Controller {
   final OnlineController _onlineCtrl = Get.find<OnlineController>();
   final WorldsController _worldsCtrl = Get.find<WorldsController>();
 
+  String? rankLastUpdate;
+
   DateTime _loadStartTime = DateTime.now();
 
   RxInt pageCtrl = 1.obs;
@@ -55,6 +57,7 @@ class HighscoresController extends Controller {
     pageCtrl.value = newPage ? pageCtrl.value + 1 : 1;
     if (!newPage) loadedAll = false.obs;
     if (pageCtrl.value > 20) return;
+    if (pageCtrl.value == 1) rankLastUpdate = null;
     if (pageCtrl.value == 1) rawList.clear();
     if (pageCtrl.value == 1) filteredList.clear();
     if (resetTimer) _loadStartTime = DateTime.now();
@@ -82,6 +85,7 @@ class HighscoresController extends Controller {
         final Record aux = Record.fromJson(
           (response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{},
         );
+        if (pageCtrl.value == 1) rankLastUpdate = response.dataAsMap['data']['timestamp'] as String?;
         _onlineCtrl.onlineTimes = <HighscoresEntry>[].obs;
 
         if (aux.list.length < 50 == true) loadedAll.value = true;

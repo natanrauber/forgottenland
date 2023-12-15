@@ -70,7 +70,7 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
 
             _selectedFilters(),
 
-            _disclaimer(),
+            if (highscoresCtrl.rankLastUpdate != null) _lastUpdated(),
           ],
         ),
       );
@@ -238,6 +238,17 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
     return '$text.';
   }
 
+  Widget _lastUpdated() => Padding(
+        padding: const EdgeInsets.fromLTRB(25, 10, 25, 0),
+        child: Text(
+          'Updated: ${highscoresCtrl.rankLastUpdate?.replaceAll('-', '.')}',
+          style: const TextStyle(
+            fontSize: 11,
+            color: AppColors.textSecondary,
+          ),
+        ),
+      );
+
   Widget _category() => _dropdown<String>(
         labelText: 'Category',
         selectedItem: highscoresCtrl.category.value,
@@ -247,9 +258,9 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
           if (value == 'Experience gained' || value == 'Online time') {
             final String category = value.toLowerCase().replaceAll(' ', '');
             final String timeframe = highscoresCtrl.timeframe.value.toLowerCase().replaceAll(' ', '');
-            return Get.offAndToNamed('/highscores/$category/$timeframe');
+            return Get.toNamed('/highscores/$category/$timeframe');
           }
-          return Get.offAndToNamed('/highscores/${value.toLowerCase().replaceAll(' ', '')}');
+          return Get.toNamed('/highscores/${value.toLowerCase().replaceAll(' ', '')}');
         },
       );
 
@@ -265,7 +276,7 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
               if (value is! String) return;
               final String category = highscoresCtrl.category.value.toLowerCase().replaceAll(' ', '');
               final String timeframe = value.toLowerCase().replaceAll(' ', '');
-              Get.offAndToNamed('/highscores/$category/$timeframe');
+              Get.toNamed('/highscores/$category/$timeframe');
             },
           );
         },
@@ -383,29 +394,6 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
             highscoresCtrl.worldType.value = value;
             await highscoresCtrl.filterList();
           }
-        },
-      );
-
-  Widget _disclaimer() => Obx(
-        () {
-          if (highscoresCtrl.category.value != 'Experience gained') return Container();
-
-          return Container(
-            margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-              color: AppColors.bgPaper,
-              borderRadius: BorderRadius.circular(11),
-            ),
-            child: const Text(
-              'Characters that were connected at server save time might have the experience gained (before server save) counted for the next day (after server save).',
-              style: TextStyle(
-                fontSize: 11,
-                // height: 1.2,
-                color: Colors.orange,
-              ),
-            ),
-          );
         },
       );
 }

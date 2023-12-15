@@ -36,6 +36,7 @@ class ErrorBuilder extends Container {
                       style: TextStyle(
                         color: AppColors.primary,
                         decoration: TextDecoration.underline,
+                        decorationColor: AppColors.blue,
                       ),
                     ),
                   ),

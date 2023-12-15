@@ -52,14 +52,14 @@ class HighscoresController {
 
   String? _getDateFromCategory(String category) {
     Map<String, String> dates = <String, String>{
-      'experiencegained+today': MyDateTime.today(),
-      'experiencegained+yesterday': MyDateTime.yesterday(),
-      'experiencegained+last7days': MyDateTime.yesterday(),
-      'experiencegained+last30days': MyDateTime.yesterday(),
-      'onlinetime+today': MyDateTime.today(),
-      'onlinetime+yesterday': MyDateTime.yesterday(),
-      'onlinetime+last7days': MyDateTime.yesterday(),
-      'onlinetime+last30days': MyDateTime.yesterday(),
+      'experiencegained+today': DT.tibia.today(),
+      'experiencegained+yesterday': DT.tibia.yesterday(),
+      'experiencegained+last7days': DT.tibia.yesterday(),
+      'experiencegained+last30days': DT.tibia.yesterday(),
+      'onlinetime+today': DT.tibia.today(),
+      'onlinetime+yesterday': DT.tibia.yesterday(),
+      'onlinetime+last7days': DT.tibia.yesterday(),
+      'onlinetime+last30days': DT.tibia.yesterday(),
     };
     return dates[category];
   }
@@ -109,6 +109,7 @@ class HighscoresController {
     try {
       dynamic response = await databaseClient.from(table).select().eq('date', date).single();
       Record record = Record.fromJson(response['data'] as Map<String, dynamic>);
+      record.timestamp = response['timestamp'] as String?;
 
       record.list = _filterWorld<HighscoresEntry>(world, record.list);
       if (page != null) record.list = _getPageRange<HighscoresEntry>(page, record.list);
@@ -149,6 +150,7 @@ class HighscoresController {
     try {
       dynamic response = await databaseClient.from('rook-master').select().order('date').limit(1).single();
       Record record = Record.fromJson(response['data'] as Map<String, dynamic>);
+      record.timestamp = response['timestamp'] as String?;
 
       record.list = _filterWorld<HighscoresEntry>(world, record.list);
       if (page != null) record.list = _getPageRange<HighscoresEntry>(page, record.list);

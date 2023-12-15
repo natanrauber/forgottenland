@@ -98,7 +98,6 @@ class _SplashPageState extends State<SplashPage> {
         borderRadius: BorderRadius.circular(11),
         child: Container(
           constraints: const BoxConstraints(maxWidth: 800),
-          color: Colors.red,
           child: Image.asset(
             'assets/images/splash/tintas_merighi.jpeg',
           ),

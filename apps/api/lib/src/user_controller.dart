@@ -20,7 +20,7 @@ class UserController {
         <String, dynamic>{
           'email': email,
           'device': device,
-          'datetime': MyDateTime.timeStamp(),
+          'datetime': DT.tibia.timeStamp(),
         }.toString(),
       );
       String token = utf8.fuse(base64).encode('Basic $email:$password');

@@ -62,7 +62,15 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 dropdownBuilder: _dropdownBuilder,
                 popupProps: PopupProps<T>.dialog(
                   showSearchBox: true,
+                  searchDelay: Duration.zero,
                   itemBuilder: _popupItemBuilder,
+                  containerBuilder: (_, Widget child) => Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.bgDefault,
+                      borderRadius: BorderRadius.circular(11),
+                    ),
+                    child: child,
+                  ),
                   dialogProps: const DialogProps(
                     backgroundColor: AppColors.bgDefault,
                   ),
@@ -156,8 +164,14 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
           );
 
   TextFieldProps get _searchFieldProps => TextFieldProps(
+        cursorColor: Colors.white,
         padding: const EdgeInsets.all(20),
+        style: appTheme().textTheme.bodyMedium?.copyWith(
+              color: AppColors.textPrimary,
+            ),
         decoration: InputDecoration(
+          filled: true,
+          fillColor: AppColors.bgPaper,
           hintText: 'Search',
           hintStyle: appTheme().textTheme.bodyMedium?.copyWith(
                 color: AppColors.textSecondary.withOpacity(0.5),

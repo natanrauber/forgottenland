@@ -38,14 +38,14 @@ void configureCustomPrint(CustomPrintMode mode) {
 void _customPrintRelease(String? message, {dynamic data}) {}
 
 void _customPrintDev(String? message, {dynamic data}) {
-  debugPrint('[${MyDateTime.timeStamp()}] $message');
+  debugPrint('[${DT.tibia.timeStamp()}] $message');
 }
 
 void _customPrintDebug(String? message, {Map<String, dynamic>? data}) {
   const JsonEncoder encoder = JsonEncoder.withIndent(' ');
   final String prettyprint = encoder.convert(data);
 
-  debugPrint('\n[${MyDateTime.timeStamp()}]');
+  debugPrint('\n[${DT.tibia.timeStamp()}]');
   debugPrint(message);
   if (data != null) debugPrint(prettyprint, wrapWidth: 10000);
 }

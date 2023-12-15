@@ -2,7 +2,10 @@ import 'package:models/src/highscores_entry_model.dart';
 import 'package:utils/utils.dart';
 
 class Record {
-  Record({this.list = const <HighscoresEntry>[]});
+  Record({
+    this.list = const <HighscoresEntry>[],
+    this.timestamp,
+  });
 
   Record.fromJson(Map<String, dynamic> json) {
     json.clean();
@@ -41,23 +44,12 @@ class Record {
   }
 
   List<HighscoresEntry> list = <HighscoresEntry>[];
+  String? timestamp;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['timestamp'] = timestamp;
     data['highscore_list'] = list.map((HighscoresEntry v) => v.toJson()).toList();
     return data.clean();
   }
 }
-
-// int _getExpPointsForLevel(int? level, String? name) {
-//   double points = 0;
-
-//   for (int i = 2; i < (level ?? 2); i++) {
-//     int currentExpH = 12000 + (i * 75);
-//     int expForNextLevel = ((50 * pow(i, 2)) - (150 * i) + 200).floor();
-//     double hoursForNextLevel = expForNextLevel / currentExpH;
-//     points += hoursForNextLevel;
-//   }
-
-//   return points.floor();
-// }
