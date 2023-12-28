@@ -14,6 +14,7 @@ abstract class IETL {
   Future<Response> expGainedYesterday(Request request);
   Future<Response> expGainedLast7Days(Request request);
   Future<Response> expGainedLast30Days(Request request);
+  Future<Response> expGainedLast365Days(Request request);
   Future<Response> registerOnlinePlayers(Request request);
   Future<Response> rookmaster(Request request);
   Future<Response> calcSkillPoints(Request request);
@@ -197,6 +198,24 @@ class ETL implements IETL {
       Record result = await _getExpGainRange(DT.tibia.aMonthAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
       await _saveExpGain('exp-gain-last-30-days', DT.tibia.yesterday(), result);
+      return ApiResponse.success();
+    } catch (e) {
+      return ApiResponse.error(e);
+    }
+  }
+
+  @override
+  Future<Response> expGainedLast365Days(Request request) async {
+    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
+    String supabaseKey = request.headers['supabaseKey'] ?? '';
+    databaseClient.setup(supabaseUrl, supabaseKey);
+
+    if (await _exists('exp-gain-last-365-days', DT.tibia.yesterday())) return ApiResponse.accepted();
+
+    try {
+      Record result = await _getExpGainRange(DT.tibia.aYearAgo(), DT.tibia.today());
+      _recordAddMissingRank(result);
+      await _saveExpGain('exp-gain-last-365-days', DT.tibia.yesterday(), result);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);

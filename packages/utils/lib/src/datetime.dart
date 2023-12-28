@@ -41,6 +41,8 @@ class MyDateTime {
 
   String aMonthAgo() => (now().subtract(const Duration(days: 30))).toIso8601String().substring(0, 10);
 
+  String aYearAgo() => (now().subtract(const Duration(days: 365))).toIso8601String().substring(0, 10);
+
   List<String> range(DateTime start, DateTime end) {
     List<String> range = <String>[];
     DateTime date = start;

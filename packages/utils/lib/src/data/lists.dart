@@ -22,6 +22,7 @@ class LIST {
     'Yesterday',
     'Last 7 days',
     'Last 30 days',
+    'Last 365 days',
   ];
 
   static const List<String> premiumCategories = <String>[

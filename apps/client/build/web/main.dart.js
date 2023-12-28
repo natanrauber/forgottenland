@@ -27130,7 +27130,7 @@ return new A.C_(new A.af2(b),s,s,s,B.Wu,B.aj,s,s,!0,!0,s,s,B.Ks,s,B.t,!1,!0,s,a,
 aVr(){var s,r,q,p,o,n=A.a([$.aEQ(),$.Kd(),$.aER(),$.aAO(),$.aAP(),$.aAQ(),$.aES(),$.aAR()],t.zF)
 for(s=0;s<12;++s){r=B.hd[s]
 q=A.bB(r.toLowerCase()," ","")
-if(r==="Experience gained"||r==="Online time")for(q="/highscores/"+r+"/",p=0;p<4;++p){o=B.hf[p]
+if(r==="Experience gained"||r==="Online time")for(q="/highscores/"+r+"/",p=0;p<5;++p){o=B.hg[p]
 n.push(A.mp(A.bB((q+o).toLowerCase()," ",""),new A.qy(r,o,null)))}else n.push(A.mp("/highscores/"+q,new A.qy(r,null,null)))}return n},
 C_:function C_(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,a0,a1,a2,a3,a4,a5,a6,a7){var _=this
 _.r=a
@@ -79345,7 +79345,7 @@ r=A.a([],s)
 q=c.y
 q.toString
 p=J.aq(q,null)
-if(p==null)p=B.hg
+if(p==null)p=B.hf
 o=A.z(t.ob,t.UX)
 q=c.y
 q.toString
@@ -79365,8 +79365,8 @@ if(j){r=A.a([],s)
 i=c.y
 i.toString
 p=J.aq(i,h.geN())
-if(p==null)p=B.hg}else{r=B.hg
-p=B.hg}l=h
+if(p==null)p=B.hf}else{r=B.hf
+p=B.hf}l=h
 continue}if(j){i=h.b
 i=i==null?b:i.gXu()
 j=i===!0}else j=!1
@@ -89182,7 +89182,7 @@ q.aG$=1
 m=A.jQ(A.a([],n),m)
 n=A.jQ(A.a([],t.s),t.N)
 s=A.jQ(A.a([],k),j)
-s=new A.AS(this.a,a0,p,l,new A.eF(i,!1),q,m,n,s,new A.jZ(B.cG,r),A.jQ(A.a([],k),j),A.ib(B.b.gK(B.hd)),A.ib(B.b.gK(B.hf)),A.aCI(A.mX("All")),A.ib(B.b.gK(B.dy)),A.ib(B.b.gK(B.cb)),A.ib(B.b.gK(B.dB)),A.ib(B.b.gK(B.dz)),A.dI(!0),A.dI(!0),A.dI(!0),A.dI(!0),A.dI(!1),A.dI(!1),A.a([],d),A.dY(f,f,f,c,b),new A.dC(a),new A.dC(a),!1,!1)
+s=new A.AS(this.a,a0,p,l,new A.eF(i,!1),q,m,n,s,new A.jZ(B.cG,r),A.jQ(A.a([],k),j),A.ib(B.b.gK(B.hd)),A.ib(B.b.gK(B.hg)),A.aCI(A.mX("All")),A.ib(B.b.gK(B.dy)),A.ib(B.b.gK(B.cb)),A.ib(B.b.gK(B.dB)),A.ib(B.b.gK(B.dz)),A.dI(!0),A.dI(!0),A.dI(!0),A.dI(!0),A.dI(!1),A.dI(!1),A.a([],d),A.dY(f,f,f,c,b),new A.dC(a),new A.dC(a),!1,!1)
 s.kc()
 A.o9(e,s,t.fA)
 s=$.aS
@@ -89736,7 +89736,7 @@ A.at_.prototype={
 $0(){var s=null,r=this.a,q=r.d,p=q.p1,o=p.gj(p)
 if(o!=="Experience gained"&&o!=="Online time")return A.E(s,s,B.e,s,s,s,s,s,s,s)
 q=q.p2
-return r.EV(B.hf,"Timeframe",new A.asZ(r),q.gj(q),t.N)},
+return r.EV(B.hg,"Timeframe",new A.asZ(r),q.gj(q),t.N)},
 $S:39}
 A.asZ.prototype={
 $1(a){return this.ZY(a)},
@@ -90022,7 +90022,7 @@ q.aP()
 s=q.a.c
 if(s==null)s=B.b.gK(B.hd)
 r=q.a.d
-if(r==null)r=B.b.gK(B.hf)
+if(r==null)r=B.b.gK(B.hg)
 if(q.a68(s,r))return
 $.ag.ag$.push(new A.atc(q,s,r))},
 a68(a,b){var s=this.d,r=s.p1
@@ -100222,7 +100222,6 @@ B.cE=new A.l7(0,"butt")
 B.lh=new A.l7(1,"round")
 B.zX=new A.l7(2,"square")
 B.K6=A.a(s([B.cE,B.lh,B.zX]),A.af("r<l7>"))
-B.hf=A.a(s(["Today","Yesterday","Last 7 days","Last 30 days"]),t.s)
 B.a7=new A.le(0,"rtl")
 B.w=new A.le(1,"ltr")
 B.Kd=A.a(s([B.a7,B.w]),A.af("r<le>"))
@@ -100268,7 +100267,7 @@ B.Kn=A.a(s([]),t.fJ)
 B.Ko=A.a(s([]),A.af("r<vs>"))
 B.ZV=A.a(s([]),t.ss)
 B.Kx=A.a(s([]),t.tc)
-B.hg=A.a(s([]),t.jl)
+B.hf=A.a(s([]),t.jl)
 B.oK=A.a(s([]),t.wi)
 B.Ky=A.a(s([]),A.af("r<mt<@>>"))
 B.Kr=A.a(s([]),t.Vz)
@@ -100286,6 +100285,7 @@ B.Kz=A.a(s([]),t._m)
 B.NX=new A.k(0,2)
 B.BO=new A.eD(0.75,B.dl,B.na,B.NX,1.5)
 B.KE=A.a(s([B.BO]),t.sq)
+B.hg=A.a(s(["Today","Yesterday","Last 7 days","Last 30 days","Last 365 days"]),t.s)
 B.id=new A.jY(0,"left")
 B.lv=new A.jY(1,"right")
 B.dc=new A.jY(2,"center")

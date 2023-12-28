@@ -21,6 +21,7 @@ final _router = Router()
   ..get('/expgain+yesterday', ETL(_env, _databaseClient, _httpClient).expGainedYesterday)
   ..get('/expgain+last7days', ETL(_env, _databaseClient, _httpClient).expGainedLast7Days)
   ..get('/expgain+last30days', ETL(_env, _databaseClient, _httpClient).expGainedLast30Days)
+  ..get('/expgain+last365days', ETL(_env, _databaseClient, _httpClient).expGainedLast365Days)
   ..get('/online', ETL(_env, _databaseClient, _httpClient).registerOnlinePlayers)
   ..get('/rookmaster', ETL(_env, _databaseClient, _httpClient).rookmaster)
   ..get('/skill/<name>/<value>', ETL(_env, _databaseClient, _httpClient).calcSkillPoints);

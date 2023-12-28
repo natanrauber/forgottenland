@@ -24,6 +24,7 @@ void main(List<String> arguments) {
     CronJob(time: '55 * * * *', name: 'expgain+yesterday', task: () => _etlGet('/expgain+yesterday')),
     CronJob(time: '55 * * * *', name: 'expgain+last7days', task: () => _etlGet('/expgain+last7days')),
     CronJob(time: '55 * * * *', name: 'expgain+last30days', task: () => _etlGet('/expgain+last30days')),
+    CronJob(time: '55 * * * *', name: 'expgain+last365days', task: () => _etlGet('/expgain+last365days')),
     CronJob(time: '0 0 * * 0', name: 'rookmaster', task: () => _etlGet('/rookmaster')),
   ];
 
