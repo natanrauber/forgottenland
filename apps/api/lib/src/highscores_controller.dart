@@ -1,5 +1,6 @@
 import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/utils/error_handler.dart';
+import 'package:forgottenlandapi/utils/maps.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
@@ -24,7 +25,10 @@ class HighscoresController {
     if (category.contains('experiencegained')) return getExpGain(world, category, page);
     if (category.contains('onlinetime')) return getOnlineTime(world, category, page);
     if (category.contains('rookmaster')) return getRookmaster(world, page);
+    return getFromTibiaData(world, category, vocation, page);
+  }
 
+  Future<Response> getFromTibiaData(String? world, String? category, String? vocation, int page) async {
     try {
       MyHttpResponse response = await httpClient.get(
         '${env['PATH_TIBIA_DATA']}/highscores/$world/$category/$vocation/$page',
@@ -34,46 +38,6 @@ class HighscoresController {
     } catch (e) {
       return handleError(e);
     }
-  }
-
-  String? _getTableFromCategory(String category) {
-    Map<String, String> tables = <String, String>{
-      'experiencegained+today': 'exp-gain-today',
-      'experiencegained+yesterday': 'exp-gain-last-day',
-      'experiencegained+last7days': 'exp-gain-last-7-days',
-      'experiencegained+last30days': 'exp-gain-last-30-days',
-      'experiencegained+last365days': 'exp-gain-last-365-days',
-      'onlinetime+today': 'onlinetime',
-      'onlinetime+yesterday': 'onlinetime',
-      'onlinetime+last7days': 'onlinetime-last7days',
-      'onlinetime+last30days': 'onlinetime-last30days',
-    };
-    return tables[category];
-  }
-
-  String? _getDateFromCategory(String category) {
-    Map<String, String> dates = <String, String>{
-      'experiencegained+today': DT.tibia.today(),
-      'experiencegained+yesterday': DT.tibia.yesterday(),
-      'experiencegained+last7days': DT.tibia.yesterday(),
-      'experiencegained+last30days': DT.tibia.yesterday(),
-      'experiencegained+last365days': DT.tibia.yesterday(),
-      'onlinetime+today': DT.tibia.today(),
-      'onlinetime+yesterday': DT.tibia.yesterday(),
-      'onlinetime+last7days': DT.tibia.yesterday(),
-      'onlinetime+last30days': DT.tibia.yesterday(),
-    };
-    return dates[category];
-  }
-
-  List<T> _getPageRange<T>(int page, List<T> list) {
-    if ((page - 1) * 50 > list.length) return <T>[];
-    if (list.length <= 50) return list;
-
-    int start = (page - 1) * 50;
-    int end = page * 50;
-    if (end > list.length) end = list.length;
-    return list.getRange(start, end).toList();
   }
 
   List<T> _filterWorld<T>(String world, List<T> list) {
@@ -102,8 +66,8 @@ class HighscoresController {
   }
 
   Future<Response> getExpGain(String world, String category, int? page) async {
-    String? table = _getTableFromCategory(category);
-    String? date = _getDateFromCategory(category);
+    String? table = tableToCategory[category];
+    String? date = dateToCategory[category];
 
     if (page != null && page <= 0) return ApiResponse.error('Invalid page number');
     if (table == null || date == null) return ApiResponse.error('Invalid category');
@@ -114,7 +78,7 @@ class HighscoresController {
       record.timestamp = response['timestamp'] as String?;
 
       record.list = _filterWorld<HighscoresEntry>(world, record.list);
-      if (page != null) record.list = _getPageRange<HighscoresEntry>(page, record.list);
+      if (page != null) record.list = record.list.getSegment<HighscoresEntry>(size: 50, index: page - 1);
       record.list = _addMissingRank<HighscoresEntry>(page, record.list);
 
       if (record.list.isEmpty) return ApiResponse.noContent();
@@ -125,8 +89,8 @@ class HighscoresController {
   }
 
   Future<Response> getOnlineTime(String world, String category, int? page) async {
-    String? table = _getTableFromCategory(category);
-    String? date = _getDateFromCategory(category);
+    String? table = tableToCategory[category];
+    String? date = dateToCategory[category];
 
     if (page != null && page <= 0) return ApiResponse.error('Invalid page number');
     if (table == null || date == null) return ApiResponse.error('Invalid category');
@@ -136,7 +100,7 @@ class HighscoresController {
       Online online = Online.fromJson(response['data'] as Map<String, dynamic>);
 
       online.list = _filterWorld<OnlineEntry>(world, online.list);
-      if (page != null) online.list = _getPageRange<OnlineEntry>(page, online.list);
+      if (page != null) online.list = online.list.getSegment<OnlineEntry>(size: 50, index: page - 1);
       online.list = _addMissingRank<OnlineEntry>(page, online.list);
 
       if (online.list.isEmpty) return ApiResponse.noContent();
@@ -155,7 +119,7 @@ class HighscoresController {
       record.timestamp = response['timestamp'] as String?;
 
       record.list = _filterWorld<HighscoresEntry>(world, record.list);
-      if (page != null) record.list = _getPageRange<HighscoresEntry>(page, record.list);
+      if (page != null) record.list = record.list.getSegment<HighscoresEntry>(size: 50, index: page - 1);
       record.list = _addMissingRank<HighscoresEntry>(page, record.list);
 
       if (record.list.isEmpty) return ApiResponse.noContent();
