@@ -1,4 +1,6 @@
 import 'package:database_client/database_client.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/controllers/guilds_controller.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
@@ -13,7 +15,7 @@ import 'package:http_client/http_client.dart';
 
 class MainBinding implements Bindings {
   final IDatabaseClient _databaseClient = MySupabaseClient();
-  final IHttpClient _httpClient = MyDioClient();
+  final IHttpClient _httpClient = MyDioClient(postRequestCallback: _postRequestCallback);
 
   @override
   void dependencies() {
@@ -27,4 +29,18 @@ class MainBinding implements Bindings {
     Get.put(HighscoresController(_databaseClient, _httpClient));
     Get.put(BazaarController(httpClient: _httpClient, worldsCtrl: Get.find<WorldsController>()));
   }
+}
+
+Future<void> _postRequestCallback(MyHttpResponse? response, Object? e) async {
+  if (response != null) {
+    return FirebaseAnalytics.instance.logEvent(
+      name:
+          '${kDebugMode ? 'DEV: ' : ''}${response.statusCode} ${response.requestOptions?.path.replaceAll('//', '').replaceFirst('/', 'SPLIT').split('SPLIT').last}',
+      parameters: <String, dynamic>{
+        'data': response.dataAsMap.toString(),
+      },
+    );
+  }
+
+  return FirebaseAnalytics.instance.logEvent(name: '${kDebugMode ? 'DEV: ' : ''}$e');
 }

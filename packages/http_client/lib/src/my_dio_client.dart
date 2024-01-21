@@ -6,11 +6,12 @@ import 'package:http_client/src/http_error_handler.dart';
 import 'package:http_client/src/http_response.dart';
 
 class MyDioClient implements IHttpClient {
-  MyDioClient({BaseOptions? baseOptions}) {
+  MyDioClient({BaseOptions? baseOptions, this.postRequestCallback}) {
     _dio = Dio(baseOptions ?? defaultBaseOptions);
   }
 
   late Dio _dio;
+  final Function(MyHttpResponse? response, Object? e)? postRequestCallback;
 
   static BaseOptions defaultBaseOptions = BaseOptions(
     headers: <String, dynamic>{'Content-Type': 'application/json'},
@@ -34,13 +35,19 @@ class MyDioClient implements IHttpClient {
     try {
       response = MyHttpResponse.fromResponse(await request.call());
     } on DioException catch (e) {
+      postRequestCallback?.call(MyHttpResponse.fromResponse(e.response), null);
       return HttpErrorHandler.dio(e);
     } on SocketException catch (e) {
+      postRequestCallback?.call(null, e);
       return HttpErrorHandler.socket(e);
     } catch (e) {
+      postRequestCallback?.call(null, e);
       return HttpErrorHandler.fallback(e);
     } finally {
-      if (response != null) _printRequest(response);
+      if (response != null) {
+        _printRequest(response);
+        postRequestCallback?.call(response, null);
+      }
     }
     return response;
   }
