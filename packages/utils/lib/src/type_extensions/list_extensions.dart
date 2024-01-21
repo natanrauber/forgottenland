@@ -18,7 +18,7 @@ extension ListExtension on List<dynamic> {
     if (length <= size) return this as List<T>;
 
     int start = index * size;
-    int end = index + 1 * size;
+    int end = (index + 1) * size;
     if (end > length) end = length;
     return getRange(start, end).toList() as List<T>;
   }
