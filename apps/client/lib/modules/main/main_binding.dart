@@ -32,6 +32,7 @@ class MainBinding implements Bindings {
 }
 
 Future<void> _postRequestCallback(MyHttpResponse? response, Object? e) async {
+  if (kDebugMode) return;
   if (response != null) {
     return FirebaseAnalytics.instance.logEvent(
       name:
