@@ -88242,7 +88242,7 @@ l.sj(0,!0)
 o=p.fr
 o.sj(0,new A.hk())
 s=3
-return A.M(p.dx.kf(0,"http://localhost:8080/character/"+p.dy.a.a),$async$ml)
+return A.M(p.dx.kf(0,"https://forgottenlandapi.up.railway.app/character/"+p.dy.a.a),$async$ml)
 case 3:n=b
 p.fx=n
 if(B.b.t(A.a([200,201,204],t.t),n.b)){n=t.P
@@ -88300,7 +88300,7 @@ e=n.p3.k(0)
 j=A.e(m)
 i=n.id.k(0)
 s=10
-return A.M(n.dy.kf(0,A.bA(("http://localhost:8080/highscores/"+e+"/"+j+"/none/"+i).toLowerCase()," ","")),$async$p_)
+return A.M(n.dy.kf(0,A.bA(("https://forgottenlandapi.up.railway.app/highscores/"+e+"/"+j+"/none/"+i).toLowerCase()," ","")),$async$p_)
 case 10:f=a0
 if(f.b===204)n.xr.sj(0,!0)
 else{e=f
@@ -88540,7 +88540,7 @@ break
 case 3:s=5
 return A.M(n.rj(0),$async$nJ)
 case 5:case 4:s=6
-return A.M(p.dx.kf(0,"http://localhost:8080/online/now"),$async$nJ)
+return A.M(p.dx.kf(0,"https://forgottenlandapi.up.railway.app/online/now"),$async$nJ)
 case 6:m=b
 if(B.b.t(A.a([200,201,204],t.t),m.b))p.ag2(o,m)
 s=7
@@ -88638,7 +88638,7 @@ s=3
 return A.M(new A.a5C().gIr(),$async$wb)
 case 3:m=j.aQb(b)
 s=4
-return A.M(p.dx.Cd("http://localhost:8080/login",A.ap(["email",o,"password",n,"device",m.k(m)],t.N,t.z)),$async$wb)
+return A.M(p.dx.Cd("https://forgottenlandapi.up.railway.app/login",A.ap(["email",o,"password",n,"device",m.k(m)],t.N,t.z)),$async$wb)
 case 4:l=b
 if(B.b.t(A.a([200,201,204],t.t),l.b)){o=document
 o.toString
@@ -88673,7 +88673,7 @@ if(n==null){q=null
 s=1
 break}o.sj(0,!0)
 s=3
-return A.M(p.dx.Cd("http://localhost:8080/revive",A.ap(["session_id",n],t.N,t.z)),$async$CD)
+return A.M(p.dx.Cd("https://forgottenlandapi.up.railway.app/revive",A.ap(["session_id",n],t.N,t.z)),$async$CD)
 case 3:m=b
 if(B.b.t(A.a([200,201,204],t.t),m.b)){l.sj(0,!0)
 p.fr=A.aJg(A.aK3(t.P.a(J.aq(m.giX(),"data"))))}o.sj(0,!1)
@@ -88792,7 +88792,7 @@ break
 case 3:s=5
 return A.M(n.rj(0),$async$nG)
 case 5:case 4:s=6
-return A.M(p.dx.kf(0,"http://localhost:8080/bazaar"),$async$nG)
+return A.M(p.dx.kf(0,"https://forgottenlandapi.up.railway.app/bazaar"),$async$nG)
 case 6:m=b
 if(B.b.t(A.a([200,201,204],t.t),m.b))p.a6r(o,m)
 s=7
