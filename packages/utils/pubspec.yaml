@@ -1,9 +1,9 @@
 name: utils
 description: A starting point for Dart libraries or applications.
-version: 24.01.07+1
+version: 24.01.22+1
 
 environment:
-  sdk: '>=2.18.4 <3.0.0'
+  sdk: '3.2.0'
 
 dependencies:
   dotenv: ^4.1.0

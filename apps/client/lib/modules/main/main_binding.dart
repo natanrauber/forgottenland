@@ -1,6 +1,5 @@
 import 'package:database_client/database_client.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/controllers/guilds_controller.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
@@ -31,17 +30,10 @@ class MainBinding implements Bindings {
   }
 }
 
-Future<void> _postRequestCallback(MyHttpResponse? response, Object? e) async {
-  if (kDebugMode) return;
-  if (response != null) {
-    return FirebaseAnalytics.instance.logEvent(
+Future<void> _postRequestCallback(MyHttpResponse response) async => FirebaseAnalytics.instance.logEvent(
       name:
-          '${kDebugMode ? 'DEV: ' : ''}${response.statusCode} ${response.requestOptions?.path.replaceAll('//', '').replaceFirst('/', 'SPLIT').split('SPLIT').last}',
+          '${response.statusCode} ${response.requestOptions?.path.replaceAll('//', '').replaceFirst('/', 'SPLIT').split('SPLIT').last}',
       parameters: <String, dynamic>{
         'data': response.dataAsMap.toString(),
       },
     );
-  }
-
-  return FirebaseAnalytics.instance.logEvent(name: '${kDebugMode ? 'DEV: ' : ''}$e');
-}

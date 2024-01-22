@@ -1,12 +1,13 @@
 name: http_client
 description: A starting point for Dart libraries or applications.
-version: 24.01.21+1
+version: 24.01.22+1
 
 environment:
-  sdk: '>=2.18.4 <3.0.0'
+  sdk: '3.2.0'
 
 dependencies:
   dio: ^5.1.1
+  utils:
 
 dev_dependencies:
   lints: ^2.0.0

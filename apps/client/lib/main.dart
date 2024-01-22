@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:forgottenland/firebase_options.dart';
 import 'package:forgottenland/forgotten_land.dart';
-import 'package:forgottenland/utils/utils.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:utils/utils.dart';
 
 String appVersion = '';
 
@@ -14,15 +14,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final PackageInfo packageInfo = await PackageInfo.fromPlatform();
   appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
-  configureCustomPrint(CustomPrintMode.dev);
   await _initializeFirebase();
   runApp(ForgottenLand());
 }
 
 Future<void> _initializeFirebase() async {
-  if (kDebugMode) return;
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  customPrint(DefaultFirebaseOptions.currentPlatform.projectId, color: PrintColor.yellow);
   await FirebaseAnalytics.instance.logAppOpen();
 
   // Pass all uncaught "fatal" errors from the framework to Crashlytics

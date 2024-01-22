@@ -95,7 +95,7 @@ class HighscoresController extends Controller {
         return loadHighscores(newPage: newPage, resetTimer: false);
       }
     } catch (e) {
-      HttpErrorHandler.fallback(e);
+      customPrint(e, color: PrintColor.red);
     }
 
     return filterList(resetTimer: false);
@@ -170,7 +170,7 @@ class HighscoresController extends Controller {
         if (e is Map<String, dynamic>) supporters.add(Supporter.fromJson(e));
       }
     } catch (e) {
-      HttpErrorHandler.fallback(e);
+      customPrint(e, color: PrintColor.red);
     }
 
     isLoading.value = false;
@@ -186,7 +186,7 @@ class HighscoresController extends Controller {
         if (e is Map<String, dynamic> && e['name'] is String) hidden.add(e['name'] as String);
       }
     } catch (e) {
-      HttpErrorHandler.fallback(e);
+      customPrint(e, color: PrintColor.red);
     }
 
     isLoading.value = false;

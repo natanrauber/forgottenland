@@ -2,16 +2,17 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:http_client/src/http_client_interface.dart';
-import 'package:http_client/src/http_error_handler.dart';
 import 'package:http_client/src/http_response.dart';
+import 'package:http_client/src/print_http_request.dart';
 
 class MyDioClient implements IHttpClient {
-  MyDioClient({BaseOptions? baseOptions, this.postRequestCallback}) {
+  MyDioClient({BaseOptions? baseOptions, this.postRequestCallback, this.printResponseData = false}) {
     _dio = Dio(baseOptions ?? defaultBaseOptions);
   }
 
   late Dio _dio;
-  final Function(MyHttpResponse? response, Object? e)? postRequestCallback;
+  final Function(MyHttpResponse response)? postRequestCallback;
+  final bool printResponseData;
 
   static BaseOptions defaultBaseOptions = BaseOptions(
     headers: <String, dynamic>{'Content-Type': 'application/json'},
@@ -31,28 +32,20 @@ class MyDioClient implements IHttpClient {
   }
 
   Future<MyHttpResponse> _request(Future<Response<dynamic>> Function() request) async {
-    MyHttpResponse? response;
+    MyHttpResponse response = MyHttpResponse();
+
     try {
       response = MyHttpResponse.fromResponse(await request.call());
     } on DioException catch (e) {
-      postRequestCallback?.call(MyHttpResponse.fromResponse(e.response), null);
-      return HttpErrorHandler.dio(e);
+      response = MyHttpResponse.fromResponse(e.response);
     } on SocketException catch (e) {
-      postRequestCallback?.call(null, e);
-      return HttpErrorHandler.socket(e);
+      response = MyHttpResponse(statusCode: 500, statusMessage: e.message);
     } catch (e) {
-      postRequestCallback?.call(null, e);
-      return HttpErrorHandler.fallback(e);
-    } finally {
-      if (response != null) {
-        _printRequest(response);
-        postRequestCallback?.call(response, null);
-      }
+      response = MyHttpResponse(statusCode: 500, statusMessage: e.toString());
     }
+
+    printRequest(response, printResponseData: printResponseData);
+    postRequestCallback?.call(response);
     return response;
   }
-
-  void _printRequest(MyHttpResponse? response) => print(
-        '${response?.requestOptions?.method} on "${response?.requestOptions?.baseUrl}${response?.requestOptions?.path}": ${response?.statusMessage} [${response?.statusCode}]',
-      );
 }
