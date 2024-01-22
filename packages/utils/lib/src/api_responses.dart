@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:shelf/shelf.dart';
 import 'package:utils/utils.dart';
 
-Map<String, dynamic> defaultBody = <String, dynamic>{
+final Map<String, dynamic> defaultBody = <String, dynamic>{
   "server_time": DT.germany.timeStamp(),
   "tibia_time": DT.tibia.timeStamp(),
 };
@@ -14,7 +14,7 @@ class ApiResponse extends Response {
           200,
           headers: <String, Object>{"Content-Type": "application/json"},
           body: jsonEncode(
-            defaultBody
+            defaultBody.map((key, value) => MapEntry(key, value))
               ..addAll({"response": 'Success', "data": data})
               ..clean(),
           ),
@@ -25,7 +25,7 @@ class ApiResponse extends Response {
           202,
           headers: <String, Object>{"Content-Type": "application/json"},
           body: jsonEncode(
-            defaultBody
+            defaultBody.map((key, value) => MapEntry(key, value))
               ..addAll({"response": 'Accepted'})
               ..clean(),
           ),
@@ -36,7 +36,7 @@ class ApiResponse extends Response {
           204,
           headers: <String, Object>{"Content-Type": "application/json"},
           body: jsonEncode(
-            defaultBody
+            defaultBody.map((key, value) => MapEntry(key, value))
               ..addAll({"response": 'No Content'})
               ..clean(),
           ),
@@ -47,7 +47,7 @@ class ApiResponse extends Response {
           404,
           headers: <String, Object>{"Content-Type": "application/json"},
           body: jsonEncode(
-            defaultBody
+            defaultBody.map((key, value) => MapEntry(key, value))
               ..addAll({"response": 'Not Found'})
               ..clean(),
           ),
@@ -58,7 +58,7 @@ class ApiResponse extends Response {
           406,
           headers: <String, Object>{"Content-Type": "application/json"},
           body: jsonEncode(
-            defaultBody
+            defaultBody.map((key, value) => MapEntry(key, value))
               ..addAll({"response": 'Not Acceptable'})
               ..clean(),
           ),
@@ -69,7 +69,7 @@ class ApiResponse extends Response {
           500,
           headers: <String, Object>{"Content-Type": "application/json"},
           body: jsonEncode(
-            defaultBody
+            defaultBody.map((key, value) => MapEntry(key, value))
               ..addAll({"response": e.toString()})
               ..clean(),
           ),
