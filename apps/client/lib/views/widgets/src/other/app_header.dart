@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/user_controller.dart';
+import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/images/svg_image.dart';
@@ -17,10 +18,14 @@ class AppHeader extends AppBar {
 
 class _AppHeaderState extends State<AppHeader> {
   final UserController userCtrl = Get.find<UserController>();
+  final SettingsController settingsCtrl = Get.find<SettingsController>();
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => userCtrl.retrieveSession());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      userCtrl.retrieveSession();
+      settingsCtrl.getFeatures();
+    });
     super.initState();
   }
 

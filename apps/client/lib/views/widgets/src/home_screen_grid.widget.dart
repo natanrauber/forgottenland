@@ -1,17 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
+import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
+import 'package:forgottenland/modules/settings/models/feature_model.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/src/routes.dart';
 import 'package:get/get.dart';
 
 class GridButtonModel {
   GridButtonModel({
+    required this.enabled,
     required this.name,
     required this.icon,
     this.onTap,
   });
 
+  final bool enabled;
   final String name;
   final IconData icon;
   Function()? onTap;
@@ -19,6 +23,7 @@ class GridButtonModel {
 
 class HomeScreenGrid extends StatelessWidget {
   final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
+  final SettingsController settingsCtrl = Get.find<SettingsController>();
 
   final List<GridButtonModel> _buttonList = <GridButtonModel>[];
   final int crossAxisCount = 4;
@@ -65,9 +70,9 @@ class HomeScreenGrid extends StatelessWidget {
 
   /// [grid item builder]
   Widget _gridItemBuilder(BuildContext context, int index) => MouseRegion(
-        cursor: SystemMouseCursors.click,
+        cursor: _buttonList[index].enabled ? SystemMouseCursors.click : MouseCursor.defer,
         child: GestureDetector(
-          onTap: _buttonList[index].onTap,
+          onTap: _buttonList[index].enabled ? _buttonList[index].onTap : null,
           child: Column(
             children: <Widget>[
               //
@@ -101,6 +106,7 @@ class HomeScreenGrid extends StatelessWidget {
       child: Icon(
         _buttonList[index].icon,
         size: 30,
+        color: _buttonList[index].enabled ? AppColors.primary : AppColors.bgDefault,
       ),
     );
   }
@@ -113,16 +119,19 @@ class HomeScreenGrid extends StatelessWidget {
           _buttonList[index].name,
           textAlign: TextAlign.center,
           maxLines: _buttonList[index].name.contains('\n') ? 2 : 1,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
-            height: 16 / 11,
+            height: 15 / 11,
             fontWeight: FontWeight.w500,
+            color: _buttonList[index].enabled ? AppColors.textPrimary : AppColors.bgPaper,
             overflow: TextOverflow.ellipsis,
           ),
+          scrollPhysics: const NeverScrollableScrollPhysics(),
         ),
       );
 
   GridButtonModel _highscores(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Highscores')?.enabled ?? false,
         name: 'Highscores',
         icon: CupertinoIcons.chart_bar_alt_fill,
         onTap: _getToHighscoresPage,
@@ -138,30 +147,35 @@ class HomeScreenGrid extends StatelessWidget {
   }
 
   GridButtonModel _onlineCharacters(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Online')?.enabled ?? false,
         name: 'Online',
         icon: CupertinoIcons.check_mark_circled_solid,
         onTap: () => Get.toNamed(Routes.online.name),
       );
 
   GridButtonModel _characters(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Characters')?.enabled ?? false,
         name: 'Characters',
         icon: CupertinoIcons.person_fill,
         onTap: () => Get.toNamed(Routes.character.name),
       );
 
   GridButtonModel _bazaar(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Char Bazaar')?.enabled ?? false,
         name: 'Char\nBazaar',
         icon: CupertinoIcons.money_dollar_circle_fill,
         onTap: () => Get.toNamed(Routes.bazaar.name),
       );
 
   GridButtonModel _rookmaster(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Highscores')?.enabled ?? false,
         name: 'Rook\nMaster',
         icon: CupertinoIcons.shield_lefthalf_fill,
         onTap: () => Get.toNamed('${Routes.highscores.name}/rookmaster'),
       );
 
   GridButtonModel _about(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'About')?.enabled ?? false,
         name: 'About',
         icon: CupertinoIcons.info_circle_fill,
         onTap: () => Get.toNamed(Routes.guild.name),
