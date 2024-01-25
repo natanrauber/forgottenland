@@ -58,5 +58,5 @@ class LIST {
     'Experimental',
   ];
 
-  static const List<String> member = <String>['awkn', 'draven', 'karkaroff', 'junck', 'freedan'];
+  static const List<String> member = <String>['awkn', 'draven', 'karkaroff', 'junck'];
 }

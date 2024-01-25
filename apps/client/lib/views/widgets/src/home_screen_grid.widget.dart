@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
 import 'package:forgottenland/modules/settings/models/feature_model.dart';
@@ -13,12 +14,14 @@ class GridButtonModel {
     required this.name,
     required this.icon,
     this.onTap,
+    this.resizeBy = 0,
   });
 
   final bool enabled;
   final String name;
   final IconData icon;
   Function()? onTap;
+  final double resizeBy;
 }
 
 class HomeScreenGrid extends StatelessWidget {
@@ -35,10 +38,11 @@ class HomeScreenGrid extends StatelessWidget {
   void _configureButtonGrid(BuildContext context) {
     _buttonList.clear();
     _buttonList.add(_highscores(context));
+    _buttonList.add(_expgained(context));
+    _buttonList.add(_rookmaster(context));
     _buttonList.add(_onlineCharacters(context));
     _buttonList.add(_characters(context));
     _buttonList.add(_bazaar(context));
-    _buttonList.add(_rookmaster(context));
     _buttonList.add(_about(context));
   }
 
@@ -105,7 +109,7 @@ class HomeScreenGrid extends StatelessWidget {
       ),
       child: Icon(
         _buttonList[index].icon,
-        size: 30,
+        size: 30 + _buttonList[index].resizeBy,
         color: _buttonList[index].enabled ? AppColors.primary : AppColors.bgDefault,
       ),
     );
@@ -134,6 +138,7 @@ class HomeScreenGrid extends StatelessWidget {
         enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Highscores')?.enabled ?? false,
         name: 'Highscores',
         icon: CupertinoIcons.chart_bar_alt_fill,
+        resizeBy: 2,
         onTap: _getToHighscoresPage,
       );
 
@@ -146,9 +151,27 @@ class HomeScreenGrid extends StatelessWidget {
     return Get.toNamed(route.toLowerCase().replaceAll(' ', ''));
   }
 
+  GridButtonModel _expgained(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Highscores')?.enabled ?? false,
+        name: 'Exp\ngained',
+        icon: FontAwesomeIcons.chartLine,
+        resizeBy: -4,
+        onTap: () => Get.toNamed(
+          '${Routes.highscores.name}/experiencegained/${highscoresCtrl.timeframe.value.toLowerCase()}',
+        ),
+      );
+
+  GridButtonModel _rookmaster(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Highscores')?.enabled ?? false,
+        name: 'Rook\nMaster',
+        icon: FontAwesomeIcons.trophy,
+        resizeBy: -4,
+        onTap: () => Get.toNamed('${Routes.highscores.name}/rookmaster'),
+      );
+
   GridButtonModel _onlineCharacters(BuildContext context) => GridButtonModel(
         enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Online')?.enabled ?? false,
-        name: 'Online',
+        name: 'Who is\nonline',
         icon: CupertinoIcons.check_mark_circled_solid,
         onTap: () => Get.toNamed(Routes.online.name),
       );
@@ -167,17 +190,10 @@ class HomeScreenGrid extends StatelessWidget {
         onTap: () => Get.toNamed(Routes.bazaar.name),
       );
 
-  GridButtonModel _rookmaster(BuildContext context) => GridButtonModel(
-        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Highscores')?.enabled ?? false,
-        name: 'Rook\nMaster',
-        icon: CupertinoIcons.shield_lefthalf_fill,
-        onTap: () => Get.toNamed('${Routes.highscores.name}/rookmaster'),
-      );
-
   GridButtonModel _about(BuildContext context) => GridButtonModel(
         enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'About')?.enabled ?? false,
-        name: 'About',
-        icon: CupertinoIcons.info_circle_fill,
+        name: 'About\nFL',
+        icon: CupertinoIcons.shield_lefthalf_fill,
         onTap: () => Get.toNamed(Routes.guild.name),
       );
 }

@@ -6,6 +6,5 @@ class MAP {
     'draven': 'https://instagram.com/draventhehunter',
     'karkaroff': 'https://instagram.com/kvkknight',
     'junck': 'https://instagram.com/cronicas.de.aldricht',
-    'freedan': 'https://instagram.com/freedan.tibianknight',
   };
 }
