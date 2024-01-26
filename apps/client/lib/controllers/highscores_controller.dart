@@ -1,12 +1,12 @@
 import 'package:database_client/database_client.dart';
+import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/controllers/online_controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/rxmodels/world_rxmodel.dart';
 import 'package:forgottenland/utils/src/paths.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/instance_manager.dart';
+import 'package:get/get.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:utils/utils.dart';
@@ -43,6 +43,24 @@ class HighscoresController extends Controller {
   RxBool enablePvpType = true.obs;
   RxBool enableWorldType = true.obs;
   RxBool loadedAll = false.obs;
+  Map<String, AssetImage> images = <String, AssetImage>{
+    'assets/icons/battleye_type/green.png': const AssetImage('assets/icons/battleye_type/green.png'),
+    'assets/icons/battleye_type/yellow.png': const AssetImage('assets/icons/battleye_type/yellow.png'),
+    'assets/icons/battleye_type/none.png': const AssetImage('assets/icons/battleye_type/none.png'),
+    'assets/icons/pvp_type/hardcore_pvp.png': const AssetImage('assets/icons/pvp_type/hardcore_pvp.png'),
+    'assets/icons/pvp_type/open_pvp.png': const AssetImage('assets/icons/pvp_type/open_pvp.png'),
+    'assets/icons/pvp_type/optional_pvp.png': const AssetImage('assets/icons/pvp_type/optional_pvp.png'),
+    'assets/icons/pvp_type/retro_hardcore_pvp.png': const AssetImage('assets/icons/pvp_type/retro_hardcore_pvp.png'),
+    'assets/icons/pvp_type/retro_open_pvp.png': const AssetImage('assets/icons/pvp_type/retro_open_pvp.png'),
+    'assets/icons/rank/globalrank1.png': const AssetImage('assets/icons/rank/globalrank1.png'),
+    'assets/icons/rank/globalrank2.png': const AssetImage('assets/icons/rank/globalrank2.png'),
+    'assets/icons/rank/globalrank3.png': const AssetImage('assets/icons/rank/globalrank3.png'),
+    'assets/icons/rank/globalrank4.png': const AssetImage('assets/icons/rank/globalrank4.png'),
+    'assets/icons/rank/rank1.png': const AssetImage('assets/icons/rank/rank1.png'),
+    'assets/icons/rank/rank2.png': const AssetImage('assets/icons/rank/rank2.png'),
+    'assets/icons/rank/rank3.png': const AssetImage('assets/icons/rank/rank3.png'),
+    'assets/icons/rank/rank4.png': const AssetImage('assets/icons/rank/rank4.png'),
+  };
 
   bool get _shouldLoadMore {
     if (loadedAll.value) return false;
@@ -68,7 +86,7 @@ class HighscoresController extends Controller {
 
     isLoading.value = true;
 
-    if (_worldsCtrl.list.isEmpty) await _worldsCtrl.load();
+    if (_worldsCtrl.list.isEmpty) await _worldsCtrl.getWorlds();
 
     try {
       String cat = category.value;
@@ -190,5 +208,16 @@ class HighscoresController extends Controller {
     }
 
     isLoading.value = false;
+  }
+
+  Future<void> preCacheImages(BuildContext context) async {
+    int count = 0;
+    for (final String key in images.keys) {
+      if (images[key] is AssetImage) {
+        await precacheImage(images[key]!, context);
+        count++;
+      }
+    }
+    customPrint('Pre-cached $count/${images.length} images', color: PrintColor.yellow);
   }
 }

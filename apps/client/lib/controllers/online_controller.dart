@@ -36,7 +36,7 @@ class OnlineController extends Controller {
     isLoading.value = true;
     rawList.clear();
 
-    if (worldsCtrl.list.isEmpty) await worldsCtrl.load();
+    if (worldsCtrl.list.isEmpty) await worldsCtrl.getWorlds();
 
     final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/online/now');
     if (response.success) _populateList(rawList, response);
@@ -101,7 +101,7 @@ class OnlineController extends Controller {
     isLoading.value = true;
     onlineTimes.clear();
 
-    if (worldsCtrl.list.isEmpty) await worldsCtrl.load();
+    if (worldsCtrl.list.isEmpty) await worldsCtrl.getWorlds();
 
     final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/online/time/$day');
     if (response.success) _populateList(onlineTimes, response);

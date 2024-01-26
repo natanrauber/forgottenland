@@ -33,7 +33,7 @@ class BazaarController extends Controller {
     isLoading.value = true;
     auctionList.clear();
 
-    if (worldsCtrl.list.isEmpty) await worldsCtrl.load();
+    if (worldsCtrl.list.isEmpty) await worldsCtrl.getWorlds();
 
     final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/bazaar');
     if (response.success) _populateList(auctionList, response);

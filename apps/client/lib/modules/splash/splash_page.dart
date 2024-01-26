@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:forgottenland/controllers/highscores_controller.dart';
+import 'package:forgottenland/controllers/user_controller.dart';
+import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/modules/main/controllers/main_controller.dart';
+import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/app_header.dart';
@@ -19,7 +23,12 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   SplashPageArguments? args;
-  MainController mainCtrl = Get.find<MainController>();
+
+  final MainController mainCtrl = Get.find<MainController>();
+  final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
+  final UserController userCtrl = Get.find<UserController>();
+  final SettingsController settingsCtrl = Get.find<SettingsController>();
+  final WorldsController worldsCtrl = Get.find<WorldsController>();
 
   bool _visible = false;
 
@@ -29,15 +38,22 @@ class _SplashPageState extends State<SplashPage> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         args = Get.arguments as SplashPageArguments?;
-        visible = true;
-        await Future<dynamic>.delayed(const Duration(seconds: 3), () => visible = false);
-        await Future<dynamic>.delayed(const Duration(seconds: 1), _redirect);
+        await setVisible(true);
+        // ignore: use_build_context_synchronously
+        await highscoresCtrl.preCacheImages(context);
+        await userCtrl.retrieveSession();
+        await settingsCtrl.getFeatures();
+        await worldsCtrl.getWorlds();
+        await setVisible(false);
+        _redirect();
       },
     );
   }
 
-  bool get visible => _visible;
-  set visible(bool value) => setState(() => _visible = value);
+  Future<void> setVisible(bool value) async {
+    setState(() => _visible = value);
+    await Future<dynamic>.delayed(const Duration(seconds: 1));
+  }
 
   void _redirect() {
     mainCtrl.visitedSplash = true;
@@ -66,7 +82,7 @@ class _SplashPageState extends State<SplashPage> {
       );
 
   Widget _sponsor() => AnimatedOpacity(
-        opacity: visible ? 1.0 : 0.0,
+        opacity: _visible ? 1.0 : 0.0,
         duration: const Duration(seconds: 1),
         child: MouseRegion(
           cursor: SystemMouseCursors.click,

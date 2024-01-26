@@ -106,7 +106,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
           alignment: Alignment.center,
           children: <Widget>[
             //
-            Image.asset('assets/icons/rank/rank${(_rankValue ?? ' ').length}.png'),
+            _rankImage(),
 
             Text(
               _rankValue ?? '',
@@ -120,6 +120,13 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
           ],
         ),
       );
+
+  Widget _rankImage() {
+    final int length = (_rankValue ?? ' ').length;
+    final AssetImage? image = highscoresCtrl.images['assets/icons/rank/rank$length.png'];
+    if (image == null) return Container();
+    return Image(image: image);
+  }
 
   String? get _rankValue {
     if (_showGlobalRank) return (widget.index + 1).toString();
@@ -269,24 +276,26 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         child: child,
       );
 
-  Widget _battleyeTypeIcon() => _infoIcon(
-        child: Image.asset(
-          'assets/icons/battleye_type/${widget.item.world?.battleyeType?.toLowerCase()}.png',
-        ),
-      );
+  Widget _battleyeTypeIcon() {
+    final String? type = widget.item.world?.battleyeType?.toLowerCase();
+    final AssetImage? image = highscoresCtrl.images['assets/icons/battleye_type/$type.png'];
+    if (image == null) return _infoIcon(child: Container());
+    return _infoIcon(child: Image(image: image));
+  }
 
-  Widget _pvpType() => _infoIcon(
-        child: Image.asset(
-          'assets/icons/pvp_type/${widget.item.world?.pvpType?.toLowerCase().replaceAll(' ', '_')}.png',
-        ),
-      );
+  Widget _pvpType() {
+    final String? type = widget.item.world?.pvpType?.toLowerCase().replaceAll(' ', '_');
+    final AssetImage? image = highscoresCtrl.images['assets/icons/pvp_type/$type.png'];
+    if (image == null) return _infoIcon(child: Container());
+    return _infoIcon(child: Image(image: image));
+  }
 
   Widget _globalRank() => _infoIcon(
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
             //
-            Image.asset('assets/icons/rank/globalrank${(_globalRankValue ?? ' ').length}.png'),
+            _globalRankImage(),
 
             Container(
               padding: const EdgeInsets.only(left: 16),
@@ -303,6 +312,13 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
           ],
         ),
       );
+
+  Widget _globalRankImage() {
+    final int length = (_globalRankValue ?? ' ').length;
+    final AssetImage? image = highscoresCtrl.images['assets/icons/rank/globalrank$length.png'];
+    if (image == null) return Container();
+    return Image(image: image);
+  }
 
   String? get _globalRankValue {
     if (highscoresCtrl.category.value == 'Experience gained') {

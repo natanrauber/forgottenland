@@ -1,6 +1,5 @@
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/utils/src/paths.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:utils/utils.dart';
@@ -10,17 +9,15 @@ class WorldsController extends Controller {
 
   final IHttpClient httpClient;
 
-  final List<World> _list = <World>[];
-
-  ///
-  List<World> get list => _list;
+  final List<World> list = <World>[];
 
   /// [load worlds]
-  Future<MyHttpResponse?> load() async {
-    if (isLoading.isTrue) return null;
-    isLoading.value = true;
-    _list.clear();
-    _list.add(World(name: 'All'));
+  Future<MyHttpResponse?> getWorlds() async {
+    if (isLoading.value) return null;
+    if (list.isNotEmpty) return null;
+
+    list.clear();
+    list.add(World(name: 'All'));
 
     List<dynamic>? aux;
     MyHttpResponse? response;
@@ -34,7 +31,7 @@ class WorldsController extends Controller {
 
     if (aux != null) {
       for (int i = 0; i < aux.length; i++) {
-        _list.add(World.fromJson(aux[i] as Map<String, dynamic>));
+        list.add(World.fromJson(aux[i] as Map<String, dynamic>));
       }
     }
 

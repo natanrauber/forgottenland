@@ -21,7 +21,7 @@ class _GuildsHiddenPageState extends State<GuildsHiddenPage> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         Alert.loading(context);
-        await worldsCtrl.load().then(
+        await worldsCtrl.getWorlds().then(
           (_) async {
             await guildsCtrl.load(worldsCtrl.list).then((_) => Alert.pop(context));
           },
