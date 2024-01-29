@@ -78,6 +78,7 @@ class LiveStreamsController implements ILiveStreamsController {
   }
 
   bool _isVerified(dynamic verifiedStreams, LiveStream stream) {
+    stream.tags.removeWhere((String e) => e.toLowerCase() == 'verified');
     if (verifiedStreams is! List<dynamic>) return false;
     for (dynamic e in verifiedStreams) {
       if (e is Map<String, dynamic> &&
