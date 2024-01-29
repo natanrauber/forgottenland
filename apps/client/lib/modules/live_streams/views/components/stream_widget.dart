@@ -54,8 +54,8 @@ class _StreamWidgetState extends State<StreamWidget> {
                 ),
                 _title(),
                 _tags(widget.item.tags, 10),
-                if (_itemCount(widget.item.tags) < widget.item.tags.length)
-                  _tags(widget.item.tags.sublist(_itemCount(widget.item.tags)), 5),
+                if (_tagCount(widget.item.tags) < widget.item.tags.length)
+                  _tags(widget.item.tags.sublist(_tagCount(widget.item.tags)), 5),
               ],
             ),
           ),
@@ -77,8 +77,8 @@ class _StreamWidgetState extends State<StreamWidget> {
           ),
           _title(),
           _tags(widget.item.tags, 10),
-          if (_itemCount(widget.item.tags) < widget.item.tags.length)
-            _tags(widget.item.tags.sublist(_itemCount(widget.item.tags)), 5),
+          if (_tagCount(widget.item.tags) < widget.item.tags.length)
+            _tags(widget.item.tags.sublist(_tagCount(widget.item.tags)), 5),
         ],
       );
 
@@ -156,12 +156,12 @@ class _StreamWidgetState extends State<StreamWidget> {
         child: ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: _itemCount(tags),
-          itemBuilder: (_, int index) => _itemBuilder(tags, index),
+          itemCount: _tagCount(tags),
+          itemBuilder: (_, int index) => _tagBuilder(tags, index),
         ),
       );
 
-  int _itemCount(List<String> tags) {
+  int _tagCount(List<String> tags) {
     int count = 0;
     String result = '';
     for (String tag in tags) {
@@ -174,7 +174,7 @@ class _StreamWidgetState extends State<StreamWidget> {
     return count;
   }
 
-  Widget _itemBuilder(List<String> tags, int index) {
+  Widget _tagBuilder(List<String> tags, int index) {
     final String tag = tags[index];
 
     return Container(
@@ -188,11 +188,11 @@ class _StreamWidgetState extends State<StreamWidget> {
       child: Row(
         children: <Widget>[
           Text(
-            tag.length > 10 ? tag.substring(0, 8) : tag,
-            style: const TextStyle(
+            _tagText(tag),
+            style: TextStyle(
               fontSize: 10,
               height: 20 / 10,
-              color: AppColors.textSecondary,
+              color: tag == 'Verified' ? AppColors.green : AppColors.textSecondary,
             ),
           ),
           if (tag.length > 10) const SizedBox(width: 1),
@@ -209,6 +209,12 @@ class _StreamWidgetState extends State<StreamWidget> {
         ],
       ),
     );
+  }
+
+  String _tagText(String tag) {
+    if (tag.length > 10) return tag.substring(0, 8);
+    if (tag == 'Verified') return '$tag ✔️';
+    return tag;
   }
 
   Future<void> _openLivestreamExternal() async {

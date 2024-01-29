@@ -1,3 +1,4 @@
+import 'package:database_client/database_client.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
@@ -8,8 +9,9 @@ abstract class ILiveStreamsController {
 }
 
 class LiveStreamsController implements ILiveStreamsController {
-  LiveStreamsController(this.httpClient);
+  LiveStreamsController(this.databaseClient, this.httpClient);
 
+  final IDatabaseClient databaseClient;
   final IHttpClient httpClient;
 
   @override
@@ -18,6 +20,8 @@ class LiveStreamsController implements ILiveStreamsController {
     if (attempt > 3) return ApiResponse.success();
 
     try {
+      dynamic verifiedStreams = await databaseClient.from('verified-livestreams').select();
+
       tokenResponse ??= await httpClient.post(
         'https://id.twitch.tv/oauth2/token',
         <String, dynamic>{
@@ -52,6 +56,7 @@ class LiveStreamsController implements ILiveStreamsController {
           LiveStream stream = LiveStream();
           if (e is Map<String, dynamic>) stream = LiveStream.fromJson(e);
           if (stream.contains('Rookgaard') && !streams.any((LiveStream e) => e.userName == stream.userName)) {
+            if (_isVerified(verifiedStreams, stream)) stream.tags.insert(0, 'Verified');
             streams.add(stream);
           }
         }
@@ -70,5 +75,17 @@ class LiveStreamsController implements ILiveStreamsController {
     } catch (e) {
       return ApiResponse.error(e);
     }
+  }
+
+  bool _isVerified(dynamic verifiedStreams, LiveStream stream) {
+    if (verifiedStreams is! List<dynamic>) return false;
+    for (dynamic e in verifiedStreams) {
+      if (e is Map<String, dynamic> &&
+          e['name'] is String &&
+          e['name'].toLowerCase() == stream.userName?.toLowerCase()) {
+        return true;
+      }
+    }
+    return false;
   }
 }
