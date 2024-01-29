@@ -10,6 +10,7 @@ class AppPage extends StatefulWidget {
   const AppPage({
     super.key,
     this.body,
+    this.postFrameCallback,
     this.onRefresh,
     this.onNotification,
     this.padding = const EdgeInsets.fromLTRB(20, 20, 20, 60),
@@ -17,6 +18,7 @@ class AppPage extends StatefulWidget {
   });
 
   final Widget? body;
+  final Future<void> Function()? postFrameCallback;
   final Future<void> Function()? onRefresh;
   final bool Function(ScrollNotification)? onNotification;
   final EdgeInsetsGeometry? padding;
@@ -32,7 +34,10 @@ class _AppPageState extends State<AppPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => mainCtrl.ensureSplashIsVisited());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      mainCtrl.ensureSplashIsVisited();
+      if (mainCtrl.visitedSplash) widget.postFrameCallback?.call();
+    });
   }
 
   @override
@@ -57,41 +62,44 @@ class _AppPageState extends State<AppPage> {
             height: height,
             width: width,
             decoration: _backgroundDecoration,
-            child: NotificationListener<ScrollNotification>(
-              onNotification: widget.onNotification,
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: <Widget>[
-                  //
-                  Container(
-                    constraints: BoxConstraints(minHeight: height - appBarHeight - topMargin),
-                    margin: EdgeInsets.fromLTRB(sideMargin, topMargin * 2, sideMargin, 0),
-                    decoration: _bodyDecoration,
-                  ),
-
-                  SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(sideMargin, topMargin, sideMargin, 0),
+            child: RefreshIndicator(
+              onRefresh: widget.onRefresh ?? () async {},
+              child: NotificationListener<ScrollNotification>(
+                onNotification: widget.onNotification,
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: <Widget>[
+                    //
+                    Container(
+                      constraints: BoxConstraints(minHeight: height - appBarHeight - topMargin),
+                      margin: EdgeInsets.fromLTRB(sideMargin, topMargin * 2, sideMargin, 0),
                       decoration: _bodyDecoration,
-                      child: Column(
-                        children: <Widget>[
-                          //
-                          SingleChildScrollView(
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: widget.padding,
-                            child: Container(
-                              constraints: _bodyConstraints,
-                              child: widget.body,
-                            ),
-                          ),
+                    ),
 
-                          AppFooter(),
-                        ],
+                    SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(sideMargin, topMargin, sideMargin, 0),
+                        decoration: _bodyDecoration,
+                        child: Column(
+                          children: <Widget>[
+                            //
+                            SingleChildScrollView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              padding: widget.padding,
+                              child: Container(
+                                constraints: _bodyConstraints,
+                                child: widget.body,
+                              ),
+                            ),
+
+                            AppFooter(),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

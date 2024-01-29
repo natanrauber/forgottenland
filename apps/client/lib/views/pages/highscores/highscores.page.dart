@@ -27,21 +27,14 @@ class _HighscoresPageState extends State<HighscoresPage> {
   final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
   final UserController userCtrl = Get.find<UserController>();
 
-  @override
-  void initState() {
-    super.initState();
-
+  Future<void> _postFrameCallback() async {
     final String c = widget.category ?? LIST.category.first;
     final String p = widget.timeframe ?? LIST.timeframe.first;
     if (_alreadyLoaded(c, p)) return;
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        highscoresCtrl.category.value = c;
-        highscoresCtrl.timeframe.value = p;
-        _loadHighscores();
-      },
-    );
+    highscoresCtrl.category.value = c;
+    highscoresCtrl.timeframe.value = p;
+    _loadHighscores();
   }
 
   bool _alreadyLoaded(String c, String p) {
@@ -59,6 +52,7 @@ class _HighscoresPageState extends State<HighscoresPage> {
 
   @override
   Widget build(BuildContext context) => AppPage(
+        postFrameCallback: _postFrameCallback,
         onRefresh: _loadHighscores,
         onNotification: _onScrollNotification,
         padding: const EdgeInsets.symmetric(vertical: 20),

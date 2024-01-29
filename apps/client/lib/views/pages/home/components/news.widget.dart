@@ -23,13 +23,6 @@ class _NewsWidgetState extends State<NewsWidget> {
   late double height;
 
   @override
-  void initState() {
-    super.initState();
-    if (newsCtrl.list.isNotEmpty) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) => newsCtrl.getNews());
-  }
-
-  @override
   Widget build(BuildContext context) {
     double screenHeight;
     double appBarHeight;

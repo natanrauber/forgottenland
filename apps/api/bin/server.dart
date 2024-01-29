@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/src/bazaar_controller.dart';
 import 'package:forgottenlandapi/src/character_controller.dart';
-import 'package:forgottenlandapi/src/settings_controller.dart';
 import 'package:forgottenlandapi/src/highscores_controller.dart';
+import 'package:forgottenlandapi/src/live_streams_controller.dart';
 import 'package:forgottenlandapi/src/online_controller.dart';
+import 'package:forgottenlandapi/src/settings_controller.dart';
 import 'package:forgottenlandapi/src/user_controller.dart';
 import 'package:http_client/http_client.dart';
 import 'package:shelf/shelf.dart';
@@ -19,23 +20,25 @@ final Env _env = Env();
 final IDatabaseClient _databaseClient = MySupabaseClient();
 final IHttpClient _httpClient = MyDioClient();
 
-final HighscoresController _highscoresCtrl = HighscoresController(_env, _databaseClient, _httpClient);
 final CharacterController _characterCtrl = CharacterController(_env, _databaseClient, _httpClient, _highscoresCtrl);
+final HighscoresController _highscoresCtrl = HighscoresController(_env, _databaseClient, _httpClient);
 final IBazaarController _bazaarCtrl = BazaarController(_databaseClient);
+final ILiveStreamsController _liveStreamsCtrl = LiveStreamsController(_httpClient);
 final IOnlineController _onlineCtrl = OnlineController(_databaseClient);
-final UserController _userCtrl = UserController(_databaseClient);
 final SettingsController _settingsCtrl = SettingsController(_databaseClient);
+final UserController _userCtrl = UserController(_databaseClient);
 
 // Configure routes.
 final Router _router = Router()
+  ..get('/bazaar', _bazaarCtrl.get)
   ..get('/character/<name>', _characterCtrl.get)
   ..get('/highscores/<world>/<category>/<vocation>/<page>', _highscoresCtrl.get)
+  ..get('/livestreams', _liveStreamsCtrl.get)
   ..get('/online/now', _onlineCtrl.getOnlineNow)
   ..get('/online/time/<date>', _onlineCtrl.getOnlineTime)
-  ..get('/bazaar', _bazaarCtrl.get)
+  ..get('/settings/<value>', _settingsCtrl.get)
   ..post('/user/login', _userCtrl.login)
-  ..post('/user/revive', _userCtrl.revive)
-  ..get('/settings/<value>', _settingsCtrl.get);
+  ..post('/user/revive', _userCtrl.revive);
 
 void main(List<String> args) async {
   _env.log();

@@ -16,13 +16,8 @@ class _BazaarPageState extends State<BazaarPage> {
   final BazaarController bazaarCtrl = Get.find<BazaarController>();
 
   @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => bazaarCtrl.getAuctions());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) => AppPage(
+        postFrameCallback: bazaarCtrl.getAuctions,
         onRefresh: bazaarCtrl.getAuctions,
         padding: const EdgeInsets.symmetric(vertical: 20),
         body: Column(

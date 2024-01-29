@@ -43,6 +43,7 @@ class HomeScreenGrid extends StatelessWidget {
     _buttonList.add(_onlineCharacters(context));
     _buttonList.add(_characters(context));
     _buttonList.add(_bazaar(context));
+    _buttonList.add(_liveStreams(context));
     _buttonList.add(_about(context));
   }
 
@@ -188,6 +189,13 @@ class HomeScreenGrid extends StatelessWidget {
         name: 'Char\nBazaar',
         icon: CupertinoIcons.money_dollar_circle_fill,
         onTap: () => Get.toNamed(Routes.bazaar.name),
+      );
+
+  GridButtonModel _liveStreams(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Live streams')?.enabled ?? false,
+        name: 'Live\nstreams',
+        icon: CupertinoIcons.dot_radiowaves_left_right,
+        onTap: () => Get.toNamed(Routes.livestreams.name),
       );
 
   GridButtonModel _about(BuildContext context) => GridButtonModel(

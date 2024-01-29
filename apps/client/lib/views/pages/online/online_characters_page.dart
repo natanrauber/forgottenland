@@ -16,13 +16,8 @@ class _OnlineCharactersPageState extends State<OnlineCharactersPage> {
   final OnlineController onlineCtrl = Get.find<OnlineController>();
 
   @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => onlineCtrl.getOnlineCharacters());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) => AppPage(
+        postFrameCallback: onlineCtrl.getOnlineCharacters,
         onRefresh: onlineCtrl.getOnlineCharacters,
         padding: const EdgeInsets.symmetric(vertical: 20),
         body: Column(

@@ -68,9 +68,13 @@ class _CharacterPageState extends State<CharacterPage> {
       );
 
   Widget _errorBuilder() {
-    if (characterCtrl.searchResponse.statusCode == 404) return ErrorBuilder.notFound();
-    if (characterCtrl.searchResponse.statusCode == 406) return ErrorBuilder.notAcceptable();
-    return ErrorBuilder.serverError(onTapRetry: characterCtrl.searchCharacter);
+    if (characterCtrl.searchResponse.statusCode == 404) return ErrorBuilder('Character not found');
+    if (characterCtrl.searchResponse.statusCode == 406) return ErrorBuilder('Character is not in Rookgaard');
+    return ErrorBuilder(
+      'Internal server error',
+      reloadButtonText: 'Try again',
+      onTapReload: characterCtrl.searchCharacter,
+    );
   }
 
   Widget _characterData() => Column(
