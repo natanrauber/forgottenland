@@ -1,5 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:forgottenland/modules/main/controllers/main_controller.dart';
+import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
+import 'package:forgottenland/modules/settings/models/feature_model.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/app_footer.dart';
@@ -30,13 +33,14 @@ class AppPage extends StatefulWidget {
 
 class _AppPageState extends State<AppPage> {
   MainController mainCtrl = Get.find<MainController>();
+  SettingsController settingsCtrl = Get.find<SettingsController>();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       mainCtrl.ensureSplashIsVisited();
-      if (mainCtrl.visitedSplash) widget.postFrameCallback?.call();
+      if (mainCtrl.visitedSplash && !_featureDisabled) widget.postFrameCallback?.call();
     });
   }
 
@@ -89,7 +93,7 @@ class _AppPageState extends State<AppPage> {
                               padding: widget.padding,
                               child: Container(
                                 constraints: _bodyConstraints,
-                                child: widget.body,
+                                child: _featureDisabled ? _disabledPageBody() : widget.body,
                               ),
                             ),
 
@@ -108,13 +112,55 @@ class _AppPageState extends State<AppPage> {
     );
   }
 
+  bool get _featureDisabled {
+    final String? routeName = Get.rawRoute?.settings.name?.toLowerCase();
+    for (final Feature e in settingsCtrl.features) {
+      if (e.name != null && routeName?.contains(e.name!.toLowerCase()) == true && !e.enabled) return true;
+    }
+    return false;
+  }
+
+  Widget _disabledPageBody() => Container(
+        margin: const EdgeInsets.all(20),
+        child: Column(
+          children: <Widget>[
+            SelectableText.rich(
+              TextSpan(
+                style: const TextStyle(
+                  fontSize: 12,
+                  height: 1.5,
+                  fontWeight: FontWeight.w200,
+                  color: AppColors.textSecondary,
+                ),
+                children: <InlineSpan>[
+                  //
+                  const TextSpan(
+                    text: 'Feature temporarily disabled\n',
+                  ),
+
+                  TextSpan(
+                    text: 'Go to homepage',
+                    style: const TextStyle(
+                      color: AppColors.blue,
+                      decoration: TextDecoration.underline,
+                      decorationColor: AppColors.blue,
+                    ),
+                    recognizer: TapGestureRecognizer()..onTap = () => Get.toNamed(Routes.home.name),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+
   BoxDecoration get _backgroundDecoration => const BoxDecoration(
         color: AppColors.black,
         image: DecorationImage(
           image: AssetImage('assets/images/background/offline.jpg'),
           fit: BoxFit.cover,
           alignment: Alignment.topCenter,
-          // opacity: 0.7,
         ),
       );
 

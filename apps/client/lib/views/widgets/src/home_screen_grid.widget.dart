@@ -185,14 +185,14 @@ class HomeScreenGrid extends StatelessWidget {
       );
 
   GridButtonModel _bazaar(BuildContext context) => GridButtonModel(
-        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Char Bazaar')?.enabled ?? false,
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Bazaar')?.enabled ?? false,
         name: 'Char\nBazaar',
         icon: CupertinoIcons.money_dollar_circle_fill,
         onTap: () => Get.toNamed(Routes.bazaar.name),
       );
 
   GridButtonModel _liveStreams(BuildContext context) => GridButtonModel(
-        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Live streams')?.enabled ?? false,
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Streams')?.enabled ?? false,
         name: 'Live\nstreams',
         icon: CupertinoIcons.dot_radiowaves_left_right,
         onTap: () => Get.toNamed(Routes.livestreams.name),
