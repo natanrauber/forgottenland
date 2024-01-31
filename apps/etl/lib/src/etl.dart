@@ -257,6 +257,7 @@ class ETL implements IETL {
   }
 
   void _recordAddMissingRank(Record record) {
+    if (record.list.isEmpty) return;
     if (record.list.first.rank != null) return;
     for (var e in record.list) {
       e.rank = record.list.indexOf(e) + 1;
