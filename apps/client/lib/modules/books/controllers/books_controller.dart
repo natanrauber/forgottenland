@@ -44,6 +44,7 @@ class BooksController extends Controller {
 
   bool _matchFilter(Book book, String text) {
     if (book.name?.toLowerCase().contains(text.toLowerCase()) ?? false) return true;
+    if (book.author?.toLowerCase().contains(text.toLowerCase()) ?? false) return true;
     if (book.description?.toLowerCase().contains(text.toLowerCase()) ?? false) return true;
     if (book.text?.toLowerCase().contains(text.toLowerCase()) ?? false) return true;
     return false;
