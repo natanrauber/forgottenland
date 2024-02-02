@@ -3,7 +3,6 @@ import 'package:forgottenland/controllers/news_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/theme/theme.dart';
 import 'package:forgottenland/views/widgets/src/buttons/card_button.widget.dart';
-import 'package:forgottenland/views/widgets/src/other/app_header.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/instance_manager.dart';
 import 'package:models/models.dart';
@@ -20,57 +19,23 @@ class NewsWidget extends StatefulWidget {
 class _NewsWidgetState extends State<NewsWidget> {
   final NewsController newsCtrl = Get.find<NewsController>();
 
-  late double height;
-
   @override
-  Widget build(BuildContext context) {
-    double screenHeight;
-    double appBarHeight;
-    double topMargin;
-    double buttonsHeight;
-    double paddings;
-
-    screenHeight = MediaQuery.of(context).size.height;
-    appBarHeight = AppHeader().preferredSize.height;
-    topMargin = screenHeight > 700 ? screenHeight - 700 : 0;
-    if (topMargin > screenHeight * 0.18) topMargin = screenHeight * 0.18;
-    buttonsHeight = 162;
-    paddings = 20 + 20;
-    height = screenHeight - appBarHeight - topMargin - buttonsHeight - paddings;
-
-    return Container(
-      height: height,
-      decoration: _decoration,
-      child: Column(
+  Widget build(BuildContext context) => Column(
         children: <Widget>[
-          //
-          const SizedBox(height: 20),
-
           _title(),
-
-          const SizedBox(height: 10),
-
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            child: const Divider(height: 1),
-          ),
-
+          _divider(),
           _body(),
         ],
-      ),
-    );
-  }
-
-  BoxDecoration get _decoration => BoxDecoration(
-        borderRadius: BorderRadius.circular(11),
-        border: Border.all(
-          color: AppColors.bgPaper,
-        ),
       );
 
   Widget _title() => SelectableText(
         'Latest news',
         style: appTheme().textTheme.titleMedium,
+      );
+
+  Widget _divider() => Container(
+        margin: const EdgeInsets.only(top: 10, bottom: 20),
+        child: const Divider(height: 1),
       );
 
   Widget _body() => Obx(
@@ -107,19 +72,12 @@ class _NewsWidgetState extends State<NewsWidget> {
         ),
       );
 
-  Widget _listBuilder() {
-    final int maxCount = (height - 75) ~/ 120;
-
-    return Expanded(
-      child: ListView.builder(
+  Widget _listBuilder() => ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(20),
-        itemCount: newsCtrl.list.length < maxCount ? newsCtrl.list.length : maxCount,
+        itemCount: newsCtrl.list.length < 3 ? newsCtrl.list.length : 3,
         itemBuilder: _itemBuilder,
-      ),
-    );
-  }
+      );
 
   Widget _itemBuilder(BuildContext context, int index) {
     final News item = newsCtrl.list[index];

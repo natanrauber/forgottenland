@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forgottenland/modules/bazaar/views/bazaar_page.dart';
 import 'package:forgottenland/modules/books/views/books_page.dart';
 import 'package:forgottenland/modules/live_streams/views/live_streams_page.dart';
+import 'package:forgottenland/modules/npcs/views/npcs_page.dart';
 import 'package:forgottenland/modules/splash/splash_page.dart';
 import 'package:forgottenland/views/pages/character_page.dart';
 import 'package:forgottenland/views/pages/guild.page.dart';
@@ -33,6 +34,7 @@ class Routes {
   static final MyPage home = MyPage('/home', HomePage());
   static final MyPage livestreams = MyPage('/livestreams', LiveStreamsPage());
   static final MyPage login = MyPage('/login', LoginPage());
+  static final MyPage npcs = MyPage('/npcs', NpcsPage());
   static final MyPage online = MyPage('/online', OnlineCharactersPage());
   static final MyPage splash = MyPage('/splash', SplashPage());
 
@@ -46,6 +48,7 @@ class Routes {
       home,
       livestreams,
       login,
+      npcs,
       online,
       splash,
     ];

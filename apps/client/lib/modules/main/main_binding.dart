@@ -11,6 +11,7 @@ import 'package:forgottenland/modules/bazaar/controllers/bazaar_controller.dart'
 import 'package:forgottenland/modules/books/controllers/books_controller.dart';
 import 'package:forgottenland/modules/live_streams/controllers/live_streams_controller.dart';
 import 'package:forgottenland/modules/main/controllers/main_controller.dart';
+import 'package:forgottenland/modules/npcs/controllers/npcs_controller.dart';
 import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
 import 'package:get/get.dart';
 import 'package:http_client/http_client.dart';
@@ -33,6 +34,7 @@ class MainBinding implements Bindings {
     Get.put(SettingsController(_httpClient));
     Get.put(LiveStreamsController(_httpClient));
     Get.put(BooksController(_httpClient));
+    Get.put(NpcsController(_httpClient));
   }
 }
 

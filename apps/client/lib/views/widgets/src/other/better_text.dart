@@ -14,6 +14,14 @@ Map<String, Map<String, dynamic>> _tags = <String, Map<String, dynamic>>{
     'regex': '<primary>(.*?)<primary>',
     'style': const TextStyle(color: AppColors.primary),
   },
+  '<blue>': <String, dynamic>{
+    'regex': '<blue>(.*?)<blue>',
+    'style': const TextStyle(color: AppColors.blue),
+  },
+  '<green>': <String, dynamic>{
+    'regex': '<green>(.*?)<green>',
+    'style': const TextStyle(color: AppColors.lightBlue),
+  },
   '<small>': <String, dynamic>{
     'regex': '<small>(.*?)<small>',
     'style': const TextStyle(fontSize: 12),
@@ -32,6 +40,8 @@ Map<String, Map<String, dynamic>> _tags = <String, Map<String, dynamic>>{
 ///   * semi-bold (w600): `<sb>text<sb>`
 ///   * bold (w700): `<b>text<b>`
 ///   * primary color: `<primary>text<primary>`
+///   * blue: `<blue>text<blue>`
+///   * green: `<green>text<green>`
 ///   * size 16: `<small>text<small>` TODO: make size tags dynamic
 class BetterText extends StatelessWidget {
   const BetterText(

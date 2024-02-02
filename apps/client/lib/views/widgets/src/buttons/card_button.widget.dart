@@ -12,6 +12,7 @@ class CardButton extends StatefulWidget {
     this.descriptionMaxLines = 10,
     this.descriptionStyle,
     this.child,
+    this.color = AppColors.bgPaper,
   });
 
   final Function()? onTap;
@@ -21,6 +22,7 @@ class CardButton extends StatefulWidget {
   final int? descriptionMaxLines;
   final TextStyle? descriptionStyle;
   final Widget? child;
+  final Color color;
 
   @override
   State<CardButton> createState() => _CardButtonState();
@@ -68,7 +70,7 @@ class _CardButtonState extends State<CardButton> {
   }
 
   BoxDecoration get _decoration => BoxDecoration(
-        color: AppColors.bgPaper,
+        color: widget.color,
         borderRadius: BorderRadius.circular(11),
       );
 

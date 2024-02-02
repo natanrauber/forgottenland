@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
@@ -45,6 +44,7 @@ class HomeScreenGrid extends StatelessWidget {
     _buttonList.add(_bazaar(context));
     _buttonList.add(_liveStreams(context));
     _buttonList.add(_books(context));
+    _buttonList.add(_npcs(context));
     _buttonList.add(_about(context));
   }
 
@@ -121,7 +121,7 @@ class HomeScreenGrid extends StatelessWidget {
   Container _buttonName(int index) => Container(
         alignment: Alignment.topCenter,
         height: 32,
-        child: SelectableText(
+        child: Text(
           _buttonList[index].name,
           textAlign: TextAlign.center,
           maxLines: _buttonList[index].name.contains('\n') ? 2 : 1,
@@ -132,7 +132,6 @@ class HomeScreenGrid extends StatelessWidget {
             color: _buttonList[index].enabled ? AppColors.textPrimary : AppColors.bgPaper,
             overflow: TextOverflow.ellipsis,
           ),
-          scrollPhysics: const NeverScrollableScrollPhysics(),
         ),
       );
 
@@ -205,6 +204,13 @@ class HomeScreenGrid extends StatelessWidget {
         icon: FontAwesomeIcons.book,
         resizeBy: -2,
         onTap: () => Get.toNamed(Routes.books.name),
+      );
+
+  GridButtonModel _npcs(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'NPCs')?.enabled ?? false,
+        name: 'NPCs\ntranscripts',
+        icon: CupertinoIcons.doc_text_fill,
+        onTap: () => Get.toNamed(Routes.npcs.name),
       );
 
   GridButtonModel _about(BuildContext context) => GridButtonModel(

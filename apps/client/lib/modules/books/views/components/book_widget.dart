@@ -99,6 +99,7 @@ class _BookWidgetState extends State<BookWidget> {
               fit: BoxFit.none,
               width: snapshot.data?.width.toDouble(),
               backgroundColor: AppColors.bgPaper,
+              borderColor: AppColors.bgPaper,
             ),
           );
         }

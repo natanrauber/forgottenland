@@ -5,6 +5,7 @@ export 'src/guild_model.dart';
 export 'src/highscores_entry_model.dart';
 export 'src/live_stream_model.dart';
 export 'src/news_model.dart';
+export 'src/npc_model.dart';
 export 'src/online_model.dart';
 export 'src/record_model.dart';
 export 'src/supporter_model.dart';

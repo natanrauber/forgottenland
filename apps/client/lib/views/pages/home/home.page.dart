@@ -25,9 +25,14 @@ class _HomePageState extends State<HomePage> {
         body: Column(
           children: <Widget>[
             const NewsWidget(),
-            const SizedBox(height: 20),
+            _divider(),
             HomeScreenGrid(),
           ],
         ),
+      );
+
+  Widget _divider() => Container(
+        margin: const EdgeInsets.only(top: 20, bottom: 20),
+        child: const Divider(height: 1),
       );
 }
