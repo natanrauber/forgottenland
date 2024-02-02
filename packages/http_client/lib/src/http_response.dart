@@ -16,7 +16,7 @@ class MyHttpResponse {
   final Response<dynamic>? response;
   final int? statusCode;
   final String? statusMessage;
-  final dynamic data;
+  dynamic data;
 
   bool get success => <int>[200, 201, 204].contains(statusCode);
 

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/src/bazaar_controller.dart';
+import 'package:forgottenlandapi/src/books_controller.dart';
 import 'package:forgottenlandapi/src/character_controller.dart';
 import 'package:forgottenlandapi/src/highscores_controller.dart';
 import 'package:forgottenlandapi/src/live_streams_controller.dart';
@@ -23,7 +24,9 @@ final IHttpClient _httpClient = MyDioClient();
 final CharacterController _characterCtrl = CharacterController(_env, _databaseClient, _httpClient, _highscoresCtrl);
 final HighscoresController _highscoresCtrl = HighscoresController(_env, _databaseClient, _httpClient);
 final IBazaarController _bazaarCtrl = BazaarController(_databaseClient);
+final IBooksController _booksCtrl = BooksController(_httpClient);
 final ILiveStreamsController _liveStreamsCtrl = LiveStreamsController(_databaseClient, _httpClient);
+// final INPCsController _npcsCtrl = NPCsController(_httpClient);
 final IOnlineController _onlineCtrl = OnlineController(_databaseClient);
 final SettingsController _settingsCtrl = SettingsController(_databaseClient);
 final UserController _userCtrl = UserController(_databaseClient);
@@ -31,6 +34,8 @@ final UserController _userCtrl = UserController(_databaseClient);
 // Configure routes.
 final Router _router = Router()
   ..get('/bazaar', _bazaarCtrl.get)
+  // ..get('/npcs', _npcsCtrl.getAll)
+  ..get('/books', _booksCtrl.getAll)
   ..get('/character/<name>', _characterCtrl.get)
   ..get('/highscores/<world>/<category>/<vocation>/<page>', _highscoresCtrl.get)
   ..get('/livestreams', _liveStreamsCtrl.get)

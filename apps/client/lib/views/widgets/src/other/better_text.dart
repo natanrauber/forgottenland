@@ -41,6 +41,7 @@ class BetterText extends StatelessWidget {
     this.textAlign,
     this.textDirection,
     this.maxLines,
+    this.selectable = true,
   });
 
   final String text;
@@ -48,15 +49,25 @@ class BetterText extends StatelessWidget {
   final TextAlign? textAlign;
   final TextDirection? textDirection;
   final int? maxLines;
+  final bool selectable; // overflow not working with selectable
 
   @override
-  Widget build(BuildContext context) => SelectableText.rich(
-        _buildTextSpan(),
-        textAlign: textAlign,
-        textDirection: textDirection,
-        maxLines: maxLines,
-        style: style,
-      );
+  Widget build(BuildContext context) => selectable
+      ? SelectableText.rich(
+          _buildTextSpan(),
+          textAlign: textAlign,
+          textDirection: textDirection,
+          maxLines: maxLines,
+          style: style,
+          scrollPhysics: const NeverScrollableScrollPhysics(),
+        )
+      : Text.rich(
+          _buildTextSpan(),
+          textAlign: textAlign,
+          textDirection: textDirection,
+          maxLines: maxLines,
+          style: style,
+        );
 
   TextSpan _buildTextSpan() {
     Pattern pattern;

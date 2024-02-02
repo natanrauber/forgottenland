@@ -1,4 +1,5 @@
 export 'src/bazaar_model.dart';
+export 'src/book_model.dart';
 export 'src/character_model.dart';
 export 'src/guild_model.dart';
 export 'src/highscores_entry_model.dart';

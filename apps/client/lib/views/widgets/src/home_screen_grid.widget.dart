@@ -44,6 +44,7 @@ class HomeScreenGrid extends StatelessWidget {
     _buttonList.add(_characters(context));
     _buttonList.add(_bazaar(context));
     _buttonList.add(_liveStreams(context));
+    _buttonList.add(_books(context));
     _buttonList.add(_about(context));
   }
 
@@ -196,6 +197,14 @@ class HomeScreenGrid extends StatelessWidget {
         name: 'Live\nstreams',
         icon: CupertinoIcons.dot_radiowaves_left_right,
         onTap: () => Get.toNamed(Routes.livestreams.name),
+      );
+
+  GridButtonModel _books(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Books')?.enabled ?? false,
+        name: 'Books',
+        icon: FontAwesomeIcons.book,
+        resizeBy: -2,
+        onTap: () => Get.toNamed(Routes.books.name),
       );
 
   GridButtonModel _about(BuildContext context) => GridButtonModel(

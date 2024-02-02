@@ -10,6 +10,7 @@ class WebImage extends StatelessWidget {
     this.borderRadius = BorderRadius.zero,
     this.borderThickness = 0,
     this.borderColor = AppColors.bgDefault,
+    this.backgroundColor = AppColors.bgDefault,
   });
 
   final String? src;
@@ -19,6 +20,7 @@ class WebImage extends StatelessWidget {
   final BorderRadiusGeometry borderRadius;
   final double borderThickness;
   final Color borderColor;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -34,7 +36,7 @@ class WebImage extends StatelessWidget {
           child: src == null
               ? _placeHolder()
               : ColoredBox(
-                  color: AppColors.bgDefault,
+                  color: backgroundColor,
                   child: Image.network(
                     src!,
                     fit: fit,
