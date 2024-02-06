@@ -17,7 +17,8 @@ class OnlineController implements IOnlineController {
   @override
   Future<Response> getOnlineNow(Request request) async {
     try {
-      dynamic response = await databaseClient.from('online').select().single();
+      dynamic response = await databaseClient.from('online').select().maybeSingle();
+      if (response == null) return ApiResponse.noContent();
       Online online = Online.fromJson((response['data'] as Map<String, dynamic>));
       return ApiResponse.success(data: online.toJson());
     } catch (e) {
@@ -29,7 +30,8 @@ class OnlineController implements IOnlineController {
   Future<Response> getOnlineTime(Request request) async {
     try {
       String? date = request.params['date'];
-      dynamic response = await databaseClient.from('onlinetime').select().eq('date', date).single();
+      dynamic response = await databaseClient.from('onlinetime').select().eq('date', date).maybeSingle();
+      if (response == null) return ApiResponse.noContent();
       Online online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
       return ApiResponse.success(data: online.toJson());
     } catch (e) {

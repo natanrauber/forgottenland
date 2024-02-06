@@ -73,7 +73,8 @@ class HighscoresController {
     if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
-      dynamic response = await databaseClient.from(table).select().eq('date', date).single();
+      dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
+      if (response == null) return ApiResponse.noContent();
       Record record = Record.fromJson(response['data'] as Map<String, dynamic>);
       record.timestamp = response['timestamp'] as String?;
 
@@ -96,7 +97,8 @@ class HighscoresController {
     if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
-      dynamic response = await databaseClient.from(table).select().eq('date', date).single();
+      dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
+      if (response == null) return ApiResponse.noContent();
       Online online = Online.fromJson(response['data'] as Map<String, dynamic>);
 
       online.list = _filterWorld<OnlineEntry>(world, online.list);
@@ -114,7 +116,8 @@ class HighscoresController {
     if (page != null && page < 0) return ApiResponse.error('Invalid page number');
 
     try {
-      dynamic response = await databaseClient.from('rook-master').select().order('date').limit(1).single();
+      dynamic response = await databaseClient.from('rook-master').select().order('date').limit(1).maybeSingle();
+      if (response == null) return ApiResponse.noContent();
       Record record = Record.fromJson(response['data'] as Map<String, dynamic>);
       record.timestamp = response['timestamp'] as String?;
 
