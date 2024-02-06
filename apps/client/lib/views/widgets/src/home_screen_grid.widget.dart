@@ -157,9 +157,10 @@ class HomeScreenGrid extends StatelessWidget {
         name: 'Exp\ngained',
         icon: FontAwesomeIcons.chartLine,
         resizeBy: -4,
-        onTap: () => Get.toNamed(
-          '${Routes.highscores.name}/experiencegained/${highscoresCtrl.timeframe.value.toLowerCase()}',
-        ),
+        onTap: () {
+          final String timeframe = highscoresCtrl.timeframe.value.toLowerCase().replaceAll(' ', '');
+          return Get.toNamed('${Routes.highscores.name}/experiencegained/$timeframe');
+        },
       );
 
   GridButtonModel _rookmaster(BuildContext context) => GridButtonModel(
