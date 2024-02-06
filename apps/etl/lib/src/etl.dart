@@ -295,7 +295,7 @@ class ETL implements IETL {
 
       Online onlineNow = await _getOnlineNow();
       await _saveOnlineNow(onlineNow);
-      // await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
+      await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
       await _saveOnlineTimePeriod('onlinetime-last7days', Duration(days: 7));
       await _saveOnlineTimePeriod('onlinetime-last30days', Duration(days: 30));
       await _saveOnlineTimePeriod('onlinetime-last365days', Duration(days: 365));
@@ -346,6 +346,39 @@ class ETL implements IETL {
     for (var e in record.list) {
       e.rank = record.list.indexOf(e) + 1;
     }
+  }
+
+  Future<dynamic> _saveOnlineTimeToday(Online online) async {
+    var values = <String, dynamic>{
+      'date': DT.tibia.today(),
+      'data': online.toJson(),
+      'timestamp': DT.germany.timeStamp(),
+    };
+    return databaseClient.from('onlinetime').upsert(values).match(<String, dynamic>{'date': DT.tibia.now()});
+  }
+
+  Future<Online> _getOnlineTimeToday(Online onlineNow) async {
+    onlineNow.list.removeWhere((e) => (e.level ?? 0) < 10);
+    List<dynamic> response = await databaseClient.from('onlinetime').select().eq('date', DT.tibia.today());
+    Online result;
+
+    if (response.isEmpty) {
+      result = Online(list: onlineNow.list);
+    } else {
+      result = Online.fromJson(response.first['data']);
+      for (var now in onlineNow.list) {
+        if (result.list.any((e) => e.name == now.name)) {
+          result.list.firstWhere((e) => e.name == now.name).time += 5;
+          result.list.firstWhere((e) => e.name == now.name).level = now.level;
+        } else {
+          result.list.add(now);
+        }
+      }
+    }
+
+    result.list.sort(_compareTo);
+    _onlineAddMissingRank(result);
+    return result;
   }
 
   Future<dynamic> _saveOnlineTimePeriod(String table, Duration period) async {
