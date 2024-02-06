@@ -10,6 +10,7 @@ Map<String, String> get dateToCategory => <String, String>{
       'onlinetime+yesterday': DT.tibia.yesterday(),
       'onlinetime+last7days': DT.tibia.yesterday(),
       'onlinetime+last30days': DT.tibia.yesterday(),
+      'onlinetime+last365days': DT.tibia.yesterday(),
     };
 
 Map<String, String> get tableToCategory => <String, String>{
@@ -22,4 +23,5 @@ Map<String, String> get tableToCategory => <String, String>{
       'onlinetime+yesterday': 'onlinetime',
       'onlinetime+last7days': 'onlinetime-last7days',
       'onlinetime+last30days': 'onlinetime-last30days',
+      'onlinetime+last365days': 'onlinetime-last365days',
     };

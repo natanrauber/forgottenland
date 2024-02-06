@@ -295,9 +295,10 @@ class ETL implements IETL {
 
       Online onlineNow = await _getOnlineNow();
       await _saveOnlineNow(onlineNow);
-      await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
-      await _saveOnlineTimeLast7days(await _getOnlineTimeLast7days());
-      await _saveOnlineTimeLast30days(await _getOnlineTimeLast30days());
+      // await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
+      await _saveOnlineTimePeriod('onlinetime-last7days', Duration(days: 7));
+      await _saveOnlineTimePeriod('onlinetime-last30days', Duration(days: 30));
+      await _saveOnlineTimePeriod('onlinetime-last365days', Duration(days: 365));
 
       return ApiResponse.success();
     } catch (e) {
@@ -335,30 +336,6 @@ class ETL implements IETL {
     return databaseClient.from('online').update(values).match(<String, dynamic>{'world': 'All'});
   }
 
-  Future<Online> _getOnlineTimeToday(Online onlineNow) async {
-    onlineNow.list.removeWhere((e) => (e.level ?? 0) < 10);
-    List<dynamic> response = await databaseClient.from('onlinetime').select().eq('date', DT.tibia.today());
-    Online result;
-
-    if (response.isEmpty) {
-      result = Online(list: onlineNow.list);
-    } else {
-      result = Online.fromJson(response.first['data']);
-      for (var now in onlineNow.list) {
-        if (result.list.any((e) => e.name == now.name)) {
-          result.list.firstWhere((e) => e.name == now.name).time += 5;
-          result.list.firstWhere((e) => e.name == now.name).level = now.level;
-        } else {
-          result.list.add(now);
-        }
-      }
-    }
-
-    result.list.sort(_compareTo);
-    _onlineAddMissingRank(result);
-    return result;
-  }
-
   int _compareTo(OnlineEntry a, OnlineEntry b) {
     if (a.time != b.time) return b.time.compareTo(a.time);
     return (b.level ?? 0).compareTo((a.level ?? 0));
@@ -371,19 +348,22 @@ class ETL implements IETL {
     }
   }
 
-  Future<dynamic> _saveOnlineTimeToday(Online online) async {
+  Future<dynamic> _saveOnlineTimePeriod(String table, Duration period) async {
+    Online? onlineTime = await _getOnlineTimePeriod(table, period);
+    if (onlineTime == null) return;
+
     var values = <String, dynamic>{
-      'date': DT.tibia.today(),
-      'data': online.toJson(),
+      'date': DT.tibia.yesterday(),
+      'data': onlineTime.toJson(),
       'timestamp': DT.germany.timeStamp(),
     };
-    return databaseClient.from('onlinetime').upsert(values).match(<String, dynamic>{'date': DT.tibia.now()});
+    return databaseClient.from(table).insert(values);
   }
 
-  Future<Online?> _getOnlineTimeLast7days() async {
-    if (await _exists('onlinetime-last7days', DT.tibia.yesterday())) return null;
+  Future<Online?> _getOnlineTimePeriod(String table, Duration period) async {
+    if (await _exists(table, DT.tibia.yesterday())) return null;
 
-    DateTime start = DT.tibia.now().subtract(Duration(days: 7));
+    DateTime start = DT.tibia.now().subtract(period);
     DateTime end = DT.tibia.now().subtract(Duration(days: 1));
     Online result = Online(list: <OnlineEntry>[]);
 
@@ -407,55 +387,6 @@ class ETL implements IETL {
     result.list.sort(_compareTo);
     _onlineAddMissingRank(result);
     return result;
-  }
-
-  Future<dynamic> _saveOnlineTimeLast7days(Online? onlineTime) async {
-    if (onlineTime == null) return;
-    var values = <String, dynamic>{
-      'date': DT.tibia.yesterday(),
-      'data': onlineTime.toJson(),
-      'timestamp': DT.germany.timeStamp(),
-    };
-    return databaseClient.from('onlinetime-last7days').insert(values);
-  }
-
-  Future<Online?> _getOnlineTimeLast30days() async {
-    if (await _exists('onlinetime-last30days', DT.tibia.yesterday())) return null;
-
-    DateTime start = DT.tibia.now().subtract(Duration(days: 30));
-    DateTime end = DT.tibia.now().subtract(Duration(days: 1));
-    Online result = Online(list: <OnlineEntry>[]);
-
-    for (String date in DT.tibia.range(start, end)) {
-      List<dynamic> response = await databaseClient.from('onlinetime').select().eq('date', date);
-
-      if (response.isNotEmpty) {
-        Online onlineTimeOnDate = Online.fromJson(response.first['data']);
-        for (var dayE in onlineTimeOnDate.list) {
-          if (result.list.any((resultE) => resultE.name == dayE.name)) {
-            result.list.firstWhere((resultE) => resultE.name == dayE.name).time += dayE.time;
-            result.list.firstWhere((resultE) => resultE.name == dayE.name).level = dayE.level;
-            result.list.firstWhere((resultE) => resultE.name == dayE.name).world = dayE.world;
-          } else {
-            result.list.add(dayE);
-          }
-        }
-      }
-    }
-
-    result.list.sort(_compareTo);
-    _onlineAddMissingRank(result);
-    return result;
-  }
-
-  Future<dynamic> _saveOnlineTimeLast30days(Online? onlineTime) async {
-    if (onlineTime == null) return;
-    var values = <String, dynamic>{
-      'date': DT.tibia.yesterday(),
-      'data': onlineTime.toJson(),
-      'timestamp': DT.germany.timeStamp(),
-    };
-    return databaseClient.from('onlinetime-last30days').insert(values);
   }
 
   @override
