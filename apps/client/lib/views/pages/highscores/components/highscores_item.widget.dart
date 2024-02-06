@@ -10,27 +10,34 @@ import 'package:models/models.dart';
 import 'package:utils/utils.dart';
 
 class HighscoresItemCard extends StatefulWidget {
-  const HighscoresItemCard(this.index, this.item, {this.disableOnTap = false});
+  const HighscoresItemCard({
+    required this.index,
+    required this.item,
+    this.disableOnTap = false,
+    required this.characterCtrl,
+    required this.highscoresCtrl,
+    required this.userCtrl,
+  });
 
   final int index;
   final HighscoresEntry item;
   final bool disableOnTap;
+
+  final CharacterController characterCtrl;
+  final HighscoresController highscoresCtrl;
+  final UserController userCtrl;
 
   @override
   State<HighscoresItemCard> createState() => _HighscoresItemCardState();
 }
 
 class _HighscoresItemCardState extends State<HighscoresItemCard> {
-  final CharacterController characterCtrl = Get.find<CharacterController>();
-  final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
-  final UserController userCtrl = Get.find<UserController>();
-
   bool expand = false;
 
   @override
   Widget build(BuildContext context) {
-    final bool hideData =
-        LIST.premiumCategories.contains(highscoresCtrl.category.value) && userCtrl.isLoggedIn.value != true;
+    final bool hideData = LIST.premiumCategories.contains(widget.highscoresCtrl.category.value) &&
+        widget.userCtrl.isLoggedIn.value != true;
 
     return MouseRegion(
       cursor: widget.disableOnTap ? MouseCursor.defer : SystemMouseCursors.click,
@@ -62,16 +69,18 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
                       ),
                     ),
 
-                    if (highscoresCtrl.world.value.name == 'All') _info('World: ${widget.item.world?.name ?? ''}'),
+                    if (widget.highscoresCtrl.world.value.name == 'All')
+                      _info('World: ${widget.item.world?.name ?? ''}'),
 
-                    if (highscoresCtrl.category.value != 'Rook Master') _info('Level: ${widget.item.level ?? ''}'),
+                    if (widget.highscoresCtrl.category.value != 'Rook Master')
+                      _info('Level: ${widget.item.level ?? ''}'),
 
                     if (widget.item.onlineTime != null) _info('Online time: ${widget.item.onlineTime ?? ''}'),
 
                     if (widget.item.value != null)
                       _info('$_rankName: ${hideData ? '<primary>???<primary>' : widget.item.stringValue ?? '---'}'),
 
-                    if (highscoresCtrl.category.value == 'Rook Master') _skillsPosition(widget.item),
+                    if (widget.highscoresCtrl.category.value == 'Rook Master') _skillsPosition(widget.item),
 
                     // if (widget.item.supporterTitle != null)
                     //   _info('\n<primary>${widget.item.supporterTitle ?? ''}<primary>'),
@@ -123,15 +132,15 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
   Widget _rankImage() {
     final int length = (_rankValue ?? ' ').length;
-    final AssetImage? image = highscoresCtrl.images['assets/icons/rank/rank$length.png'];
+    final AssetImage? image = widget.highscoresCtrl.images['assets/icons/rank/rank$length.png'];
     if (image == null) return Container();
     return Image(image: image);
   }
 
   String? get _rankValue {
     if (_showGlobalRank) return (widget.index + 1).toString();
-    if (highscoresCtrl.category.value == 'Experience gained') return (widget.index + 1).toString();
-    if (highscoresCtrl.category.value == 'Online time') return (widget.index + 1).toString();
+    if (widget.highscoresCtrl.category.value == 'Experience gained') return (widget.index + 1).toString();
+    if (widget.highscoresCtrl.category.value == 'Online time') return (widget.index + 1).toString();
     return widget.item.rank?.toString();
   }
 
@@ -155,7 +164,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
       );
 
   String get _rankName {
-    final String name = highscoresCtrl.category.value;
+    final String name = widget.highscoresCtrl.category.value;
     if (name == 'Rook Master') return 'Total points';
     return name;
   }
@@ -266,7 +275,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
       );
 
   bool get _showGlobalRank {
-    if (highscoresCtrl.rawList.length != highscoresCtrl.filteredList.length) return true;
+    if (widget.highscoresCtrl.rawList.length != widget.highscoresCtrl.filteredList.length) return true;
     return false;
   }
 
@@ -278,14 +287,14 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
   Widget _battleyeTypeIcon() {
     final String? type = widget.item.world?.battleyeType?.toLowerCase();
-    final AssetImage? image = highscoresCtrl.images['assets/icons/battleye_type/$type.png'];
+    final AssetImage? image = widget.highscoresCtrl.images['assets/icons/battleye_type/$type.png'];
     if (image == null) return _infoIcon(child: Container());
     return _infoIcon(child: Image(image: image));
   }
 
   Widget _pvpType() {
     final String? type = widget.item.world?.pvpType?.toLowerCase().replaceAll(' ', '_');
-    final AssetImage? image = highscoresCtrl.images['assets/icons/pvp_type/$type.png'];
+    final AssetImage? image = widget.highscoresCtrl.images['assets/icons/pvp_type/$type.png'];
     if (image == null) return _infoIcon(child: Container());
     return _infoIcon(child: Image(image: image));
   }
@@ -315,25 +324,25 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
   Widget _globalRankImage() {
     final int length = (_globalRankValue ?? ' ').length;
-    final AssetImage? image = highscoresCtrl.images['assets/icons/rank/globalrank$length.png'];
+    final AssetImage? image = widget.highscoresCtrl.images['assets/icons/rank/globalrank$length.png'];
     if (image == null) return Container();
     return Image(image: image);
   }
 
   String? get _globalRankValue {
-    if (highscoresCtrl.category.value == 'Experience gained') {
-      return (highscoresCtrl.rawList.indexOf(widget.item) + 1).toString();
+    if (widget.highscoresCtrl.category.value == 'Experience gained') {
+      return (widget.highscoresCtrl.rawList.indexOf(widget.item) + 1).toString();
     }
-    if (highscoresCtrl.category.value == 'Online time') {
-      return (highscoresCtrl.rawList.indexOf(widget.item) + 1).toString();
+    if (widget.highscoresCtrl.category.value == 'Online time') {
+      return (widget.highscoresCtrl.rawList.indexOf(widget.item) + 1).toString();
     }
     return widget.item.rank.toString();
   }
 
   Future<void> _loadCharacter(BuildContext context) async {
     if (widget.item.name == null) return;
-    characterCtrl.searchCtrl.text = widget.item.name!;
+    widget.characterCtrl.searchCtrl.text = widget.item.name!;
     Get.toNamed(Routes.character.name);
-    characterCtrl.searchCharacter();
+    widget.characterCtrl.searchCharacter();
   }
 }

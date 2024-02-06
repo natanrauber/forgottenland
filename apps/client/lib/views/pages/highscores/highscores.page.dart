@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/controllers/user_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
@@ -24,6 +25,7 @@ class HighscoresPage extends StatefulWidget {
 }
 
 class _HighscoresPageState extends State<HighscoresPage> {
+  final CharacterController characterCtrl = Get.find<CharacterController>();
   final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
   final UserController userCtrl = Get.find<UserController>();
 
@@ -133,7 +135,14 @@ class _HighscoresPageState extends State<HighscoresPage> {
 
     return Padding(
       padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
-      child: HighscoresItemCard(index, item, disableOnTap: highscoresCtrl.category.value == 'Rook Master'),
+      child: HighscoresItemCard(
+        index: index,
+        item: item,
+        disableOnTap: highscoresCtrl.category.value == 'Rook Master',
+        characterCtrl: characterCtrl,
+        highscoresCtrl: highscoresCtrl,
+        userCtrl: userCtrl,
+      ),
     );
   }
 

@@ -1,6 +1,6 @@
 name: models
 description: A starting point for Dart libraries or applications.
-version: 24.02.02+2
+version: 24.02.06+1
 
 environment:
   sdk: ^3.1.1

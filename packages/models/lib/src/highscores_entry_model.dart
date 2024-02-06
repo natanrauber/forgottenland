@@ -26,9 +26,11 @@ class HighscoresEntry {
       world = World(name: json['world']['name'] as String);
     }
     if (json['time'] is int) {
-      final int hours = (json['time'] as int) ~/ 60;
+      final int days = (json['time'] as int) ~/ (60 * 24);
+      final int hours = ((json['time'] as int) % (60 * 24)) ~/ 60;
       final int minutes = (json['time'] as int) % 60;
-      onlineTime = '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
+      onlineTime = '${hours.toString().padLeft(2, '0')}h${minutes.toString().padLeft(2, '0')}m';
+      if (days > 0) onlineTime = '${days.toString()}d$onlineTime';
     }
     if (json['expanded'] is Map) expanded = ExpandedData.fromJson(json['expanded'] as Map<String, dynamic>);
   }
@@ -39,9 +41,11 @@ class HighscoresEntry {
     vocation = online.vocation;
     value = online.time;
 
-    final int hours = (value ?? 0) ~/ 60;
+    final int days = (value ?? 0) ~/ (60 * 24);
+    final int hours = ((value ?? 0) % (60 * 24)) ~/ 60;
     final int minutes = (value ?? 0) % 60;
-    onlineTime = '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
+    onlineTime = '${hours.toString().padLeft(2, '0')}h${minutes.toString().padLeft(2, '0')}m';
+    if (days > 0) onlineTime = '${days.toString()}d$onlineTime';
   }
 
   int? rank;
