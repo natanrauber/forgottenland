@@ -294,6 +294,8 @@ class ETL implements IETL {
       databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
 
       Online onlineNow = await _getOnlineNow();
+      if (onlineNow.list.isEmpty) return ApiResponse.error('');
+
       await _saveOnlineNow(onlineNow);
       await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
       await _saveOnlineTimePeriod('onlinetime-last7days', Duration(days: 7));

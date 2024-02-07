@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class Feature {
   Feature({this.name, this.enabled = false});
 
@@ -8,6 +10,7 @@ class Feature {
     } else {
       enabled = false;
     }
+    if (kDebugMode) enabled = true;
   }
 
   String? name;
