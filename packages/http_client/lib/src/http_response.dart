@@ -18,7 +18,7 @@ class MyHttpResponse {
   final String? statusMessage;
   dynamic data;
 
-  bool get success => <int>[200, 201, 204].contains(statusCode);
+  bool get success => <int>[200, 201, 202, 204].contains(statusCode);
 
   bool get error {
     if (success) return false;
