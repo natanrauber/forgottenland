@@ -33,20 +33,20 @@ class CharacterController {
       await _getExpGain(name, response);
       await _getOnlineTime(name, response);
       await _getRookmaster(name, response);
-      return ApiResponse.success(data: response.dataAsMap['characters']);
+      return ApiResponse.success(data: response.dataAsMap['character']);
     } catch (e) {
       return handleError(e);
     }
   }
 
   bool _notFound(String name, MyHttpResponse response) =>
-      response.dataAsMap['characters']['character']['name']?.toString().toLowerCase() != name;
+      response.dataAsMap['character']['character']['name']?.toString().toLowerCase() != name;
 
   bool _notOnRookgaard(MyHttpResponse response) =>
-      response.dataAsMap['characters']['character']['residence']?.toString().toLowerCase() != 'rookgaard';
+      response.dataAsMap['character']['character']['residence']?.toString().toLowerCase() != 'rookgaard';
 
   Future<void> _getExpGain(String name, MyHttpResponse httpResponse) async {
-    httpResponse.dataAsMap['characters']['experiencegained'] = <String, dynamic>{};
+    httpResponse.dataAsMap['character']['experiencegained'] = <String, dynamic>{};
     List<String> timeframes = <String>['today', 'yesterday', 'last7days', 'last30days'];
     for (String timeframe in timeframes) {
       try {
@@ -55,7 +55,7 @@ class CharacterController {
         final Record record = Record.fromJson(data['data'] as Map<String, dynamic>);
         for (HighscoresEntry e in record.list) {
           if (e.name?.toLowerCase() == name) {
-            httpResponse.dataAsMap['characters']['experiencegained'][timeframe] = e.toJson();
+            httpResponse.dataAsMap['character']['experiencegained'][timeframe] = e.toJson();
           }
         }
       } catch (_) {}
@@ -63,7 +63,7 @@ class CharacterController {
   }
 
   Future<void> _getOnlineTime(String name, MyHttpResponse httpResponse) async {
-    httpResponse.dataAsMap['characters']['onlinetime'] = <String, dynamic>{};
+    httpResponse.dataAsMap['character']['onlinetime'] = <String, dynamic>{};
     List<String> timeframes = <String>['today', 'yesterday', 'last7days', 'last30days'];
     for (String timeframe in timeframes) {
       try {
@@ -72,7 +72,7 @@ class CharacterController {
         final Online online = Online.fromJson(data['data'] as Map<String, dynamic>);
         for (OnlineEntry e in online.list) {
           if (e.name?.toLowerCase() == name) {
-            httpResponse.dataAsMap['characters']['onlinetime'][timeframe] = e.toJson();
+            httpResponse.dataAsMap['character']['onlinetime'][timeframe] = e.toJson();
           }
         }
       } catch (_) {}
@@ -86,7 +86,7 @@ class CharacterController {
       final Record record = Record.fromJson(data['data'] as Map<String, dynamic>);
       for (HighscoresEntry e in record.list) {
         if (e.name?.toLowerCase() == name) {
-          httpResponse.dataAsMap['characters']['rookmaster'] = e.toJson();
+          httpResponse.dataAsMap['character']['rookmaster'] = e.toJson();
         }
       }
     } catch (_) {}

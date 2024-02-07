@@ -28,7 +28,7 @@ class MyPage extends GetPage<dynamic> {
 class Routes {
   static final MyPage bazaar = MyPage('/bazaar', BazaarPage());
   static final MyPage books = MyPage('/books', BooksPage());
-  static final MyPage character = MyPage('/character', CharacterPage());
+  static final MyPage character = MyPage('/characters', CharacterPage());
   static final MyPage guild = MyPage('/guild', GuildPage());
   static final MyPage highscores = MyPage('/highscores', const HighscoresPage());
   static final MyPage home = MyPage('/home', HomePage());
