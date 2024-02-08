@@ -99,6 +99,8 @@ class HighscoresController extends Controller {
 
       if (response.statusCode == 204) {
         loadedAll.value = true;
+      } else if (response.success && response.dataAsMap['data'] == null) {
+        loadedAll.value = true;
       } else if (response.success) {
         final Record aux = Record.fromJson(
           (response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{},

@@ -74,7 +74,9 @@ class HighscoresController {
 
     try {
       dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
-      if (response == null) return ApiResponse.noContent();
+      if (response is! Map<String, dynamic>) return ApiResponse.noContent();
+      if (response['data'] is! Map<String, dynamic>) return ApiResponse.noContent();
+
       Record record = Record.fromJson(response['data'] as Map<String, dynamic>);
       record.timestamp = response['timestamp'] as String?;
 
@@ -98,7 +100,9 @@ class HighscoresController {
 
     try {
       dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
-      if (response == null) return ApiResponse.noContent();
+      if (response is! Map<String, dynamic>) return ApiResponse.noContent();
+      if (response['data'] is! Map<String, dynamic>) return ApiResponse.noContent();
+
       Online online = Online.fromJson(response['data'] as Map<String, dynamic>);
 
       online.list = _filterWorld<OnlineEntry>(world, online.list);

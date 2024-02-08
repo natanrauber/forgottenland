@@ -44,9 +44,11 @@ class ApiResponse extends Response {
           body: _responseBody(add: {"response": 'Accepted'}),
         );
 
+  // Temporarily changed status code from 204 to 200 due to a bug:
+  // upstream connect error or disconnect/reset before headers. reset reason: protocol error
   ApiResponse.noContent()
       : super(
-          204,
+          200,
           headers: _responseHeader(),
           body: _responseBody(add: {"response": 'No Content'}),
         );
