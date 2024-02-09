@@ -34,7 +34,7 @@ class NpcsController extends Controller {
     if (isLoadingNpc.value) return null;
 
     isLoadingNpc.value = true;
-    response = await httpClient.get('${PATH.forgottenLandApi}/npc/transcripts/${npc.name?.replaceAll(' ', '_')}');
+    response = await httpClient.get('${PATH.forgottenLandApi}/npcs/${npc.name?.replaceAll(' ', '_')}');
 
     if (response.success) npc.updateFromJson(response.dataAsMap);
 

@@ -54,6 +54,7 @@ class _HighscoresPageState extends State<HighscoresPage> {
 
   @override
   Widget build(BuildContext context) => AppPage(
+        screenName: 'highscores',
         postFrameCallback: _postFrameCallback,
         onRefresh: _loadHighscores,
         onNotification: _onScrollNotification,

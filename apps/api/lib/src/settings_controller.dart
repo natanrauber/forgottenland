@@ -1,7 +1,6 @@
 import 'package:database_client/database_client.dart';
 import 'package:forgottenlandapi/utils/error_handler.dart';
 import 'package:shelf/shelf.dart';
-import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
 class SettingsController {
@@ -9,10 +8,7 @@ class SettingsController {
 
   final IDatabaseClient databaseClient;
 
-  Future<Response> get(Request request) async {
-    String? value = request.params['value']?.toLowerCase();
-
-    if (value == null) return ApiResponse.error('Missing param "value"');
+  Future<Response> get(Request request, String value) async {
     if (value.contains('features')) return _getFeatures();
     return ApiResponse.notFound();
   }

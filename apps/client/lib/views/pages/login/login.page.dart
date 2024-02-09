@@ -15,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) => AppPage(
+        screenName: 'login',
         padding: const EdgeInsets.symmetric(vertical: 20),
         body: _body(),
       );

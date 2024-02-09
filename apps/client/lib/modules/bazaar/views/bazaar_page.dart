@@ -17,6 +17,7 @@ class _BazaarPageState extends State<BazaarPage> {
 
   @override
   Widget build(BuildContext context) => AppPage(
+        screenName: 'bazaar',
         postFrameCallback: bazaarCtrl.getAuctions,
         onRefresh: bazaarCtrl.getAuctions,
         padding: const EdgeInsets.symmetric(vertical: 20),

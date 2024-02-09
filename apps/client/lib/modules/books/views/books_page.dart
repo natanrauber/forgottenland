@@ -23,6 +23,7 @@ class _BooksPageState extends State<BooksPage> {
 
   @override
   Widget build(BuildContext context) => AppPage(
+        screenName: 'books',
         postFrameCallback: booksCtrl.getAll,
         onRefresh: booksCtrl.getAll,
         body: Column(

@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:forgottenland/modules/main/controllers/main_controller.dart';
@@ -11,7 +12,7 @@ import 'package:get/get.dart';
 
 class AppPage extends StatefulWidget {
   const AppPage({
-    super.key,
+    required this.screenName,
     this.body,
     this.postFrameCallback,
     this.onRefresh,
@@ -20,6 +21,7 @@ class AppPage extends StatefulWidget {
     this.canPop = true,
   });
 
+  final String screenName;
   final Widget? body;
   final Future<void> Function()? postFrameCallback;
   final Future<void> Function()? onRefresh;
@@ -40,9 +42,14 @@ class _AppPageState extends State<AppPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       mainCtrl.ensureSplashIsVisited();
-      if (mainCtrl.visitedSplash && !_featureDisabled) widget.postFrameCallback?.call();
+      if (mainCtrl.visitedSplash) {
+        _logScreenEvent();
+        if (!_featureDisabled) widget.postFrameCallback?.call();
+      }
     });
   }
+
+  void _logScreenEvent() => FirebaseAnalytics.instance.logEvent(name: 'page_${widget.screenName}');
 
   @override
   Widget build(BuildContext context) {

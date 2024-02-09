@@ -94,7 +94,7 @@ class HighscoresController extends Controller {
       if (cat == 'Online time') cat = '$cat+$timeframe';
 
       response = await httpClient.get(
-        '${PATH.forgottenLandApi}/highscores/$world/$cat/none/$pageCtrl'.toLowerCase().replaceAll(' ', ''),
+        '${PATH.forgottenLandApi}/highscores/$world/$cat/$pageCtrl'.toLowerCase().replaceAll(' ', ''),
       );
 
       if (response.statusCode == 204) {

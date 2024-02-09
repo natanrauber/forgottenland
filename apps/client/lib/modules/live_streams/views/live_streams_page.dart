@@ -18,6 +18,7 @@ class _LiveStreamsPageState extends State<LiveStreamsPage> {
 
   @override
   Widget build(BuildContext context) => AppPage(
+        screenName: 'live_streams',
         postFrameCallback: liveStreamsCtrl.getStreams,
         onRefresh: liveStreamsCtrl.getStreams,
         padding: const EdgeInsets.symmetric(vertical: 20),

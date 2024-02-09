@@ -18,6 +18,7 @@ class _NpcsPageState extends State<NpcsPage> {
 
   @override
   Widget build(BuildContext context) => AppPage(
+        screenName: 'npcs',
         postFrameCallback: npcsCtrl.getAll,
         onRefresh: npcsCtrl.getAll,
         body: Column(

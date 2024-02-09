@@ -17,6 +17,7 @@ class _OnlineCharactersPageState extends State<OnlineCharactersPage> {
 
   @override
   Widget build(BuildContext context) => AppPage(
+        screenName: 'online',
         postFrameCallback: onlineCtrl.getOnlineCharacters,
         onRefresh: onlineCtrl.getOnlineCharacters,
         padding: const EdgeInsets.symmetric(vertical: 20),

@@ -1,6 +1,6 @@
 name: forgottenlandapi
 description: A server app using the shelf package and Docker.
-version: 24.02.08+1
+version: 24.02.09+1
 
 environment:
   sdk: '>=2.18.4 <3.0.0'

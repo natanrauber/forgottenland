@@ -20,6 +20,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) => AppPage(
+        screenName: 'home',
         canPop: false,
         postFrameCallback: _postFrameCallback,
         body: Column(

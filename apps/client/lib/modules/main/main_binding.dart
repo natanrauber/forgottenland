@@ -15,6 +15,7 @@ import 'package:forgottenland/modules/npcs/controllers/npcs_controller.dart';
 import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
 import 'package:get/get.dart';
 import 'package:http_client/http_client.dart';
+import 'package:utils/utils.dart';
 
 class MainBinding implements Bindings {
   final IDatabaseClient _databaseClient = MySupabaseClient();
@@ -39,9 +40,23 @@ class MainBinding implements Bindings {
 }
 
 Future<void> _postRequestCallback(MyHttpResponse response) async => FirebaseAnalytics.instance.logEvent(
-      name:
-          '${response.statusCode} ${response.requestOptions?.path.replaceAll('//', '').replaceFirst('/', 'SPLIT').split('SPLIT').last}',
+      name: _eventName(response),
       parameters: <String, dynamic>{
         'data': response.dataAsMap.toString(),
       },
     );
+
+String _eventName(MyHttpResponse response) {
+  final int? statusCode = response.statusCode;
+  String? path = response.requestOptions?.path;
+  if (statusCode == null || path == null) return 'invalid response';
+
+  // remove unecessary info (name has to be as short as possible)
+  path = path.replaceAll('//', '').replaceFirst('/', 'SPLIT').split('SPLIT').last;
+  path = path.replaceAll('highscores', 'hs');
+  path = path.replaceAll('experiencegained', 'expgain');
+  if (path.contains('character/')) path = 'character/';
+  if (path.contains('npcs/')) path = 'npcs/';
+  customPrint('log: $statusCode /$path');
+  return '$statusCode /$path';
+}

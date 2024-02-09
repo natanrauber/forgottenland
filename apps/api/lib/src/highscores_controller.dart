@@ -4,7 +4,6 @@ import 'package:forgottenlandapi/utils/maps.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
-import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
 class HighscoresController {
@@ -14,24 +13,19 @@ class HighscoresController {
   final IDatabaseClient databaseClient;
   final IHttpClient httpClient;
 
-  Future<Response> get(Request request) async {
-    String? world = request.params['world']?.toLowerCase();
-    String? category = request.params['category']?.toLowerCase();
-    String? vocation = request.params['vocation']?.toLowerCase();
-    int page = int.tryParse(request.params['page'] ?? '') ?? 1;
+  Future<Response> get(Request request, String world, String category, String page) async {
+    int pageAux = int.tryParse(page) ?? 1;
 
-    if (world == null) return ApiResponse.error('Missing param "world"');
-    if (category == null) return ApiResponse.error('Missing param "category"');
-    if (category.contains('experiencegained')) return getExpGain(world, category, page);
-    if (category.contains('onlinetime')) return getOnlineTime(world, category, page);
-    if (category.contains('rookmaster')) return getRookmaster(world, page);
-    return getFromTibiaData(world, category, vocation, page);
+    if (category.contains('experiencegained')) return getExpGain(world, category, pageAux);
+    if (category.contains('onlinetime')) return getOnlineTime(world, category, pageAux);
+    if (category.contains('rookmaster')) return getRookmaster(world, pageAux);
+    return getFromTibiaData(world, category, pageAux);
   }
 
-  Future<Response> getFromTibiaData(String? world, String? category, String? vocation, int page) async {
+  Future<Response> getFromTibiaData(String? world, String? category, int page) async {
     try {
       MyHttpResponse response = await httpClient.get(
-        '${env['PATH_TIBIA_DATA']}/highscores/$world/$category/$vocation/$page',
+        '${env['PATH_TIBIA_DATA']}/highscores/$world/$category/none/$page',
       );
       Record record = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
       return ApiResponse.success(data: record.toJson());

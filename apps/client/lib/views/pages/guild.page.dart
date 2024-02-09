@@ -8,6 +8,7 @@ import 'package:utils/utils.dart';
 class GuildPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AppPage(
+        screenName: 'about_fl',
         padding: const EdgeInsets.symmetric(vertical: 20),
         body: Column(
           children: <Widget>[

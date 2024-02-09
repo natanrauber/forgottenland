@@ -23,11 +23,10 @@ class CharacterController {
 
   Future<Response> get(Request request) async {
     String? name = request.params['name']?.toLowerCase().replaceAll('%20', ' ');
-
     if (name == null) return ApiResponse.error('Missing param "name"');
 
     try {
-      final MyHttpResponse response = await httpClient.get('$pathTibiaData/character/$name');
+      final MyHttpResponse response = await httpClient.get('$pathTibiaData/character/${name.replaceAll(' ', '%20')}');
       if (_notFound(name, response)) return ApiResponse.notFound();
       if (_notOnRookgaard(response)) return ApiResponse.notAcceptable();
       await _getExpGain(name, response);

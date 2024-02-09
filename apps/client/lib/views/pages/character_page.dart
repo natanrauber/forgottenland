@@ -24,6 +24,7 @@ class _CharacterPageState extends State<CharacterPage> {
   @override
   Widget build(BuildContext context) => Obx(
         () => AppPage(
+          screenName: 'character',
           body: Column(
             children: <Widget>[
               _searchField(),

@@ -1,11 +1,10 @@
 import 'package:http_client/http_client.dart';
 import 'package:shelf/shelf.dart';
-import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
 abstract class INPCsController {
   Future<Response> getAll(Request request);
-  Future<Response> getTranscripts(Request request);
+  Future<Response> getTranscripts(Request request, String name);
 }
 
 class NPCsController implements INPCsController {
@@ -40,9 +39,7 @@ class NPCsController implements INPCsController {
   }
 
   @override
-  Future<Response> getTranscripts(Request request) async {
-    String? name = request.params['name'];
-
+  Future<Response> getTranscripts(Request request, String name) async {
     try {
       MyHttpResponse response = await httpClient.get(
         'https://raw.githubusercontent.com/s2ward/tibia/main/npc/Rookgaard/$name.txt',

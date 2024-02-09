@@ -1,12 +1,11 @@
 import 'package:database_client/database_client.dart';
 import 'package:models/models.dart';
 import 'package:shelf/shelf.dart';
-import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
 abstract class IOnlineController {
   Future<Response> getOnlineNow(Request request);
-  Future<Response> getOnlineTime(Request request);
+  Future<Response> getOnlineTime(Request request, String date);
 }
 
 class OnlineController implements IOnlineController {
@@ -27,10 +26,9 @@ class OnlineController implements IOnlineController {
   }
 
   @override
-  Future<Response> getOnlineTime(Request request) async {
+  Future<Response> getOnlineTime(Request request, String date) async {
     try {
-      String? date = request.params['date'];
-      dynamic response = await databaseClient.from('onlinetime').select().eq('date', date ?? '').maybeSingle();
+      dynamic response = await databaseClient.from('onlinetime').select().eq('date', date).maybeSingle();
       if (response == null) return ApiResponse.noContent();
       Online online = Online.fromJson((response['data'] as Map<String, dynamic>?) ?? <String, dynamic>{});
       return ApiResponse.success(data: online.toJson());
