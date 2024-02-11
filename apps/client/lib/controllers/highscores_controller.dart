@@ -64,7 +64,7 @@ class HighscoresController extends Controller {
 
   bool get _shouldLoadMore {
     if (loadedAll.value) return false;
-    if (DateTime.now().difference(_loadStartTime).inSeconds > 10) return false;
+    if (DateTime.now().difference(_loadStartTime).inSeconds > 5) return false;
     if (searchController.text.isNotEmpty) return filteredList.isEmpty;
     return rawList.length < 1000 && filteredList.length < 10;
   }
@@ -79,7 +79,7 @@ class HighscoresController extends Controller {
     if (pageCtrl.value == 1) rawList.clear();
     if (pageCtrl.value == 1) filteredList.clear();
     if (resetTimer) _loadStartTime = DateTime.now();
-    if (DateTime.now().difference(_loadStartTime).inSeconds > 10) {
+    if (DateTime.now().difference(_loadStartTime).inSeconds > 5) {
       isLoading.value = false;
       return;
     }
@@ -97,7 +97,7 @@ class HighscoresController extends Controller {
         '${PATH.forgottenLandApi}/highscores/$world/$cat/$pageCtrl'.toLowerCase().replaceAll(' ', ''),
       );
 
-      if (response.statusCode == 204) {
+      if (response.statusCode == 204 || response.statusCode == 404) {
         loadedAll.value = true;
       } else if (response.success && response.dataAsMap['data'] == null) {
         loadedAll.value = true;

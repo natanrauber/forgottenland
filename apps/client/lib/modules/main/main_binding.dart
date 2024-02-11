@@ -15,7 +15,6 @@ import 'package:forgottenland/modules/npcs/controllers/npcs_controller.dart';
 import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
 import 'package:get/get.dart';
 import 'package:http_client/http_client.dart';
-import 'package:utils/utils.dart';
 
 class MainBinding implements Bindings {
   final IDatabaseClient _databaseClient = MySupabaseClient();
@@ -57,6 +56,5 @@ String _eventName(MyHttpResponse response) {
   path = path.replaceAll('experiencegained', 'expgain');
   if (path.contains('character/')) path = 'character/';
   if (path.contains('npcs/')) path = 'npcs/';
-  customPrint('log: $statusCode /$path');
   return '$statusCode /$path';
 }
