@@ -28,7 +28,7 @@ final _router = Router()
   ..get('/skill/<name>/<value>', ETL(_env, _databaseClient, _httpClient).calcSkillPoints);
 
 void main(List<String> args) async {
-  _env.log();
+  // _env.log();
   if (_env.isMissingAny(_requiredVar)) return print('Missing required environment variable');
 
   // Use any available host or container IP (usually `0.0.0.0`).

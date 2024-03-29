@@ -48,7 +48,7 @@ final Router _router = Router()
   ..post('/user/revive', _userCtrl.revive);
 
 void main(List<String> args) async {
-  _env.log();
+  // _env.log();
   if (_env.isMissingAny(_requiredVar)) return print('Missing required environment variable');
 
   // Use any available host or container IP (usually `0.0.0.0`).
