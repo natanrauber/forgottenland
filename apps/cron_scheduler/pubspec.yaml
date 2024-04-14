@@ -1,6 +1,6 @@
 name: cron_scheduler
 description: A sample command-line application.
-version: 23.12.27+1
+version: 24.04.14+1
 
 environment:
   sdk: '>=2.18.4 <3.0.0'
