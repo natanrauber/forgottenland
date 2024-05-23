@@ -1,9 +1,9 @@
 name: forgottenlandetl
 description: A server app using the shelf package and Docker.
-version: 24.03.29+1
+version: 24.05.23+2
 
 environment:
-  sdk: ">=2.18.4 <=3.1.1"
+  sdk: ">=2.18.4 <=3.2.0"
 
 dependencies:
   args: ^2.0.0

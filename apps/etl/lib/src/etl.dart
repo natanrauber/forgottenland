@@ -113,7 +113,7 @@ class ETL implements IETL {
         'data': record.toJson(),
         'timestamp': DT.germany.timeStamp(),
       };
-      return databaseClient.from(table).update(values).match(<String, dynamic>{'world': 'All'});
+      return databaseClient.from(table).update(values).match(<String, Object>{'world': 'All'});
     }
     var values = <String, dynamic>{
       'date': DT.tibia.today(),
@@ -335,7 +335,7 @@ class ETL implements IETL {
 
   Future<dynamic> _saveOnlineNow(Online online) async {
     var values = <String, dynamic>{'data': online.toJson(), 'timestamp': DT.germany.timeStamp()};
-    return databaseClient.from('online').update(values).match(<String, dynamic>{'world': 'All'});
+    return databaseClient.from('online').update(values).match(<String, Object>{'world': 'All'});
   }
 
   int _compareTo(OnlineEntry a, OnlineEntry b) {
@@ -356,7 +356,7 @@ class ETL implements IETL {
       'data': online.toJson(),
       'timestamp': DT.germany.timeStamp(),
     };
-    return databaseClient.from('onlinetime').upsert(values).match(<String, dynamic>{'date': DT.tibia.now()});
+    return databaseClient.from('onlinetime').upsert(values).match(<String, Object>{'date': DT.tibia.now()});
   }
 
   Future<Online> _getOnlineTimeToday(Online onlineNow) async {
