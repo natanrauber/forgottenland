@@ -41,6 +41,7 @@ class LIST {
     'Europe',
     'North America',
     'South America',
+    'Oceania',
   ];
 
   static const List<String> pvpType = <String>[
