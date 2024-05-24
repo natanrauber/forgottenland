@@ -142,7 +142,7 @@ class _HomeScreenGridState extends State<HomeScreenGrid> {
       height: buttonSize,
       width: buttonSize,
       decoration: BoxDecoration(
-        color: AppColors.bgDefault.withOpacity(0.5),
+        color: AppColors.bgDefault.withOpacity(0.75),
         borderRadius: BorderRadius.circular(11),
       ),
       child: Icon(
@@ -161,7 +161,7 @@ class _HomeScreenGridState extends State<HomeScreenGrid> {
           fontSize: 11,
           height: 15 / 11,
           fontWeight: FontWeight.w500,
-          color: item.enabled ? AppColors.textPrimary : AppColors.bgDefault.withOpacity(0.5),
+          color: item.enabled ? AppColors.textPrimary : AppColors.bgDefault.withOpacity(0.75),
           overflow: TextOverflow.ellipsis,
         ),
       );

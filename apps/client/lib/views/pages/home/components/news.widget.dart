@@ -113,7 +113,7 @@ class _NewsWidgetState extends State<NewsWidget> {
             padding: const EdgeInsets.all(12),
             alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
-              color: AppColors.bgDefault.withOpacity(0.5),
+              color: AppColors.bgDefault.withOpacity(0.75),
               borderRadius: BorderRadius.circular(11),
             ),
             child: Column(
