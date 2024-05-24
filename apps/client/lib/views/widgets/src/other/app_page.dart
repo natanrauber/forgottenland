@@ -17,8 +17,9 @@ class AppPage extends StatefulWidget {
     this.postFrameCallback,
     this.onRefresh,
     this.onNotification,
-    this.padding = const EdgeInsets.fromLTRB(20, 20, 20, 60),
+    this.padding = const EdgeInsets.fromLTRB(16, 24, 16, 60),
     this.canPop = true,
+    this.maxWidth = 800,
   });
 
   final String screenName;
@@ -28,6 +29,7 @@ class AppPage extends StatefulWidget {
   final bool Function(ScrollNotification)? onNotification;
   final EdgeInsetsGeometry? padding;
   final bool canPop;
+  final double maxWidth;
 
   @override
   State<AppPage> createState() => _AppPageState();
@@ -58,7 +60,7 @@ class _AppPageState extends State<AppPage> {
     final double appBarHeight = AppHeader().preferredSize.height;
     double topMargin = height > 700 ? height - 700 : 0;
     if (topMargin > height * 0.18) topMargin = height * 0.18;
-    final double sideMargin = width > 800 ? ((width / 2) - 400) + 0 : 0;
+    final double sideMargin = width > widget.maxWidth ? ((width / 2) - (widget.maxWidth / 2)) + 0 : 0;
 
     return PopScope(
       canPop: false,

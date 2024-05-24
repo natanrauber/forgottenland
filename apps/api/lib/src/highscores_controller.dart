@@ -67,22 +67,27 @@ class HighscoresController {
     if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
-      dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
-      if (response is! Map<String, dynamic>) return ApiResponse.noContent();
-      if (response['data'] is! Map<String, dynamic>) return ApiResponse.noContent();
-
-      Record record = Record.fromJson(response['data'] as Map<String, dynamic>);
-      record.timestamp = response['timestamp'] as String?;
-
-      record.list = _filterWorld<HighscoresEntry>(world, record.list);
-      if (page != null) record.list = record.list.getSegment<HighscoresEntry>(size: 50, index: page - 1);
-      record.list = _addMissingRank<HighscoresEntry>(page, record.list);
-
-      if (record.list.isEmpty) return ApiResponse.noContent();
+      Record? record = await _getExpGain(world, category, page, table, date);
+      if (record == null) return ApiResponse.noContent();
       return ApiResponse.success(data: record.toJson());
     } catch (e) {
       return handleError(e);
     }
+  }
+
+  Future<Record?> _getExpGain(String world, String category, int? page, String table, String date) async {
+    dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
+    if (response is! Map<String, dynamic>) return null;
+    if (response['data'] is! Map<String, dynamic>) return null;
+
+    Record record = Record.fromJson(response['data'] as Map<String, dynamic>);
+    record.timestamp = response['timestamp'] as String?;
+    record.list = _filterWorld<HighscoresEntry>(world, record.list);
+    if (page != null) record.list = record.list.getSegment<HighscoresEntry>(size: 50, index: page - 1);
+    record.list = _addMissingRank<HighscoresEntry>(page, record.list);
+
+    if (record.list.isEmpty) return null;
+    return record;
   }
 
   Future<Response> getOnlineTime(String world, String category, int? page) async {
@@ -93,38 +98,80 @@ class HighscoresController {
     if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
-      dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
-      if (response is! Map<String, dynamic>) return ApiResponse.noContent();
-      if (response['data'] is! Map<String, dynamic>) return ApiResponse.noContent();
-
-      Online online = Online.fromJson(response['data'] as Map<String, dynamic>);
-
-      online.list = _filterWorld<OnlineEntry>(world, online.list);
-      if (page != null) online.list = online.list.getSegment<OnlineEntry>(size: 50, index: page - 1);
-      online.list = _addMissingRank<OnlineEntry>(page, online.list);
-
-      if (online.list.isEmpty) return ApiResponse.noContent();
+      Online? online = await _getOnlineTime(world, category, page, table, date);
+      if (online == null) return ApiResponse.noContent();
       return ApiResponse.success(data: online.toJson());
     } catch (e) {
       return handleError(e);
     }
   }
 
+  Future<Online?> _getOnlineTime(String world, String category, int? page, String table, String date) async {
+    dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
+    if (response is! Map<String, dynamic>) return null;
+    if (response['data'] is! Map<String, dynamic>) return null;
+
+    Online online = Online.fromJson(response['data'] as Map<String, dynamic>);
+    online.list = _filterWorld<OnlineEntry>(world, online.list);
+    if (page != null) online.list = online.list.getSegment<OnlineEntry>(size: 50, index: page - 1);
+    online.list = _addMissingRank<OnlineEntry>(page, online.list);
+
+    if (online.list.isEmpty) return null;
+    return online;
+  }
+
   Future<Response> getRookmaster(String world, int? page) async {
     if (page != null && page < 0) return ApiResponse.error('Invalid page number');
 
     try {
-      dynamic response = await databaseClient.from('rook-master').select().order('date').limit(1).maybeSingle();
-      if (response == null) return ApiResponse.noContent();
-      Record record = Record.fromJson(response['data'] as Map<String, dynamic>);
-      record.timestamp = response['timestamp'] as String?;
-
-      record.list = _filterWorld<HighscoresEntry>(world, record.list);
-      if (page != null) record.list = record.list.getSegment<HighscoresEntry>(size: 50, index: page - 1);
-      record.list = _addMissingRank<HighscoresEntry>(page, record.list);
-
-      if (record.list.isEmpty) return ApiResponse.noContent();
+      Record? record = await _getRookmaster(world, page);
+      if (record == null) return ApiResponse.noContent();
       return ApiResponse.success(data: record.toJson());
+    } catch (e) {
+      return handleError(e);
+    }
+  }
+
+  Future<Record?> _getRookmaster(String world, int? page) async {
+    dynamic response = await databaseClient.from('rook-master').select().order('date').limit(1).maybeSingle();
+    if (response == null) return null;
+
+    Record record = Record.fromJson(response['data'] as Map<String, dynamic>);
+    record.timestamp = response['timestamp'] as String?;
+    record.list = _filterWorld<HighscoresEntry>(world, record.list);
+    if (page != null) record.list = record.list.getSegment<HighscoresEntry>(size: 50, index: page - 1);
+    record.list = _addMissingRank<HighscoresEntry>(page, record.list);
+
+    if (record.list.isEmpty) return null;
+    return record;
+  }
+
+  Future<Response> overview(Request request) async {
+    try {
+      Online? rOnline = await _getOnlineTime(
+        'all',
+        'onlinetime+today',
+        1,
+        tableToCategory['onlinetime+today']!,
+        dateToCategory['onlinetime+today']!,
+      );
+      if (rOnline == null) return ApiResponse.noContent();
+
+      Record? rExp = await _getExpGain(
+        'all',
+        'experiencegained+today',
+        1,
+        tableToCategory['experiencegained+today']!,
+        dateToCategory['experiencegained+today']!,
+      );
+      if (rExp == null) return ApiResponse.noContent();
+
+      Overview overview = Overview(
+        timestamp: rExp.timestamp,
+        experiencegained: rExp.list.sublist(0, 5),
+        onlinetime: rOnline.list.sublist(0, 5),
+      );
+      return ApiResponse.success(data: overview.toJson());
     } catch (e) {
       return handleError(e);
     }
