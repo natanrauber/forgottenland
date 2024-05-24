@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
@@ -23,115 +24,145 @@ class GridButtonModel {
   final double resizeBy;
 }
 
-class HomeScreenGrid extends StatelessWidget {
+class HomeScreenGrid extends StatefulWidget {
+  @override
+  State<HomeScreenGrid> createState() => _HomeScreenGridState();
+}
+
+class _HomeScreenGridState extends State<HomeScreenGrid> {
   final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
+
   final SettingsController settingsCtrl = Get.find<SettingsController>();
 
-  final List<GridButtonModel> _buttonList = <GridButtonModel>[];
-  final int crossAxisCount = 4;
-  final double crossAxisSpacing = 14;
+  final List<GridButtonModel> _highscoresButtons = <GridButtonModel>[];
+  final List<GridButtonModel> _libraryButtons = <GridButtonModel>[];
+  final List<GridButtonModel> _otherButtons = <GridButtonModel>[];
 
-  /// [configure button grid]
-  ///
-  /// defines which buttons will appear on the grid
-  void _configureButtonGrid(BuildContext context) {
-    _buttonList.clear();
-    _buttonList.add(_highscores(context));
-    _buttonList.add(_expgained(context));
-    _buttonList.add(_rookmaster(context));
-    _buttonList.add(_onlineCharacters(context));
-    _buttonList.add(_characters(context));
-    _buttonList.add(_bazaar(context));
-    _buttonList.add(_liveStreams(context));
-    _buttonList.add(_books(context));
-    _buttonList.add(_npcs(context));
-    _buttonList.add(_about(context));
+  final int crossAxisCount = 4;
+  final double crossAxisSpacing = 12;
+
+  @override
+  void initState() {
+    super.initState();
+    _highscoresButtons.clear();
+    _highscoresButtons.add(_highscores(context));
+    _highscoresButtons.add(_rookmaster(context));
+    _highscoresButtons.add(_expgained(context));
+    _highscoresButtons.add(_onlineTime(context));
+
+    _otherButtons.add(_onlineCharacters(context));
+    _otherButtons.add(_characters(context));
+    _otherButtons.add(_bazaar(context));
+    _otherButtons.add(_liveStreams(context));
+
+    _libraryButtons.clear();
+    _libraryButtons.add(_books(context));
+    _libraryButtons.add(_npcs(context));
+    _libraryButtons.add(_about(context));
   }
 
-  /// [grid] builder
-  ///
-  /// grid view of buttons
   @override
-  GridView build(BuildContext context) {
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _grid('Highscores', _highscoresButtons),
+          const SizedBox(height: 16),
+          _grid('Other', _otherButtons),
+          const SizedBox(height: 16),
+          _grid('Library', _libraryButtons),
+        ],
+      );
+
+  Widget _grid(String name, List<GridButtonModel> list) {
     double screenWidth = MediaQuery.of(context).size.width;
-    screenWidth = screenWidth > 800 ? 800 : screenWidth;
+    screenWidth = screenWidth > 436 ? 436 : screenWidth;
     final double spacing = (crossAxisCount - 1) * crossAxisSpacing;
-    final double buttonWidth = (screenWidth - spacing - 40) / crossAxisCount;
-    final double buttonHeight = buttonWidth + 52;
+    final double buttonWidth = (screenWidth - spacing - 32 - 24) / crossAxisCount;
+    final double buttonHeight = buttonWidth + 36;
 
-    _configureButtonGrid(context);
-
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: crossAxisSpacing,
-        childAspectRatio: buttonWidth / (buttonHeight < 152 ? buttonHeight : 152),
-      ),
-      itemCount: _buttonList.length,
-      itemBuilder: _gridItemBuilder,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _title(name),
+        const SizedBox(height: 3),
+        Container(
+          constraints: const BoxConstraints(maxWidth: 404),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.bgPaper,
+            borderRadius: BorderRadius.circular(11),
+          ),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: crossAxisSpacing,
+              childAspectRatio: buttonWidth / (buttonHeight < 122 ? buttonHeight : 122),
+            ),
+            itemCount: list.length,
+            itemBuilder: (_, int index) => _gridItemBuilder(list, index),
+          ),
+        ),
+      ],
     );
   }
 
-  /// [grid item builder]
-  Widget _gridItemBuilder(BuildContext context, int index) => MouseRegion(
-        cursor: _buttonList[index].enabled ? SystemMouseCursors.click : MouseCursor.defer,
-        child: GestureDetector(
-          onTap: _buttonList[index].enabled ? _buttonList[index].onTap : null,
-          child: Column(
-            children: <Widget>[
-              //
-              _buttonBody(context, index),
-
-              SizedBox(height: _buttonList[index].name.contains('\n') ? 4 : 8),
-
-              _buttonName(index),
-
-              SizedBox(height: _buttonList[index].name.contains('\n') ? 16 : 12),
-            ],
-          ),
-        ),
+  Widget _title(String text) => Padding(
+        padding: const EdgeInsets.only(left: 3),
+        child: SelectableText(text),
       );
 
-  /// [button body]
-  Container _buttonBody(BuildContext context, int index) {
+  Widget _gridItemBuilder(List<GridButtonModel> list, int index) {
+    final GridButtonModel item = list[index];
+
+    return MouseRegion(
+      cursor: item.enabled ? SystemMouseCursors.click : MouseCursor.defer,
+      child: GestureDetector(
+        onTap: item.enabled ? item.onTap : null,
+        child: Column(
+          children: <Widget>[
+            _buttonBody(item),
+            SizedBox(height: item.name.contains('\n') ? 4 : 8),
+            _buttonName(item),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Container _buttonBody(GridButtonModel item) {
     double screenWidth = MediaQuery.of(context).size.width;
-    screenWidth = screenWidth > 800 ? 800 : screenWidth;
+    screenWidth = screenWidth > 436 ? 436 : screenWidth;
     final double spacing = (crossAxisCount - 1) * crossAxisSpacing;
-    final double buttonSize = (screenWidth - spacing - 40) / crossAxisCount;
+    final double buttonSize = (screenWidth - spacing - 32 - 24) / crossAxisCount;
 
     return Container(
-      constraints: const BoxConstraints(maxHeight: 100),
+      constraints: const BoxConstraints(maxHeight: 86, maxWidth: 86),
       height: buttonSize,
       width: buttonSize,
       decoration: BoxDecoration(
-        color: AppColors.bgPaper,
+        color: AppColors.bgDefault.withOpacity(0.5),
         borderRadius: BorderRadius.circular(11),
       ),
       child: Icon(
-        _buttonList[index].icon,
-        size: 30 + _buttonList[index].resizeBy,
-        color: _buttonList[index].enabled ? AppColors.primary : AppColors.bgDefault,
+        item.icon,
+        size: 30 + item.resizeBy,
+        color: item.enabled ? AppColors.primary : AppColors.bgDefault,
       ),
     );
   }
 
-  /// [button name]
-  Container _buttonName(int index) => Container(
-        alignment: Alignment.topCenter,
-        height: 32,
-        child: Text(
-          _buttonList[index].name,
-          textAlign: TextAlign.center,
-          maxLines: _buttonList[index].name.contains('\n') ? 2 : 1,
-          style: TextStyle(
-            fontSize: 11,
-            height: 15 / 11,
-            fontWeight: FontWeight.w500,
-            color: _buttonList[index].enabled ? AppColors.textPrimary : AppColors.bgPaper,
-            overflow: TextOverflow.ellipsis,
-          ),
+  Widget _buttonName(GridButtonModel item) => Text(
+        item.name,
+        textAlign: TextAlign.center,
+        maxLines: item.name.contains('\n') ? 2 : 1,
+        style: TextStyle(
+          fontSize: 11,
+          height: 15 / 11,
+          fontWeight: FontWeight.w500,
+          color: item.enabled ? AppColors.textPrimary : AppColors.bgDefault.withOpacity(0.5),
+          overflow: TextOverflow.ellipsis,
         ),
       );
 
@@ -169,6 +200,17 @@ class HomeScreenGrid extends StatelessWidget {
         icon: FontAwesomeIcons.trophy,
         resizeBy: -4,
         onTap: () => Get.toNamed('${Routes.highscores.name}/rookmaster'),
+      );
+
+  GridButtonModel _onlineTime(BuildContext context) => GridButtonModel(
+        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Highscores')?.enabled ?? false,
+        name: 'Online\ntime',
+        icon: FontAwesomeIcons.solidClock,
+        resizeBy: -4,
+        onTap: () {
+          final String timeframe = highscoresCtrl.timeframe.value.toLowerCase().replaceAll(' ', '');
+          return Get.toNamed('${Routes.highscores.name}/onlinetime/$timeframe');
+        },
       );
 
   GridButtonModel _onlineCharacters(BuildContext context) => GridButtonModel(

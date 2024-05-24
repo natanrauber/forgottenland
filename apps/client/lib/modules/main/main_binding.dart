@@ -3,7 +3,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/controllers/guilds_controller.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
-import 'package:forgottenland/controllers/news_controller.dart';
+import 'package:forgottenland/controllers/home_controller.dart';
 import 'package:forgottenland/controllers/online_controller.dart';
 import 'package:forgottenland/controllers/user_controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
@@ -24,7 +24,7 @@ class MainBinding implements Bindings {
   void dependencies() {
     Get.put(MainController());
     Get.put(UserController(_httpClient));
-    Get.put(NewsController(_httpClient));
+    Get.put(HomeController(_httpClient));
     Get.put(CharacterController(_httpClient));
     Get.put(WorldsController(_httpClient));
     Get.put(GuildsController(_httpClient));

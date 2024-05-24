@@ -7,6 +7,7 @@ export 'src/live_stream_model.dart';
 export 'src/news_model.dart';
 export 'src/npc_model.dart';
 export 'src/online_model.dart';
+export 'src/overview_model.dart';
 export 'src/record_model.dart';
 export 'src/supporter_model.dart';
 export 'src/user_model.dart';

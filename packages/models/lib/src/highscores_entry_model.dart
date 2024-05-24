@@ -36,6 +36,7 @@ class HighscoresEntry {
   }
 
   HighscoresEntry.fromOnlineEntry(OnlineEntry online) {
+    rank = online.rank;
     name = online.name;
     level = online.level;
     vocation = online.vocation;
@@ -59,6 +60,18 @@ class HighscoresEntry {
   ExpandedData? expanded;
 
   String? get stringValue => value == null ? null : NumberFormat.decimalPattern().format(value);
+
+  String? get shortValue => value == null
+      ? null
+      : value! > 1000
+          ? '${value! ~/ 1000}k'
+          : value.toString();
+
+  String? get shortTime => onlineTime == null
+      ? null
+      : (int.tryParse(onlineTime?.substring(0, 2) ?? '') ?? 0) > 0
+          ? onlineTime?.substring(0, 3)
+          : onlineTime?.substring(3, 6);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
