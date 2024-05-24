@@ -17,7 +17,7 @@ class AppPage extends StatefulWidget {
     this.postFrameCallback,
     this.onRefresh,
     this.onNotification,
-    this.padding = const EdgeInsets.fromLTRB(16, 24, 16, 60),
+    this.padding = const EdgeInsets.fromLTRB(16, 16, 16, 60),
     this.canPop = true,
     this.maxWidth = 800,
   });
@@ -60,6 +60,7 @@ class _AppPageState extends State<AppPage> {
     final double appBarHeight = AppHeader().preferredSize.height;
     double topMargin = height > 700 ? height - 700 : 0;
     if (topMargin > height * 0.18) topMargin = height * 0.18;
+    if (width <= 800) topMargin = 0;
     final double sideMargin = width > widget.maxWidth ? ((width / 2) - (widget.maxWidth / 2)) + 0 : 0;
 
     return PopScope(
@@ -198,14 +199,17 @@ class _AppPageState extends State<AppPage> {
 
   BoxConstraints get _bodyConstraints {
     double height;
+    double width;
     double appBarHeight;
     double topMargin;
     double verticalPadding;
 
     height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
     appBarHeight = AppHeader().preferredSize.height;
     topMargin = height > 700 ? height - 700 : 0;
     if (topMargin > height * 0.18) topMargin = height * 0.18;
+    if (width <= 800) topMargin = 0;
     verticalPadding = widget.padding?.along(Axis.vertical) ?? 0;
 
     return BoxConstraints(
