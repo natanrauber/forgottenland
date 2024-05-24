@@ -92,7 +92,11 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     style: TextStyle(
                       fontSize: 14,
                       height: 16 / 14,
-                      color: widget.enabled && !widget.loading ? AppColors.textPrimary : AppColors.textSecondary,
+                      color: !widget.enabled
+                          ? AppColors.textSecondary.withOpacity(0.5)
+                          : widget.loading
+                              ? AppColors.textSecondary
+                              : AppColors.textPrimary,
                     ),
                   ),
                 ),
@@ -105,24 +109,28 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   InputDecoration get _dropdownSearchDecoration => InputDecoration(
         filled: true,
         labelText: widget.labelText,
-        labelStyle: TextStyle(
-          color: widget.enabled && !widget.loading ? AppColors.primary : AppColors.textSecondary,
+        labelStyle: const TextStyle(
+          color: AppColors.primary,
         ),
-        floatingLabelStyle: const TextStyle(
+        floatingLabelStyle: TextStyle(
           fontSize: 14,
           height: 1,
-          color: AppColors.primary,
+          color: widget.enabled ? AppColors.primary : AppColors.textSecondary.withOpacity(0.5),
         ),
       );
 
   DropdownButtonProps get _dropdownButtonProps => DropdownButtonProps(
         focusNode: focusNode,
-        icon: widget.loading
+        icon: widget.enabled && widget.loading
             ? _loading()
             : Icon(
                 CupertinoIcons.chevron_down,
                 size: 17,
-                color: widget.enabled && !widget.loading ? AppColors.primary : AppColors.textSecondary,
+                color: !widget.enabled
+                    ? Colors.transparent
+                    : widget.loading
+                        ? AppColors.textSecondary
+                        : AppColors.primary,
               ),
       );
 

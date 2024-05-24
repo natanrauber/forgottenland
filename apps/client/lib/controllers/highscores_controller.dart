@@ -108,7 +108,6 @@ class HighscoresController extends Controller {
         if (pageCtrl.value == 1) rankLastUpdate = response.dataAsMap['data']['timestamp'] as String?;
         _onlineCtrl.onlineTimes = <HighscoresEntry>[].obs;
 
-        if (aux.list.length < 50 == true) loadedAll.value = true;
         _populateList(aux.list);
       } else {
         pageCtrl = pageCtrl--;
@@ -176,8 +175,11 @@ class HighscoresController extends Controller {
       if (valid) filteredList.add(item);
     }
 
-    isLoading.value = false;
-    if (_shouldLoadMore) return loadHighscores(newPage: true, resetTimer: false);
+    if (_shouldLoadMore) {
+      return loadHighscores(newPage: true, resetTimer: false);
+    } else {
+      isLoading.value = false;
+    }
   }
 
   Future<void> getSupporters() async {

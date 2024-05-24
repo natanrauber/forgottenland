@@ -64,8 +64,14 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
 
             Container(
               height: 53,
-              padding: const EdgeInsets.only(top: 5),
-              child: _searchBar(),
+              padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(child: _searchBar()),
+                  if (anyFilterSelected) const SizedBox(width: 10),
+                  if (anyFilterSelected) _clearButton(),
+                ],
+              ),
             ),
 
             _selectedFilters(),
@@ -190,27 +196,61 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
     );
   }
 
-  Widget _searchBar() => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        child: CustomTextField(
-          loading: highscoresCtrl.isLoading.isTrue,
-          label: 'Search',
-          controller: highscoresCtrl.searchController,
-          onChanged: (_) {
-            if (timer.isActive) timer.cancel();
+  Widget _searchBar() => CustomTextField(
+        loading: highscoresCtrl.isLoading.isTrue,
+        label: 'Search',
+        controller: highscoresCtrl.searchController,
+        onChanged: (_) {
+          if (timer.isActive) timer.cancel();
 
-            timer = Timer(
-              const Duration(seconds: 1),
-              () => _search(),
-            );
-          },
-        ),
+          timer = Timer(
+            const Duration(seconds: 1),
+            () => _search(),
+          );
+        },
       );
 
   void _search() {
     dismissKeyboard(context);
     highscoresCtrl.searchController.text = highscoresCtrl.searchController.text.trim();
     highscoresCtrl.filterList();
+  }
+
+  Widget _clearButton() => MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: highscoresCtrl.isLoading.value ? null : _clearFilters,
+          child: Container(
+            height: 48,
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: AppColors.bgPaper,
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: Text(
+              'Clear',
+              style: TextStyle(
+                color: highscoresCtrl.isLoading.value ? AppColors.textSecondary : AppColors.primary,
+              ),
+            ),
+          ),
+        ),
+      );
+
+  void _clearFilters() {
+    highscoresCtrl.world.value = World(name: 'All');
+    highscoresCtrl.battleyeType.value = 'All';
+    highscoresCtrl.location.value = 'All';
+    highscoresCtrl.pvpType.value = 'All';
+    highscoresCtrl.worldType.value = 'All';
+
+    highscoresCtrl.enableBattleyeType.value = true;
+    highscoresCtrl.enableLocation.value = true;
+    highscoresCtrl.enablePvpType.value = true;
+    highscoresCtrl.enableWorldType.value = true;
+
+    _loadHighscores();
   }
 
   Widget _selectedFilters() => Padding(
@@ -236,6 +276,12 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
     if (highscoresCtrl.worldType.value != 'All') text = '$text, ${highscoresCtrl.worldType.value} World';
 
     return '$text.';
+  }
+
+  bool get anyFilterSelected {
+    if (highscoresCtrl.category.value == 'Experience gained') return _selectedFiltersText.split(',').length > 2;
+    if (highscoresCtrl.category.value == 'Online time') return _selectedFiltersText.split(',').length > 2;
+    return _selectedFiltersText.contains(',');
   }
 
   Widget _lastUpdated() => Padding(
@@ -352,7 +398,7 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
         onChanged: (String? value) async {
           if (value is String) {
             highscoresCtrl.battleyeType.value = value;
-            await highscoresCtrl.filterList();
+            highscoresCtrl.filterList();
           }
         },
       );
