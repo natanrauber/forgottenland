@@ -148,7 +148,7 @@ class _HomeScreenGridState extends State<HomeScreenGrid> {
       child: Icon(
         item.icon,
         size: 30 + item.resizeBy,
-        color: item.enabled ? AppColors.primary : AppColors.bgDefault,
+        color: item.enabled ? AppColors.primary : AppColors.textSecondary.withOpacity(0.25),
       ),
     );
   }
@@ -161,7 +161,7 @@ class _HomeScreenGridState extends State<HomeScreenGrid> {
           fontSize: 11,
           height: 15 / 11,
           fontWeight: FontWeight.w500,
-          color: item.enabled ? AppColors.textPrimary : AppColors.bgDefault.withOpacity(0.75),
+          color: item.enabled ? AppColors.textPrimary : AppColors.textSecondary.withOpacity(0.25),
           overflow: TextOverflow.ellipsis,
         ),
       );
@@ -228,7 +228,8 @@ class _HomeScreenGridState extends State<HomeScreenGrid> {
       );
 
   GridButtonModel _bazaar(BuildContext context) => GridButtonModel(
-        enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Bazaar')?.enabled ?? false,
+        // enabled: settingsCtrl.features.firstWhereOrNull((Feature e) => e.name == 'Bazaar')?.enabled ?? false,
+        enabled: false,
         name: 'Char\nBazaar',
         icon: CupertinoIcons.money_dollar_circle_fill,
         onTap: () => Get.toNamed(Routes.bazaar.name),
