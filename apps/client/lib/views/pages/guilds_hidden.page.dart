@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/guilds_controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
-import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/app_header.dart';
 import 'package:get/instance_manager.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -16,21 +15,21 @@ class _GuildsHiddenPageState extends State<GuildsHiddenPage> {
   final WorldsController worldsCtrl = Get.find<WorldsController>();
   final GuildsController guildsCtrl = Get.find<GuildsController>();
 
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) async {
-        Alert.loading(context);
-        await worldsCtrl.getWorlds().then(
-          (_) async {
-            await guildsCtrl.load(worldsCtrl.list).then((_) => Alert.pop(context));
-          },
-        );
-      },
-    );
+  // @override
+  // void initState() {
+  //   WidgetsBinding.instance.addPostFrameCallback(
+  //     (_) async {
+  //       Alert.loading(context);
+  //       await worldsCtrl.getWorlds().then(
+  //         (_) async {
+  //           await guildsCtrl.load(worldsCtrl.list).then((_) => Alert.pop(context));
+  //         },
+  //       );
+  //     },
+  //   );
 
-    super.initState();
-  }
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) => Scaffold(

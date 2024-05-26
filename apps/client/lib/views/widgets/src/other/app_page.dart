@@ -64,10 +64,7 @@ class _AppPageState extends State<AppPage> {
     final double sideMargin = width > widget.maxWidth ? ((width / 2) - (widget.maxWidth / 2)) + 0 : 0;
 
     return PopScope(
-      canPop: false,
-      onPopInvoked: (_) async {
-        if (widget.canPop) Navigator.pop(context);
-      },
+      canPop: widget.canPop,
       child: GestureDetector(
         onTap: () => dismissKeyboard(context),
         child: Scaffold(
