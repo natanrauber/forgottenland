@@ -30,6 +30,10 @@ Map<String, Map<String, dynamic>> _tags = <String, Map<String, dynamic>>{
     'regex': '<error>(.*?)<error>',
     'style': const TextStyle(color: AppColors.red),
   },
+  '<u>': <String, dynamic>{
+    'regex': '<u>(.*?)<u>',
+    'style': const TextStyle(decoration: TextDecoration.underline),
+  },
 };
 
 /// This text support tags to change text style

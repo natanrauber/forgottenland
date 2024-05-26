@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:database_client/database_client.dart';
+import 'package:database_client/default_database_access_data.dart';
 import 'package:forgottenlandapi/src/bazaar_controller.dart';
 import 'package:forgottenlandapi/src/books_controller.dart';
 import 'package:forgottenlandapi/src/character_controller.dart';
@@ -19,7 +20,7 @@ import 'package:utils/utils.dart';
 
 final List<String> _requiredVar = <String>['PATH_TIBIA_DATA'];
 final Env _env = Env();
-final IDatabaseClient _databaseClient = MySupabaseClient();
+final IDatabaseClient _databaseClient = MySupabaseClient(databaseKey: _env['DATABASE_KEY'] ?? defaultDatabasePKey);
 final IHttpClient _httpClient = MyDioClient();
 
 final CharacterController _characterCtrl = CharacterController(_env, _databaseClient, _httpClient, _highscoresCtrl);
@@ -30,7 +31,7 @@ final ILiveStreamsController _liveStreamsCtrl = LiveStreamsController(_databaseC
 final INPCsController _npcsCtrl = NPCsController(_httpClient);
 final IOnlineController _onlineCtrl = OnlineController(_databaseClient);
 final SettingsController _settingsCtrl = SettingsController(_databaseClient);
-final UserController _userCtrl = UserController(_databaseClient);
+final UserController _userCtrl = UserController(_env, _databaseClient, _httpClient);
 
 // Configure routes.
 final Router _router = Router()
@@ -45,8 +46,9 @@ final Router _router = Router()
   ..get('/online/now', _onlineCtrl.getOnlineNow)
   ..get('/online/time/<date>', _onlineCtrl.getOnlineTime)
   ..get('/settings/<value>', _settingsCtrl.get)
-  ..post('/user/login', _userCtrl.login)
-  ..post('/user/revive', _userCtrl.revive);
+  ..post('/user/signin', _userCtrl.signin)
+  ..post('/user/signup', _userCtrl.signup)
+  ..post('/user/verify', _userCtrl.verify);
 
 void main(List<String> args) async {
   // _env.log();

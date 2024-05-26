@@ -67,6 +67,13 @@ class ApiResponse extends Response {
           body: _responseBody(add: {"response": 'Not Acceptable'}),
         );
 
+  ApiResponse.conflict()
+      : super(
+          409,
+          headers: _responseHeader(),
+          body: _responseBody(add: {"response": 'Conflict'}),
+        );
+
   ApiResponse.error(dynamic e)
       : super(
           500,

@@ -1,7 +1,6 @@
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html';
+import 'dart:convert';
 
-import 'package:device_info_plus/device_info_plus.dart';
+import 'package:crypto/crypto.dart';
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/rxmodels/user_rxmodel.dart';
 import 'package:forgottenland/utils/src/paths.dart';
@@ -9,89 +8,151 @@ import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:utils/utils.dart';
 
 class UserController extends Controller {
   UserController(this.httpClient);
 
   final IHttpClient httpClient;
 
-  RxBool isLoggedIn = false.obs;
+  TextController nameCtrl = TextController();
+  TextController passwordCtrl = TextController();
+  TextController confirmPasswordCtrl = TextController();
 
+  RxString? info;
+  RxString? error;
+  RxString? code;
+  RxBool verified = false.obs;
+  RxBool isLoggedIn = false.obs;
   RxUser? data;
 
-  TextController emailCtrl = TextController();
-  TextController passwordCtrl = TextController();
-
-  Future<MyHttpResponse> login() async {
+  Future<void> signup() async {
     isLoading.value = true;
+    error = null;
+    code = null;
+    verified = false.obs;
 
-    final MyHttpResponse response = await httpClient.post(
-      '${PATH.forgottenLandApi}/login',
-      <String, dynamic>{
-        'email': emailCtrl.text,
-        'password': passwordCtrl.text,
-        'device': (await DeviceInfoPlugin().deviceInfo).data.toString(),
-      },
-    );
+    if (passwordCtrl.text.length < 8) {
+      error = 'Invalid password'.obs;
+      isLoading.value = false;
+      return;
+    }
+    if (passwordCtrl.text != confirmPasswordCtrl.text) {
+      error = "Passwords don't match".obs;
+      isLoading.value = false;
+      return;
+    }
 
-    if (response.success) {
-      document.cookie = 'session_id=${response.dataAsMap['data']['session_id']}';
-      isLoggedIn.value = true;
-      data = User.fromJson(response.dataAsMap['data'] as Map<String, dynamic>).obs;
+    try {
+      final MyHttpResponse cr = await httpClient.get('${PATH.forgottenLandApi}/character/${nameCtrl.text}');
+      if (!cr.success) {
+        error = 'Character not found'.obs;
+        isLoading.value = false;
+        return;
+      }
+
+      final MyHttpResponse response = await httpClient.post(
+        '${PATH.forgottenLandApi}/user/signup',
+        <String, dynamic>{
+          'name': nameCtrl.text,
+          'secret': sha256.convert(utf8.encode(nameCtrl.text + passwordCtrl.text)).toString(),
+        },
+      );
+
+      if (response.statusCode == 409) error = 'Already registered'.obs;
+      if (response.statusCode == 500) error = 'Server error'.obs;
+      if (response.success) code = (response.dataAsMap['data']['code'] as String).obs;
+    } catch (e) {
+      customPrint(e, color: PrintColor.red);
     }
 
     isLoading.value = false;
-    return response;
   }
 
-  Future<void> logout() async {
+  Future<void> verify() async {
+    isLoading.value = true;
+
+    try {
+      final MyHttpResponse response = await httpClient.post(
+        '${PATH.forgottenLandApi}/user/verify',
+        <String, dynamic>{
+          'name': nameCtrl.text,
+        },
+      );
+
+      if (response.statusCode == 404) error = 'Character not found'.obs;
+      if (response.statusCode == 202) error = 'Already verified'.obs;
+      if (response.statusCode == 406) error = 'Code not found in comment'.obs;
+      if (response.statusCode == 500) error = 'Server error'.obs;
+      if (response.statusCode == 200) {
+        info = 'Verified!'.obs;
+        verified = true.obs;
+      }
+    } catch (e) {
+      customPrint(e, color: PrintColor.red);
+    }
+
+    isLoading.value = false;
+  }
+
+  Future<void> signin() async {
+    isLoading.value = true;
+    isLoggedIn.value = false;
+    data = null;
+
+    try {
+      final MyHttpResponse response = await httpClient.post(
+        '${PATH.forgottenLandApi}/user/signin',
+        <String, dynamic>{
+          'name': nameCtrl.text,
+          'secret': sha256.convert(utf8.encode(nameCtrl.text + passwordCtrl.text)).toString(),
+        },
+      );
+
+      if (response.statusCode == 406) error = 'Invalid credentials'.obs;
+      if (response.success) {
+        nameCtrl.clear();
+        passwordCtrl.clear();
+        isLoggedIn.value = true;
+        data = User.fromJson(response.dataAsMap['data'] as Map<String, dynamic>).obs;
+        await SharedPreferences.getInstance().then(
+          (SharedPreferences prefs) => prefs.setString('user', jsonEncode(data)),
+        );
+      }
+    } catch (e) {
+      customPrint(e, color: PrintColor.red);
+    }
+
+    isLoading.value = false;
+  }
+
+  Future<void> signout() async {
     isLoading.value = true;
     data = null;
     isLoggedIn.value = false;
-    document.cookie = 'session_id=';
     isLoading.value = false;
   }
 
-  Future<MyHttpResponse?> retrieveSession() async {
-    if (isLoggedIn.value) return null;
-    if (isLoading.isTrue) return null;
-
-    final String? sessionId = _retrieveSessionId();
-    if (sessionId == null) return null;
-
+  Future<void> retrieveSession() async {
     isLoading.value = true;
+    isLoggedIn.value = false;
+    data = null;
 
-    final MyHttpResponse response = await httpClient.post(
-      '${PATH.forgottenLandApi}/revive',
-      <String, dynamic>{
-        'session_id': sessionId,
-      },
-    );
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (prefs.getString('user') == null) {
+        isLoading.value = false;
+        return;
+      }
 
-    if (response.success) {
+      final dynamic json = jsonDecode(prefs.getString('user')!);
+      data = User.fromJson(json as Map<String, dynamic>).obs;
       isLoggedIn.value = true;
-      data = User.fromJson(response.dataAsMap['data'] as Map<String, dynamic>).obs;
+    } catch (e) {
+      customPrint(e, color: PrintColor.red);
     }
 
     isLoading.value = false;
-    return response;
-  }
-
-  String? _retrieveSessionId() {
-    final String? cookies = document.cookie;
-
-    if (cookies == null || cookies.isEmpty) return null;
-
-    final Iterable<MapEntry<String, dynamic>> entity = cookies.split('; ').map(
-      (String item) {
-        final List<String> split = item.split('=');
-        return MapEntry<String, dynamic>(split[0], item.replaceAll('${split[0]}=', ''));
-      },
-    );
-    final Map<String, dynamic> cookieMap = Map<String, dynamic>.fromEntries(entity);
-    final String? sessionId = cookieMap['session_id'] as String?;
-
-    if (sessionId == null || sessionId.isEmpty) return null;
-    return sessionId;
   }
 }
