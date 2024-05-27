@@ -19,24 +19,24 @@ class HomeController extends Controller {
 
   Timer? timer;
 
-  Future<MyHttpResponse> getNews() async {
-    isLoading.value = true;
+  Future<MyHttpResponse> getNews({bool showLoading = true}) async {
+    if (showLoading) isLoading.value = true;
     final MyHttpResponse response = await httpClient.get('${PATH.tibiaDataApi}/news/latest');
 
     if (response.success) {
+      final List<News> aux = <News>[];
       for (final dynamic item in response.dataAsMap['news'] as List<dynamic>) {
-        news.add(News.fromJson(item as Map<String, dynamic>));
+        aux.add(News.fromJson(item as Map<String, dynamic>));
       }
+      news.value = aux.toList();
     }
 
     isLoading.value = false;
     return response;
   }
 
-  Future<MyHttpResponse> getOverview() async {
-    isLoading.value = true;
-    experiencegained.clear();
-    onlinetime.clear();
+  Future<MyHttpResponse> getOverview({bool showLoading = true}) async {
+    if (showLoading) isLoading.value = true;
 
     final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/highscores/overview');
 
@@ -44,9 +44,9 @@ class HomeController extends Controller {
       final Overview overview = Overview.fromJson(
         (response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{},
       );
-      experiencegained.addAll(overview.experiencegained);
-      onlinetime.addAll(overview.onlinetime.map((OnlineEntry e) => HighscoresEntry.fromOnlineEntry(e)).toList());
-      rookmaster.addAll(overview.rookmaster);
+      experiencegained.value = overview.experiencegained.toList();
+      onlinetime.value = overview.onlinetime.map((OnlineEntry e) => HighscoresEntry.fromOnlineEntry(e)).toList();
+      rookmaster.value = overview.rookmaster.toList();
     }
 
     isLoading.value = false;
@@ -59,7 +59,15 @@ class HomeController extends Controller {
       (_) {
         if (isLoading.value) return;
         if (Get.currentRoute != Routes.home.name) return;
-        getOverview();
+        getOverview(showLoading: false);
+      },
+    );
+    Timer.periodic(
+      const Duration(hours: 1),
+      (_) {
+        if (isLoading.value) return;
+        if (Get.currentRoute != Routes.home.name) return;
+        getNews(showLoading: false);
       },
     );
   }

@@ -34,7 +34,7 @@ class _NewsWidgetState extends State<NewsWidget> {
 
   Widget _body() => Obx(
         () => ShimmerLoading(
-          isLoading: homeCtrl.isLoading.value,
+          isLoading: homeCtrl.isLoading.value && homeCtrl.news.isEmpty,
           child: ClickableContainer(
             enabled: homeCtrl.news.isEmpty,
             onTap: homeCtrl.getNews,
@@ -57,9 +57,9 @@ class _NewsWidgetState extends State<NewsWidget> {
 
   Widget _reloadButton() => Center(
         child: Container(
-          height: 125,
-          width: 125,
-          padding: const EdgeInsets.all(42.5),
+          height: 100,
+          width: 100,
+          padding: const EdgeInsets.all(30),
           child: homeCtrl.isLoading.value
               ? _loading()
               : Icon(
