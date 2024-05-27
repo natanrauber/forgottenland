@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/home_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
+import 'package:forgottenland/views/widgets/src/other/shimmer_loading.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/instance_manager.dart';
 import 'package:models/models.dart';
@@ -21,14 +22,7 @@ class _NewsWidgetState extends State<NewsWidget> {
         children: <Widget>[
           _title(),
           const SizedBox(height: 3),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.bgPaper,
-              borderRadius: BorderRadius.circular(11),
-            ),
-            child: _body(),
-          ),
+          _body(),
         ],
       );
 
@@ -38,22 +32,20 @@ class _NewsWidgetState extends State<NewsWidget> {
       );
 
   Widget _body() => Obx(
-        () {
-          if (homeCtrl.isLoading.value) return _loading();
-          if (homeCtrl.news.isEmpty) return _reloadButton();
-          if (homeCtrl.news.isNotEmpty) return _listBuilder();
-          return Container();
-        },
-      );
-
-  Widget _loading() => Center(
-        child: Container(
-          height: 110,
-          width: 110,
-          padding: const EdgeInsets.all(30),
-          child: const Center(
-            child: CircularProgressIndicator(
-              color: AppColors.textSecondary,
+        () => ShimmerLoading(
+          isLoading: homeCtrl.isLoading.value,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.bgPaper,
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: Builder(
+              builder: (_) {
+                if (homeCtrl.news.isEmpty) return _reloadButton();
+                if (homeCtrl.news.isNotEmpty) return _listBuilder();
+                return Container();
+              },
             ),
           ),
         ),
@@ -66,12 +58,20 @@ class _NewsWidgetState extends State<NewsWidget> {
             height: 110,
             width: 110,
             padding: const EdgeInsets.all(30),
-            child: const Icon(
-              Icons.refresh,
-              size: 50,
-              color: AppColors.bgDefault,
-            ),
+            child: homeCtrl.isLoading.value
+                ? _loading()
+                : const Icon(
+                    Icons.refresh,
+                    size: 50,
+                    color: AppColors.bgDefault,
+                  ),
           ),
+        ),
+      );
+
+  Widget _loading() => const Center(
+        child: CircularProgressIndicator(
+          color: AppColors.textSecondary,
         ),
       );
 

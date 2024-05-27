@@ -38,6 +38,7 @@ class OnlineEntry {
     this.vocation,
     this.world,
     this.time = 5,
+    this.isOnline = false,
   });
 
   OnlineEntry.fromJson(Map<String, dynamic> json) {
@@ -48,6 +49,7 @@ class OnlineEntry {
     if (json['vocation'] is String) vocation = json['vocation'] as String;
     if (json['world'] is String) world = json['world'] as String;
     if (json['time'] is int) time = json['time'] as int;
+    if (json['is_online'] is bool) isOnline = json['is_online'] as bool;
   }
 
   int? rank;
@@ -56,6 +58,7 @@ class OnlineEntry {
   String? vocation;
   String? world;
   int time = 5;
+  bool isOnline = false;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -64,6 +67,7 @@ class OnlineEntry {
     data['level'] = level;
     data['world'] = world;
     data['time'] = time;
+    data['is_online'] = isOnline;
     return data.clean();
   }
 }

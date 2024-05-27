@@ -24,7 +24,6 @@ final IDatabaseClient _databaseClient = MySupabaseClient(databaseKey: _env['DATA
 final IHttpClient _httpClient = MyDioClient();
 
 final CharacterController _characterCtrl = CharacterController(_env, _databaseClient, _httpClient, _highscoresCtrl);
-final HighscoresController _highscoresCtrl = HighscoresController(_env, _databaseClient, _httpClient);
 final IBazaarController _bazaarCtrl = BazaarController(_databaseClient);
 final IBooksController _booksCtrl = BooksController(_httpClient);
 final ILiveStreamsController _liveStreamsCtrl = LiveStreamsController(_databaseClient, _httpClient);
@@ -32,6 +31,12 @@ final INPCsController _npcsCtrl = NPCsController(_httpClient);
 final IOnlineController _onlineCtrl = OnlineController(_databaseClient);
 final SettingsController _settingsCtrl = SettingsController(_databaseClient);
 final UserController _userCtrl = UserController(_env, _databaseClient, _httpClient);
+final HighscoresController _highscoresCtrl = HighscoresController(
+  _env,
+  _databaseClient,
+  _httpClient,
+  _onlineCtrl,
+);
 
 // Configure routes.
 final Router _router = Router()

@@ -1,4 +1,5 @@
 import 'package:database_client/database_client.dart';
+import 'package:forgottenlandapi/src/online_controller.dart';
 import 'package:forgottenlandapi/utils/error_handler.dart';
 import 'package:forgottenlandapi/utils/maps.dart';
 import 'package:http_client/http_client.dart';
@@ -7,11 +8,17 @@ import 'package:shelf/shelf.dart';
 import 'package:utils/utils.dart';
 
 class HighscoresController {
-  HighscoresController(this.env, this.databaseClient, this.httpClient);
+  HighscoresController(
+    this.env,
+    this.databaseClient,
+    this.httpClient,
+    this.onlineCtrl,
+  );
 
   final Env env;
   final IDatabaseClient databaseClient;
   final IHttpClient httpClient;
+  final IOnlineController onlineCtrl;
 
   Future<Response> get(Request request, String world, String category, String page) async {
     int pageAux = int.tryParse(page) ?? 1;
@@ -148,33 +155,45 @@ class HighscoresController {
 
   Future<Response> overview(Request request) async {
     try {
-      Online? rOnline = await _getOnlineTime(
+      Online? rOnlinetime = await _getOnlineTime(
         'all',
         'onlinetime+today',
         1,
         tableToCategory['onlinetime+today']!,
         dateToCategory['onlinetime+today']!,
       );
-      if (rOnline == null) return ApiResponse.noContent();
+      if (rOnlinetime == null) return ApiResponse.noContent();
 
-      Record? rExp = await _getExpGain(
+      Record? rExpgain = await _getExpGain(
         'all',
         'experiencegained+today',
         1,
         tableToCategory['experiencegained+today']!,
         dateToCategory['experiencegained+today']!,
       );
-      if (rExp == null) return ApiResponse.noContent();
+      if (rExpgain == null) return ApiResponse.noContent();
 
-      Record? rRookmaster = await _getRookmaster(
-        'all',
-        1,
-      );
+      Record? rRookmaster = await _getRookmaster('all', 1);
       if (rRookmaster == null) return ApiResponse.noContent();
 
+      Online? onlineNow = await onlineCtrl.onlineNow();
+      if (onlineNow != null) {
+        for (OnlineEntry online in onlineNow.list) {
+          if (rOnlinetime.list.any((OnlineEntry e) => e.name == online.name)) {
+            rOnlinetime.list.firstWhere((OnlineEntry e) => e.name == online.name).isOnline = true;
+          }
+          if (rExpgain.list.any((HighscoresEntry e) => e.name == online.name)) {
+            rExpgain.list.firstWhere((HighscoresEntry e) => e.name == online.name).isOnline = true;
+          }
+          if (rRookmaster.list.any((HighscoresEntry e) => e.name == online.name)) {
+            rRookmaster.list.firstWhere((HighscoresEntry e) => e.name == online.name).isOnline = true;
+          }
+        }
+      }
+
       Overview overview = Overview(
-        experiencegained: rExp.list.sublist(0, 5),
-        onlinetime: rOnline.list.sublist(0, 5),
+        experiencegained: rExpgain.list.sublist(0, 5),
+        onlinetime: rOnlinetime.list.sublist(0, 5),
         rookmaster: rRookmaster.list.sublist(0, 5),
         timestamp: rRookmaster.timestamp,
       );

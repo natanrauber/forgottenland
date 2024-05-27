@@ -13,6 +13,7 @@ class HighscoresEntry {
     this.supporterTitle,
     this.onlineTime,
     this.expanded,
+    this.isOnline = false,
   });
 
   HighscoresEntry.fromJson(Map<String, dynamic> json) {
@@ -33,6 +34,7 @@ class HighscoresEntry {
       if (days > 0) onlineTime = '${days.toString()}d$onlineTime';
     }
     if (json['expanded'] is Map) expanded = ExpandedData.fromJson(json['expanded'] as Map<String, dynamic>);
+    if (json['is_online'] is bool) isOnline = json['is_online'] as bool;
   }
 
   HighscoresEntry.fromOnlineEntry(OnlineEntry online) {
@@ -41,6 +43,7 @@ class HighscoresEntry {
     level = online.level;
     vocation = online.vocation;
     value = online.time;
+    isOnline = online.isOnline;
 
     final int days = (value ?? 0) ~/ (60 * 24);
     final int hours = ((value ?? 0) % (60 * 24)) ~/ 60;
@@ -58,6 +61,7 @@ class HighscoresEntry {
   String? supporterTitle;
   String? onlineTime;
   ExpandedData? expanded;
+  bool isOnline = false;
 
   String? get stringValue => value == null ? null : NumberFormat.decimalPattern().format(value);
 
@@ -81,6 +85,7 @@ class HighscoresEntry {
     data['level'] = level;
     data['value'] = value;
     data['expanded'] = expanded?.toJson();
+    data['is_online'] = isOnline;
     return data.clean();
   }
 }

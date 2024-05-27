@@ -3,6 +3,7 @@ import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/better_text.dart';
+import 'package:forgottenland/views/widgets/src/other/blinking_circle.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
 
@@ -40,14 +41,7 @@ class _OnlineEntryWidgetState extends State<OnlineEntryWidget> {
                         child: Row(
                           children: <Widget>[
                             //
-                            Container(
-                              height: 12,
-                              width: 12,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.green,
-                              ),
-                            ),
+                            const BlinkingCircle(size: 12),
 
                             const SizedBox(width: 4),
 

@@ -3,6 +3,9 @@ import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/controllers/home_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/src/routes.dart';
+import 'package:forgottenland/views/widgets/src/other/better_text.dart';
+import 'package:forgottenland/views/widgets/src/other/blinking_circle.dart';
+import 'package:forgottenland/views/widgets/src/other/shimmer_loading.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
 
@@ -21,15 +24,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         children: <Widget>[
           _title(),
           const SizedBox(height: 3),
-          Container(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
-            alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
-              color: AppColors.bgPaper,
-              borderRadius: BorderRadius.circular(11),
-            ),
-            child: _body(),
-          ),
+          _body(),
         ],
       );
 
@@ -39,22 +34,22 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
       );
 
   Widget _body() => Obx(
-        () {
-          if (homeCtrl.isLoading.value) return _loading();
-          if (homeCtrl.rookmaster.isEmpty) return _reloadButton();
-          if (homeCtrl.rookmaster.isNotEmpty) return _listBuilder();
-          return Container();
-        },
-      );
-
-  Widget _loading() => Center(
-        child: Container(
-          height: 110,
-          width: 110,
-          padding: const EdgeInsets.all(30),
-          child: const Center(
-            child: CircularProgressIndicator(
-              color: AppColors.textSecondary,
+        () => ShimmerLoading(
+          isLoading: homeCtrl.isLoading.value,
+          child: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
+            decoration: BoxDecoration(
+              color: AppColors.bgPaper,
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: Builder(
+              builder: (_) {
+                if (homeCtrl.isLoading.value) return _loading();
+                if (homeCtrl.rookmaster.isEmpty) return _reloadButton();
+                if (homeCtrl.rookmaster.isNotEmpty) return _listBuilder();
+                return Container();
+              },
             ),
           ),
         ),
@@ -71,6 +66,19 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
               Icons.refresh,
               size: 50,
               color: AppColors.bgDefault,
+            ),
+          ),
+        ),
+      );
+
+  Widget _loading() => Center(
+        child: Container(
+          height: 110,
+          width: 110,
+          padding: const EdgeInsets.all(30),
+          child: const Center(
+            child: CircularProgressIndicator(
+              color: AppColors.textSecondary,
             ),
           ),
         ),
@@ -97,32 +105,51 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         margin: const EdgeInsets.only(bottom: 6),
         child: Row(
           children: <Widget>[
-            //
-            Expanded(
-              child: Text(
-                _itemName(item),
-                maxLines: 1,
-                style: const TextStyle(
-                  fontSize: 12,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
+            Stack(
+              alignment: Alignment.centerLeft,
+              children: <Widget>[
+                _itemRank(item),
+                if (item.isOnline) _onlineIndicator(),
+              ],
             ),
-
-            Text(
-              ' ${item.stringValue ?? ''}',
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.blue,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            const SizedBox(width: 2),
+            _itemName(item),
+            const SizedBox(width: 2),
+            _itemValue(item),
           ],
         ),
       );
 
-  String _itemName(HighscoresEntry item) {
-    if (MediaQuery.of(context).size.width <= 750) return item.name ?? '';
-    return '${item.rank}. ${item.name}';
-  }
+  Widget _itemRank(HighscoresEntry item) => Text(
+        '${item.rank}.',
+        style: TextStyle(
+          fontSize: 12,
+          color: item.isOnline ? Colors.transparent : AppColors.textSecondary.withOpacity(0.25),
+        ),
+      );
+
+  Widget _onlineIndicator() => const Padding(
+        padding: EdgeInsets.only(bottom: 1),
+        child: BlinkingCircle(),
+      );
+
+  Widget _itemName(HighscoresEntry item) => Expanded(
+        child: Text(
+          item.name ?? '',
+          maxLines: 1,
+          style: const TextStyle(
+            fontSize: 12,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      );
+
+  Widget _itemValue(HighscoresEntry item) => BetterText(
+        '${item.value ?? ''}/8000 <blue>${(((item.value ?? 0) / 8000) * 100).toStringAsFixed(2)}%<blue>',
+        style: TextStyle(
+          fontSize: 12,
+          color: AppColors.textSecondary.withOpacity(0.25),
+          overflow: TextOverflow.ellipsis,
+        ),
+      );
 }
