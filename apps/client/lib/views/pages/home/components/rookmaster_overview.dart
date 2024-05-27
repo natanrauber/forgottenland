@@ -59,8 +59,8 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         child: GestureDetector(
           onTap: homeCtrl.getOverview,
           child: Container(
-            height: 110,
-            width: 110,
+            height: 125,
+            width: 125,
             padding: const EdgeInsets.all(30),
             child: const Icon(
               Icons.refresh,
@@ -73,8 +73,8 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
 
   Widget _loading() => Center(
         child: Container(
-          height: 110,
-          width: 110,
+          height: 125,
+          width: 125,
           padding: const EdgeInsets.all(30),
           child: const Center(
             child: CircularProgressIndicator(
@@ -102,6 +102,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
       );
 
   Widget _item(HighscoresEntry item) => Container(
+        height: 19,
         margin: const EdgeInsets.only(bottom: 6),
         child: Row(
           children: <Widget>[
@@ -124,6 +125,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         '${item.rank}.',
         style: TextStyle(
           fontSize: 12,
+          height: 19 / 12,
           color: item.isOnline ? Colors.transparent : AppColors.textSecondary.withOpacity(0.25),
         ),
       );
@@ -139,6 +141,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
           maxLines: 1,
           style: const TextStyle(
             fontSize: 12,
+            height: 19 / 12,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -148,6 +151,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         '${item.value ?? ''}/8000 <blue>${(((item.value ?? 0) / 8000) * 100).toStringAsFixed(2)}%<blue>',
         style: TextStyle(
           fontSize: 12,
+          height: 19 / 12,
           color: AppColors.textSecondary.withOpacity(0.25),
           overflow: TextOverflow.ellipsis,
         ),

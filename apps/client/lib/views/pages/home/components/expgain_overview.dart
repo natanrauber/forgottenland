@@ -58,8 +58,8 @@ class _ExpgainOverviewState extends State<ExpgainOverview> {
         child: GestureDetector(
           onTap: homeCtrl.getOverview,
           child: Container(
-            height: 110,
-            width: 110,
+            height: 125,
+            width: 125,
             padding: const EdgeInsets.all(30),
             child: const Icon(
               Icons.refresh,
@@ -72,8 +72,8 @@ class _ExpgainOverviewState extends State<ExpgainOverview> {
 
   Widget _loading() => Center(
         child: Container(
-          height: 110,
-          width: 110,
+          height: 125,
+          width: 125,
           padding: const EdgeInsets.all(30),
           child: const Center(
             child: CircularProgressIndicator(
@@ -104,6 +104,7 @@ class _ExpgainOverviewState extends State<ExpgainOverview> {
       );
 
   Widget _item(HighscoresEntry item) => Container(
+        height: 19,
         margin: const EdgeInsets.only(bottom: 6),
         child: Row(
           children: <Widget>[
@@ -126,6 +127,7 @@ class _ExpgainOverviewState extends State<ExpgainOverview> {
         '${item.rank}.',
         style: TextStyle(
           fontSize: 12,
+          height: 19 / 12,
           color: item.isOnline ? Colors.transparent : AppColors.textSecondary.withOpacity(0.25),
         ),
       );
@@ -141,6 +143,7 @@ class _ExpgainOverviewState extends State<ExpgainOverview> {
           maxLines: 1,
           style: const TextStyle(
             fontSize: 12,
+            height: 19 / 12,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -150,6 +153,7 @@ class _ExpgainOverviewState extends State<ExpgainOverview> {
         '+${item.stringValue}',
         style: const TextStyle(
           fontSize: 12,
+          height: 19 / 12,
           color: Colors.green,
           overflow: TextOverflow.ellipsis,
         ),

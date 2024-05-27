@@ -162,8 +162,6 @@ class HighscoresController {
         tableToCategory['onlinetime+today']!,
         dateToCategory['onlinetime+today']!,
       );
-      if (rOnlinetime == null) return ApiResponse.noContent();
-
       Record? rExpgain = await _getExpGain(
         'all',
         'experiencegained+today',
@@ -171,31 +169,28 @@ class HighscoresController {
         tableToCategory['experiencegained+today']!,
         dateToCategory['experiencegained+today']!,
       );
-      if (rExpgain == null) return ApiResponse.noContent();
-
       Record? rRookmaster = await _getRookmaster('all', 1);
-      if (rRookmaster == null) return ApiResponse.noContent();
 
       Online? onlineNow = await onlineCtrl.onlineNow();
       if (onlineNow != null) {
         for (OnlineEntry online in onlineNow.list) {
-          if (rOnlinetime.list.any((OnlineEntry e) => e.name == online.name)) {
-            rOnlinetime.list.firstWhere((OnlineEntry e) => e.name == online.name).isOnline = true;
+          if (rOnlinetime?.list.any((OnlineEntry e) => e.name == online.name) ?? false) {
+            rOnlinetime?.list.firstWhere((OnlineEntry e) => e.name == online.name).isOnline = true;
           }
-          if (rExpgain.list.any((HighscoresEntry e) => e.name == online.name)) {
-            rExpgain.list.firstWhere((HighscoresEntry e) => e.name == online.name).isOnline = true;
+          if (rExpgain?.list.any((HighscoresEntry e) => e.name == online.name) ?? false) {
+            rExpgain?.list.firstWhere((HighscoresEntry e) => e.name == online.name).isOnline = true;
           }
-          if (rRookmaster.list.any((HighscoresEntry e) => e.name == online.name)) {
-            rRookmaster.list.firstWhere((HighscoresEntry e) => e.name == online.name).isOnline = true;
+          if (rRookmaster?.list.any((HighscoresEntry e) => e.name == online.name) ?? false) {
+            rRookmaster?.list.firstWhere((HighscoresEntry e) => e.name == online.name).isOnline = true;
           }
         }
       }
 
       Overview overview = Overview(
-        experiencegained: rExpgain.list.sublist(0, 5),
-        onlinetime: rOnlinetime.list.sublist(0, 5),
-        rookmaster: rRookmaster.list.sublist(0, 5),
-        timestamp: rRookmaster.timestamp,
+        experiencegained: rExpgain?.list.sublist(0, 5) ?? <HighscoresEntry>[],
+        onlinetime: rOnlinetime?.list.sublist(0, 5) ?? <OnlineEntry>[],
+        rookmaster: rRookmaster?.list.sublist(0, 5) ?? <HighscoresEntry>[],
+        timestamp: DT.tibia.timeStamp(),
       );
       return ApiResponse.success(data: overview.toJson());
     } catch (e) {
