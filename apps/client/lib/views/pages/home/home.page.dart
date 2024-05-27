@@ -15,11 +15,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final HomeController newsCtrl = Get.find<HomeController>();
+  final HomeController homeCtrl = Get.find<HomeController>();
 
   Future<void> _loadHomeData() async {
-    if (newsCtrl.news.isEmpty) await newsCtrl.getNews();
-    newsCtrl.getOverview();
+    if (homeCtrl.news.isEmpty) await homeCtrl.getNews();
+    await homeCtrl.getOverview();
+    homeCtrl.runTimer();
   }
 
   @override

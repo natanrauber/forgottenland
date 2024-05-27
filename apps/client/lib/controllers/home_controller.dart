@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/utils/src/paths.dart';
-import 'package:get/get_rx/get_rx.dart';
+import 'package:forgottenland/utils/src/routes.dart';
+import 'package:get/get.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 
@@ -13,6 +16,8 @@ class HomeController extends Controller {
   RxList<HighscoresEntry> experiencegained = <HighscoresEntry>[].obs;
   RxList<HighscoresEntry> onlinetime = <HighscoresEntry>[].obs;
   RxList<HighscoresEntry> rookmaster = <HighscoresEntry>[].obs;
+
+  Timer? timer;
 
   Future<MyHttpResponse> getNews() async {
     isLoading.value = true;
@@ -46,5 +51,16 @@ class HomeController extends Controller {
 
     isLoading.value = false;
     return response;
+  }
+
+  void runTimer() {
+    Timer.periodic(
+      const Duration(minutes: 5),
+      (_) {
+        if (isLoading.value) return;
+        if (Get.currentRoute != Routes.home.name) return;
+        getOverview();
+      },
+    );
   }
 }
