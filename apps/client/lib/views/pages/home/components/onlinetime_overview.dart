@@ -4,6 +4,7 @@ import 'package:forgottenland/controllers/home_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/src/routes.dart';
 import 'package:forgottenland/views/widgets/src/other/blinking_circle.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:forgottenland/views/widgets/src/other/shimmer_loading.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
@@ -35,11 +36,18 @@ class _OnlinetimeOverviewState extends State<OnlinetimeOverview> {
   Widget _body() => Obx(
         () => ShimmerLoading(
           isLoading: homeCtrl.isLoading.value,
-          child: Container(
+          child: ClickableContainer(
+            onTap: homeCtrl.onlinetime.isEmpty
+                ? homeCtrl.getOverview
+                : () async {
+                    final String timeframe = highscoresCtrl.timeframe.value.toLowerCase().replaceAll(' ', '');
+                    return Get.toNamed('${Routes.highscores.name}/onlinetime/$timeframe');
+                  },
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
             alignment: Alignment.centerLeft,
+            color: AppColors.bgPaper,
+            hoverColor: AppColors.bgHover,
             decoration: BoxDecoration(
-              color: AppColors.bgPaper,
               borderRadius: BorderRadius.circular(11),
             ),
             child: Builder(
@@ -55,17 +63,14 @@ class _OnlinetimeOverviewState extends State<OnlinetimeOverview> {
       );
 
   Widget _reloadButton() => Center(
-        child: GestureDetector(
-          onTap: homeCtrl.getOverview,
-          child: Container(
-            height: 125,
-            width: 125,
-            padding: const EdgeInsets.all(30),
-            child: const Icon(
-              Icons.refresh,
-              size: 50,
-              color: AppColors.bgDefault,
-            ),
+        child: Container(
+          height: 125,
+          width: 125,
+          padding: const EdgeInsets.all(42.5),
+          child: Icon(
+            Icons.refresh,
+            size: 40,
+            color: AppColors.textSecondary.withOpacity(0.25),
           ),
         ),
       );
@@ -83,24 +88,15 @@ class _OnlinetimeOverviewState extends State<OnlinetimeOverview> {
         ),
       );
 
-  Widget _listBuilder() => MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () async {
-            final String timeframe = highscoresCtrl.timeframe.value.toLowerCase().replaceAll(' ', '');
-            return Get.toNamed('${Routes.highscores.name}/onlinetime/$timeframe');
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              if (homeCtrl.onlinetime.isNotEmpty) _item(homeCtrl.onlinetime[0]),
-              if (homeCtrl.onlinetime.length >= 2) _item(homeCtrl.onlinetime[1]),
-              if (homeCtrl.onlinetime.length >= 3) _item(homeCtrl.onlinetime[2]),
-              if (homeCtrl.onlinetime.length >= 4) _item(homeCtrl.onlinetime[3]),
-              if (homeCtrl.onlinetime.length >= 5) _item(homeCtrl.onlinetime[4]),
-            ],
-          ),
-        ),
+  Widget _listBuilder() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          if (homeCtrl.onlinetime.isNotEmpty) _item(homeCtrl.onlinetime[0]),
+          if (homeCtrl.onlinetime.length >= 2) _item(homeCtrl.onlinetime[1]),
+          if (homeCtrl.onlinetime.length >= 3) _item(homeCtrl.onlinetime[2]),
+          if (homeCtrl.onlinetime.length >= 4) _item(homeCtrl.onlinetime[3]),
+          if (homeCtrl.onlinetime.length >= 5) _item(homeCtrl.onlinetime[4]),
+        ],
       );
 
   Widget _item(HighscoresEntry item) => Container(

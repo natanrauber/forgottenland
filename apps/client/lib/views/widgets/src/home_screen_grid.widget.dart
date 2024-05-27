@@ -6,6 +6,7 @@ import 'package:forgottenland/modules/settings/controllers/settings_controller.d
 import 'package:forgottenland/modules/settings/models/feature_model.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/src/routes.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:get/get.dart';
 
 class GridButtonModel {
@@ -116,33 +117,30 @@ class _HomeScreenGridState extends State<HomeScreenGrid> {
   Widget _gridItemBuilder(List<GridButtonModel> list, int index) {
     final GridButtonModel item = list[index];
 
-    return MouseRegion(
-      cursor: item.enabled ? SystemMouseCursors.click : MouseCursor.defer,
-      child: GestureDetector(
-        onTap: item.enabled ? item.onTap : null,
-        child: Column(
-          children: <Widget>[
-            _buttonBody(item),
-            SizedBox(height: item.name.contains('\n') ? 4 : 8),
-            _buttonName(item),
-          ],
-        ),
-      ),
+    return Column(
+      children: <Widget>[
+        _buttonBody(item),
+        SizedBox(height: item.name.contains('\n') ? 4 : 8),
+        _buttonName(item),
+      ],
     );
   }
 
-  Container _buttonBody(GridButtonModel item) {
+  Widget _buttonBody(GridButtonModel item) {
     double screenWidth = MediaQuery.of(context).size.width;
     screenWidth = screenWidth > 436 ? 436 : screenWidth;
     final double spacing = (crossAxisCount - 1) * crossAxisSpacing;
     final double buttonSize = (screenWidth - spacing - 32 - 24) / crossAxisCount;
 
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 86, maxWidth: 86),
+    return ClickableContainer(
+      enabled: item.enabled,
+      onTap: item.onTap,
       height: buttonSize,
       width: buttonSize,
+      constraints: const BoxConstraints(maxHeight: 86, maxWidth: 86),
+      color: AppColors.bgDefault.withOpacity(0.75),
+      hoverColor: AppColors.bgHover,
       decoration: BoxDecoration(
-        color: AppColors.bgDefault.withOpacity(0.75),
         borderRadius: BorderRadius.circular(11),
       ),
       child: Icon(

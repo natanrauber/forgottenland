@@ -5,6 +5,7 @@ import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/src/routes.dart';
 import 'package:forgottenland/views/widgets/src/other/better_text.dart';
 import 'package:forgottenland/views/widgets/src/other/blinking_circle.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:forgottenland/views/widgets/src/other/shimmer_loading.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
@@ -36,11 +37,15 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
   Widget _body() => Obx(
         () => ShimmerLoading(
           isLoading: homeCtrl.isLoading.value,
-          child: Container(
+          child: ClickableContainer(
+            onTap: homeCtrl.rookmaster.isEmpty
+                ? homeCtrl.getOverview
+                : () => Get.toNamed('${Routes.highscores.name}/rookmaster'),
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
+            color: AppColors.bgPaper,
+            hoverColor: AppColors.bgHover,
             decoration: BoxDecoration(
-              color: AppColors.bgPaper,
               borderRadius: BorderRadius.circular(11),
             ),
             child: Builder(
@@ -56,17 +61,14 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
       );
 
   Widget _reloadButton() => Center(
-        child: GestureDetector(
-          onTap: homeCtrl.getOverview,
-          child: Container(
-            height: 125,
-            width: 125,
-            padding: const EdgeInsets.all(30),
-            child: const Icon(
-              Icons.refresh,
-              size: 50,
-              color: AppColors.bgDefault,
-            ),
+        child: Container(
+          height: 125,
+          width: 125,
+          padding: const EdgeInsets.all(42.5),
+          child: Icon(
+            Icons.refresh,
+            size: 40,
+            color: AppColors.textSecondary.withOpacity(0.25),
           ),
         ),
       );
@@ -84,21 +86,15 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         ),
       );
 
-  Widget _listBuilder() => MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () => Get.toNamed('${Routes.highscores.name}/rookmaster'),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              if (homeCtrl.rookmaster.isNotEmpty) _item(homeCtrl.rookmaster[0]),
-              if (homeCtrl.rookmaster.length >= 2) _item(homeCtrl.rookmaster[1]),
-              if (homeCtrl.rookmaster.length >= 3) _item(homeCtrl.rookmaster[2]),
-              if (homeCtrl.rookmaster.length >= 4) _item(homeCtrl.rookmaster[3]),
-              if (homeCtrl.rookmaster.length >= 5) _item(homeCtrl.rookmaster[4]),
-            ],
-          ),
-        ),
+  Widget _listBuilder() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          if (homeCtrl.rookmaster.isNotEmpty) _item(homeCtrl.rookmaster[0]),
+          if (homeCtrl.rookmaster.length >= 2) _item(homeCtrl.rookmaster[1]),
+          if (homeCtrl.rookmaster.length >= 3) _item(homeCtrl.rookmaster[2]),
+          if (homeCtrl.rookmaster.length >= 4) _item(homeCtrl.rookmaster[3]),
+          if (homeCtrl.rookmaster.length >= 5) _item(homeCtrl.rookmaster[4]),
+        ],
       );
 
   Widget _item(HighscoresEntry item) => Container(

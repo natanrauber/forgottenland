@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/home_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:forgottenland/views/widgets/src/other/shimmer_loading.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/instance_manager.dart';
@@ -34,10 +35,13 @@ class _NewsWidgetState extends State<NewsWidget> {
   Widget _body() => Obx(
         () => ShimmerLoading(
           isLoading: homeCtrl.isLoading.value,
-          child: Container(
+          child: ClickableContainer(
+            enabled: homeCtrl.news.isEmpty,
+            onTap: homeCtrl.getNews,
             padding: const EdgeInsets.all(12),
+            color: AppColors.bgPaper,
+            hoverColor: AppColors.bgHover,
             decoration: BoxDecoration(
-              color: AppColors.bgPaper,
               borderRadius: BorderRadius.circular(11),
             ),
             child: Builder(
@@ -52,20 +56,17 @@ class _NewsWidgetState extends State<NewsWidget> {
       );
 
   Widget _reloadButton() => Center(
-        child: GestureDetector(
-          onTap: homeCtrl.getNews,
-          child: Container(
-            height: 110,
-            width: 110,
-            padding: const EdgeInsets.all(30),
-            child: homeCtrl.isLoading.value
-                ? _loading()
-                : const Icon(
-                    Icons.refresh,
-                    size: 50,
-                    color: AppColors.bgDefault,
-                  ),
-          ),
+        child: Container(
+          height: 125,
+          width: 125,
+          padding: const EdgeInsets.all(42.5),
+          child: homeCtrl.isLoading.value
+              ? _loading()
+              : Icon(
+                  Icons.refresh,
+                  size: 40,
+                  color: AppColors.textSecondary.withOpacity(0.25),
+                ),
         ),
       );
 
@@ -105,55 +106,51 @@ class _NewsWidgetState extends State<NewsWidget> {
     return Expanded(child: _itemBody(item));
   }
 
-  Widget _itemBody(News item) => MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () => _openSelectedNews(item),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
-              color: AppColors.bgDefault.withOpacity(0.75),
-              borderRadius: BorderRadius.circular(11),
+  Widget _itemBody(News item) => ClickableContainer(
+        onTap: () => _openSelectedNews(item),
+        padding: const EdgeInsets.all(12),
+        alignment: Alignment.centerLeft,
+        color: AppColors.bgDefault.withOpacity(0.75),
+        hoverColor: AppColors.bgHover,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(11),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            //
+            Text(
+              item.news ?? '',
+              maxLines: 2,
+              style: const TextStyle(
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                //
-                Text(
-                  item.news ?? '',
-                  maxLines: 2,
-                  style: const TextStyle(
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
 
-                const SizedBox(height: 5),
+            const SizedBox(height: 5),
 
-                Text(
-                  MediaQuery.of(context).size.width > 600 ? 'Date: ${item.date ?? ''}' : item.date ?? '',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-
-                const SizedBox(height: 5),
-
-                Text(
-                  MediaQuery.of(context).size.width > 600
-                      ? 'Category: ${item.category?.capitalizeString() ?? ''}'
-                      : item.category?.capitalizeString() ?? '',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+            Text(
+              MediaQuery.of(context).size.width > 600 ? 'Date: ${item.date ?? ''}' : item.date ?? '',
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
+
+            const SizedBox(height: 5),
+
+            Text(
+              MediaQuery.of(context).size.width > 600
+                  ? 'Category: ${item.category?.capitalizeString() ?? ''}'
+                  : item.category?.capitalizeString() ?? '',
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
       );
 

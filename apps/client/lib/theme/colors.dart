@@ -27,6 +27,7 @@ class AppColors {
 
   static const Color bgDefault = Color(0xFF232323);
   static const Color bgPaper = Color(0xFF292929);
+  static const Color bgHover = Color(0xBE181821);
 
   static const Color textPrimary = Color(0xFFFFFFFF);
   static const Color textSecondary = Color(0xB2FFFFFF);
