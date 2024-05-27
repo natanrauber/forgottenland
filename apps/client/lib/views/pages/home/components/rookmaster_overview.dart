@@ -31,7 +31,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
 
   Widget _title() => const Padding(
         padding: EdgeInsets.only(left: 3),
-        child: SelectableText('Rookmaster'),
+        child: SelectableText('Rook Master'),
       );
 
   Widget _body() => Obx(

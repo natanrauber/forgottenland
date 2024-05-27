@@ -60,8 +60,9 @@ class _AppPageState extends State<AppPage> {
     final double appBarHeight = AppHeader().preferredSize.height;
     double topMargin = height > 700 ? height - 700 : 0;
     if (topMargin > height * 0.18) topMargin = height * 0.18;
-    if (width <= 800) topMargin = 0;
     final double sideMargin = width > widget.maxWidth ? ((width / 2) - (widget.maxWidth / 2)) + 0 : 0;
+    if (topMargin > sideMargin) topMargin = sideMargin;
+    if (width <= 800) topMargin = 0;
 
     return PopScope(
       canPop: widget.canPop,

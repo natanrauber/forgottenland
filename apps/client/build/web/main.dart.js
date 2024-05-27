@@ -94238,7 +94238,7 @@ if(s==null)s=$.ar=B.y
 return new A.IQ(s.bF(0,null,t.k4),B.j)}}
 A.IQ.prototype={
 G(a){var s=null,r=this.d.gE8()
-return A.mh(A.b_(A.a([A.aI("Live streams",s,A.zP().p3.w,s),A.F(s,B.k2,B.e,s,s,s,s,s,B.Je,s,s,s,s),A.F(s,B.S9,B.e,s,s,new A.bp(B.R,s,s,A.cB(11),s,s,s,B.L),s,s,B.bY,B.Jd,s,s,s),B.iR,new A.bk(B.bY,this.aha(0),s)],t.p),B.v,B.l,B.m),!0,800,s,r,B.eM,r,"live_streams")},
+return A.mh(A.b_(A.a([A.aI("Live streams",s,A.zP().p3.w,s),A.F(s,B.k2,B.e,s,s,s,s,s,B.Je,s,s,s,s),A.F(s,B.S8,B.e,s,s,new A.bp(B.R,s,s,A.cB(11),s,s,s,B.L),s,s,B.bY,B.Jd,s,s,s),B.iR,new A.bk(B.bY,this.aha(0),s)],t.p),B.v,B.l,B.m),!0,800,s,r,B.eM,r,"live_streams")},
 aha(a){return new A.em(new A.ayX(this),null)},
 ahc(a,b){var s=this.d.dy[b]
 return new A.bk(new A.ah(0,b===0?0:10,0,0),new A.G8(s,null),null)}}
@@ -95485,7 +95485,7 @@ r=$.ar
 if(r==null)r=$.ar=B.y
 return new A.Yz(s,r.bF(0,null,t.J9),B.j)}}
 A.Yz.prototype={
-G(a){return A.b_(A.a([B.QM,B.fI,this.ac9(0)],t.p),B.z,B.l,B.m)},
+G(a){return A.b_(A.a([B.QL,B.fI,this.ac9(0)],t.p),B.z,B.l,B.m)},
 ac9(a){return new A.em(new A.awI(this),null)},
 uz(a,b){var s,r=null,q=b.a,p=t.p
 q=A.a([A.br(A.e(q)+".",r,r,r,A.dz(r,r,b.y?B.G:A.X(64,255,255,255),r,r,r,r,r,r,r,r,12,r,r,r,r,1.5833333333333333,!0,r,r,r,r,r,r,r,r),r,r)],p)
@@ -95532,7 +95532,7 @@ var s=$.ar
 if(s==null)s=$.ar=B.y
 return new A.a_p(s.bF(0,null,t.J9),B.j)}}
 A.a_p.prototype={
-G(a){return A.b_(A.a([B.QL,B.fI,this.ai9(0)],t.p),B.z,B.l,B.m)},
+G(a){return A.b_(A.a([B.QK,B.fI,this.ai9(0)],t.p),B.z,B.l,B.m)},
 ai9(a){return new A.em(new A.azS(this),null)},
 uK(a,b){var s=this.c
 s.toString
@@ -95679,7 +95679,7 @@ r=$.ar
 if(r==null)r=$.ar=B.y
 return new A.a1j(s,r.bF(0,null,t.J9),B.j)}}
 A.a1j.prototype={
-G(a){return A.b_(A.a([B.QK,B.fI,this.alp(0)],t.p),B.z,B.l,B.m)},
+G(a){return A.b_(A.a([B.QM,B.fI,this.alp(0)],t.p),B.z,B.l,B.m)},
 alp(a){return new A.em(new A.aBw(this),null)},
 v5(a,b){var s,r,q,p=null,o=b.a,n=t.p
 o=A.a([A.br(A.e(o)+".",p,p,p,A.dz(p,p,b.y?B.G:A.X(64,255,255,255),p,p,p,p,p,p,p,p,12,p,p,p,p,1.5833333333333333,!0,p,p,p,p,p,p,p,p),p,p)],n)
@@ -96555,10 +96555,11 @@ aE(){this.aP()
 $.at.ak$.push(new A.au_(this))},
 G(a0){var s,r,q,p,o,n,m,l,k,j,i,h=this,g=null,f=t.w,e=A.aR(a0,g,f).w.a.b,d=A.aR(a0,g,f).w.a.a,c=A.a61(),b=e>700?e-700:0,a=e*0.18
 if(b>a)b=a
-if(d<=800)b=0
 s=h.a
 r=s.y
 q=d>r?d/2-r/2+0:0
+if(b>q)b=q
+if(d<=800)b=0
 r=s.x
 p=A.a61()
 o=s.f
@@ -107963,15 +107964,15 @@ B.a1n=new A.RQ(0,"start")
 B.QI=new A.RQ(1,"end")
 B.Sc=new A.jz("Online time",null,null,null,null,null,null,null)
 B.QJ=new A.bk(B.cJ,B.Sc,null)
-B.S8=new A.jz("Rookmaster",null,null,null,null,null,null,null)
-B.QK=new A.bk(B.cJ,B.S8,null)
-B.Sa=new A.jz("Latest news",null,null,null,null,null,null,null)
-B.QL=new A.bk(B.cJ,B.Sa,null)
+B.S9=new A.jz("Latest news",null,null,null,null,null,null,null)
+B.QK=new A.bk(B.cJ,B.S9,null)
 B.Sb=new A.jz("Exp gained",null,null,null,null,null,null,null)
-B.QM=new A.bk(B.cJ,B.Sb,null)
+B.QL=new A.bk(B.cJ,B.Sb,null)
 B.IT=new A.ah(0,0,0,1)
 B.CB=new A.v8(10,null)
 B.lk=new A.bk(B.IT,B.CB,null)
+B.Sa=new A.jz("Rook Master",null,null,null,null,null,null,null)
+B.QM=new A.bk(B.cJ,B.Sa,null)
 B.aZ=new A.Sc(0,"fill")
 B.w0=new A.pd(1/0)
 B.bE=new A.Sh(0,"nonZero")
@@ -108119,7 +108120,7 @@ B.S6=new A.Fv(null,null)
 B.eg=new A.t(!0,B.aa,null,null,null,null,12,null,null,null,null,null,1.5,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.S7=new A.jz("Locations:",null,B.eg,null,null,null,null,null)
 B.dt=new A.t(!0,B.aa,null,null,null,null,11,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.S9=new A.jz('Live streams on Twitch containing the word "Rookgaard" in their title or tags will be shown here.',null,B.dt,null,null,null,null,null)
+B.S8=new A.jz('Live streams on Twitch containing the word "Rookgaard" in their title or tags will be shown here.',null,B.dt,null,null,null,null,null)
 B.ax=new A.jA(0,"tap")
 B.zX=new A.jA(1,"doubleTap")
 B.b_=new A.jA(2,"longPress")
