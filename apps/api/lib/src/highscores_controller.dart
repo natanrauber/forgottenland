@@ -187,14 +187,20 @@ class HighscoresController {
       }
 
       Overview overview = Overview(
-        experiencegained: rExpgain?.list.sublist(0, 5) ?? <HighscoresEntry>[],
-        onlinetime: rOnlinetime?.list.sublist(0, 5) ?? <OnlineEntry>[],
-        rookmaster: rRookmaster?.list.sublist(0, 5) ?? <HighscoresEntry>[],
+        experiencegained: _overviewSublist<HighscoresEntry>(rExpgain?.list),
+        onlinetime: _overviewSublist<OnlineEntry>(rOnlinetime?.list),
+        rookmaster: _overviewSublist<HighscoresEntry>(rRookmaster?.list),
         timestamp: DT.tibia.timeStamp(),
       );
       return ApiResponse.success(data: overview.toJson());
     } catch (e) {
       return handleError(e);
     }
+  }
+
+  List<E> _overviewSublist<E>(List<E>? list) {
+    if (list == null) return <E>[];
+    if (list.length <= 5) return list;
+    return list.sublist(0, 5);
   }
 }
