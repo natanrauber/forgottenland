@@ -55,12 +55,12 @@ class _NpcsPageState extends State<NpcsPage> {
       );
 
   Widget _loading() => Container(
-        height: 110,
-        width: 110,
-        padding: const EdgeInsets.all(30),
-        child: const Center(
+        height: 100,
+        width: 100,
+        padding: const EdgeInsets.all(35),
+        child: Center(
           child: CircularProgressIndicator(
-            color: AppColors.textSecondary,
+            color: AppColors.textSecondary.withOpacity(0.5),
           ),
         ),
       );

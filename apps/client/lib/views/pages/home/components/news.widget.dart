@@ -42,7 +42,7 @@ class _NewsWidgetState extends State<NewsWidget> {
             color: AppColors.bgPaper,
             hoverColor: AppColors.bgHover,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Builder(
               builder: (_) {
@@ -59,20 +59,20 @@ class _NewsWidgetState extends State<NewsWidget> {
         child: Container(
           height: 100,
           width: 100,
-          padding: const EdgeInsets.all(30),
+          padding: EdgeInsets.all(homeCtrl.isLoading.value ? 35 : 30),
           child: homeCtrl.isLoading.value
               ? _loading()
               : Icon(
                   Icons.refresh,
                   size: 40,
-                  color: AppColors.textSecondary.withOpacity(0.25),
+                  color: AppColors.textSecondary.withOpacity(0.5),
                 ),
         ),
       );
 
-  Widget _loading() => const Center(
+  Widget _loading() => Center(
         child: CircularProgressIndicator(
-          color: AppColors.textSecondary,
+          color: AppColors.textSecondary.withOpacity(0.5),
         ),
       );
 
@@ -113,7 +113,7 @@ class _NewsWidgetState extends State<NewsWidget> {
         color: AppColors.bgDefault.withOpacity(0.75),
         hoverColor: AppColors.bgHover,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

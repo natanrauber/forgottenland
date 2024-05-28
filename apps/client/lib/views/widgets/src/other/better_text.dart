@@ -18,9 +18,13 @@ Map<String, Map<String, dynamic>> _tags = <String, Map<String, dynamic>>{
     'regex': '<blue>(.*?)<blue>',
     'style': const TextStyle(color: AppColors.blue),
   },
+  '<lBlue>': <String, dynamic>{
+    'regex': '<lBlue>(.*?)<lBlue>',
+    'style': const TextStyle(color: AppColors.lightBlue),
+  },
   '<green>': <String, dynamic>{
     'regex': '<green>(.*?)<green>',
-    'style': const TextStyle(color: AppColors.lightBlue),
+    'style': const TextStyle(color: AppColors.green),
   },
   '<small>': <String, dynamic>{
     'regex': '<small>(.*?)<small>',

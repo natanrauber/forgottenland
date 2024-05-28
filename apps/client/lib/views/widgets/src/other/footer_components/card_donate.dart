@@ -27,7 +27,7 @@ class _CardDonateState extends State<CardDonate> {
       );
 
   BoxDecoration get _decoration => BoxDecoration(
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: AppColors.bgPaper,
         ),

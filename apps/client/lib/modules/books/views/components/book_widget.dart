@@ -7,6 +7,7 @@ import 'package:forgottenland/modules/books/controllers/books_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/views/widgets/src/images/web_image.dart';
 import 'package:forgottenland/views/widgets/src/other/better_text.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
 
@@ -61,7 +62,7 @@ class _BookWidgetState extends State<BookWidget> {
 
   BoxDecoration _decoration(BuildContext context) => BoxDecoration(
         color: AppColors.bgPaper,
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors.bgPaper),
       );
 
@@ -259,20 +260,19 @@ class _BookWidgetState extends State<BookWidget> {
         ],
       );
 
-  Widget _toggleViewButton() => MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: _toggleView,
-          behavior: HitTestBehavior.opaque,
-          child: Container(
-            height: 32,
-            width: 32,
-            alignment: Alignment.center,
-            child: Icon(
-              expandedView ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
-              size: 17,
-            ),
-          ),
+  Widget _toggleViewButton() => ClickableContainer(
+        onTap: _toggleView,
+        height: 32,
+        width: 32,
+        alignment: Alignment.center,
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgHover,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          expandedView ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
+          size: 17,
         ),
       );
 

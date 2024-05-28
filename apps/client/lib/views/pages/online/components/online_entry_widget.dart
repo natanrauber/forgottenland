@@ -4,6 +4,7 @@ import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/better_text.dart';
 import 'package:forgottenland/views/widgets/src/other/blinking_circle.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
 
@@ -20,50 +21,47 @@ class _OnlineEntryWidgetState extends State<OnlineEntryWidget> {
   final CharacterController characterCtrl = Get.find<CharacterController>();
 
   @override
-  Widget build(BuildContext context) => MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: _onTap,
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
-            decoration: _decoration(context),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                //
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      //
-                      SizedBox(
-                        height: 20,
-                        child: Row(
-                          children: <Widget>[
-                            //
-                            const BlinkingCircle(size: 12),
+  Widget build(BuildContext context) => ClickableContainer(
+        onTap: _onTap,
+        padding: const EdgeInsets.all(16),
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgHover,
+        decoration: _decoration(context),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            //
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  //
+                  SizedBox(
+                    height: 20,
+                    child: Row(
+                      children: <Widget>[
+                        //
+                        const BlinkingCircle(size: 12),
 
-                            const SizedBox(width: 4),
+                        const SizedBox(width: 4),
 
-                            Expanded(child: _name()),
-                          ],
-                        ),
-                      ),
-
-                      _info('World: ${widget.item.world?.name ?? ''}'),
-
-                      _info('Level: ${widget.item.level ?? ''}'),
-
-                      if (widget.item.supporterTitle != null)
-                        _info('\n<primary>${widget.item.supporterTitle ?? ''}<primary>'),
-                    ],
+                        Expanded(child: _name()),
+                      ],
+                    ),
                   ),
-                ),
 
-                _infoIcons(context),
-              ],
+                  _info('World: ${widget.item.world?.name ?? ''}'),
+
+                  _info('Level: ${widget.item.level ?? ''}'),
+
+                  if (widget.item.supporterTitle != null)
+                    _info('\n<primary>${widget.item.supporterTitle ?? ''}<primary>'),
+                ],
+              ),
             ),
-          ),
+
+            _infoIcons(context),
+          ],
         ),
       );
 
@@ -73,9 +71,8 @@ class _OnlineEntryWidgetState extends State<OnlineEntryWidget> {
   }
 
   BoxDecoration _decoration(BuildContext context) => BoxDecoration(
-        color: AppColors.bgPaper,
-        borderRadius: BorderRadius.circular(11),
-        border: Border.all(color: widget.item.supporterTitle != null ? AppColors.primary : AppColors.bgPaper),
+        borderRadius: BorderRadius.circular(8),
+        border: widget.item.supporterTitle == null ? null : Border.all(color: AppColors.primary),
       );
 
   Widget _name() => Text(
@@ -87,7 +84,7 @@ class _OnlineEntryWidgetState extends State<OnlineEntryWidget> {
       );
 
   Widget _info(String text) => Container(
-        margin: const EdgeInsets.only(top: 5),
+        margin: const EdgeInsets.only(top: 4),
         child: BetterText(
           text,
           style: const TextStyle(

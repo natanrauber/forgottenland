@@ -46,7 +46,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
             color: AppColors.bgPaper,
             hoverColor: AppColors.bgHover,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Builder(
               builder: (_) {
@@ -68,7 +68,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
           child: Icon(
             Icons.refresh,
             size: 40,
-            color: AppColors.textSecondary.withOpacity(0.25),
+            color: AppColors.textSecondary.withOpacity(0.5),
           ),
         ),
       );
@@ -77,10 +77,10 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         child: Container(
           height: 125,
           width: 125,
-          padding: const EdgeInsets.all(30),
-          child: const Center(
+          padding: const EdgeInsets.all(47.5),
+          child: Center(
             child: CircularProgressIndicator(
-              color: AppColors.textSecondary,
+              color: AppColors.textSecondary.withOpacity(0.5),
             ),
           ),
         ),
@@ -122,7 +122,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         style: TextStyle(
           fontSize: 12,
           height: 19 / 12,
-          color: item.isOnline ? Colors.transparent : AppColors.textSecondary.withOpacity(0.25),
+          color: item.isOnline ? Colors.transparent : AppColors.textSecondary.withOpacity(0.5),
         ),
       );
 
@@ -148,7 +148,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         style: TextStyle(
           fontSize: 12,
           height: 19 / 12,
-          color: AppColors.textSecondary.withOpacity(0.25),
+          color: AppColors.textSecondary.withOpacity(0.5),
           overflow: TextOverflow.ellipsis,
         ),
       );

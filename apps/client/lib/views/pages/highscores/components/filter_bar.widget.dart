@@ -6,6 +6,7 @@ import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/images/svg_image.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
@@ -216,24 +217,20 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
     highscoresCtrl.filterList();
   }
 
-  Widget _clearButton() => MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: highscoresCtrl.isLoading.value ? null : _clearFilters,
-          child: Container(
-            height: 48,
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: AppColors.bgPaper,
-              borderRadius: BorderRadius.circular(11),
-            ),
-            child: Text(
-              'Clear',
-              style: TextStyle(
-                color: highscoresCtrl.isLoading.value ? AppColors.textSecondary : AppColors.primary,
-              ),
-            ),
+  Widget _clearButton() => ClickableContainer(
+        onTap: highscoresCtrl.isLoading.value ? null : _clearFilters,
+        height: 48,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgHover,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          'Clear',
+          style: TextStyle(
+            color: highscoresCtrl.isLoading.value ? AppColors.textSecondary : AppColors.primary,
           ),
         ),
       );

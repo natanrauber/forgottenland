@@ -119,7 +119,7 @@ class _StreamWidgetState extends State<StreamWidget> {
 
   BoxDecoration _decoration(BuildContext context) => BoxDecoration(
         color: AppColors.bgPaper,
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors.bgPaper),
       );
 

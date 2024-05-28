@@ -91,7 +91,7 @@ class _HomeScreenGridState extends State<HomeScreenGrid> {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: AppColors.bgPaper,
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: GridView.builder(
             shrinkWrap: true,
@@ -141,12 +141,12 @@ class _HomeScreenGridState extends State<HomeScreenGrid> {
       color: AppColors.bgDefault.withOpacity(0.75),
       hoverColor: AppColors.bgHover,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(
         item.icon,
         size: 30 + item.resizeBy,
-        color: item.enabled ? AppColors.primary : AppColors.textSecondary.withOpacity(0.25),
+        color: item.enabled ? AppColors.primary : AppColors.textSecondary.withOpacity(0.5),
       ),
     );
   }
@@ -159,7 +159,7 @@ class _HomeScreenGridState extends State<HomeScreenGrid> {
           fontSize: 11,
           height: 15 / 11,
           fontWeight: FontWeight.w500,
-          color: item.enabled ? AppColors.textPrimary : AppColors.textSecondary.withOpacity(0.25),
+          color: item.enabled ? AppColors.textPrimary : AppColors.textSecondary.withOpacity(0.5),
           overflow: TextOverflow.ellipsis,
         ),
       );

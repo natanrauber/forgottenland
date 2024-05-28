@@ -46,12 +46,12 @@ class _OnlineCharactersPageState extends State<OnlineCharactersPage> {
       );
 
   Widget _loading() => Container(
-        height: 110,
-        width: 110,
-        padding: const EdgeInsets.all(30),
-        child: const Center(
+        height: 100,
+        width: 100,
+        padding: const EdgeInsets.all(35),
+        child: Center(
           child: CircularProgressIndicator(
-            color: AppColors.textSecondary,
+            color: AppColors.textSecondary.withOpacity(0.5),
           ),
         ),
       );
@@ -75,13 +75,13 @@ class _OnlineCharactersPageState extends State<OnlineCharactersPage> {
   Widget _reloadButton() => GestureDetector(
         onTap: onlineCtrl.getOnlineCharacters,
         child: Container(
-          height: 110,
-          width: 110,
+          height: 100,
+          width: 100,
           padding: const EdgeInsets.all(30),
-          child: const Icon(
+          child: Icon(
             Icons.refresh,
-            size: 50,
-            color: AppColors.bgPaper,
+            size: 40,
+            color: AppColors.textSecondary.withOpacity(0.5),
           ),
         ),
       );

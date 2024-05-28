@@ -27,7 +27,7 @@ class PrimaryButton extends StatelessWidget {
             height: 50,
             decoration: BoxDecoration(
               color: color ?? AppColors.primary,
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(8),
             ),
             alignment: Alignment.center,
             child: isLoading

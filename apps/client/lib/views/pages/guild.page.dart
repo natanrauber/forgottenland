@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:utils/utils.dart';
 
@@ -83,57 +84,46 @@ class GuildPage extends StatelessWidget {
         textAlign: TextAlign.justify,
       );
 
-  Widget _itemBuilder(BuildContext context, int index) => MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () {
-            if (MAP.instagram[LIST.member[index]] != null) {
-              launchUrlString(
-                MAP.instagram[LIST.member[index]]!,
-              );
-            }
-          },
-          child: SizedBox(
-            width: 120,
-            child: Image.asset('assets/outfit/${LIST.member[index]}.png'),
-          ),
-        ),
+  Widget _itemBuilder(BuildContext context, int index) => ClickableContainer(
+        onTap: () {
+          if (MAP.instagram[LIST.member[index]] != null) {
+            launchUrlString(
+              MAP.instagram[LIST.member[index]]!,
+            );
+          }
+        },
+        width: 120,
+        child: Image.asset('assets/outfit/${LIST.member[index]}.png'),
       );
 
-  Widget _viewOnTibiaWebsiteButton() => Container(
+  Widget _viewOnTibiaWebsiteButton() => ClickableContainer(
+        onTap: () => launchUrlString(
+          'https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Forgotten+Land',
+        ),
         constraints: const BoxConstraints(maxWidth: 600),
         margin: const EdgeInsets.all(20),
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            onTap: () => launchUrlString(
-              'https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Forgotten+Land',
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: AppColors.bgPaper,
-                borderRadius: BorderRadius.circular(11),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'View on Tibia.com',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  Icon(
-                    CupertinoIcons.arrow_up_right_square,
-                    size: 18,
-                    color: AppColors.primary,
-                  ),
-                ],
+        padding: const EdgeInsets.all(20),
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgHover,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              'View on Tibia.com',
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.primary,
               ),
             ),
-          ),
+            Icon(
+              CupertinoIcons.arrow_up_right_square,
+              size: 18,
+              color: AppColors.primary,
+            ),
+          ],
         ),
       );
 }

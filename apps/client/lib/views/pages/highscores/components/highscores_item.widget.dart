@@ -5,6 +5,7 @@ import 'package:forgottenland/controllers/user_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/better_text.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
 import 'package:utils/utils.dart';
@@ -35,68 +36,58 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
   bool expand = false;
 
   @override
-  Widget build(BuildContext context) {
-    final bool hideData = LIST.premiumCategories.contains(widget.highscoresCtrl.category.value) &&
-        widget.userCtrl.isLoggedIn.value != true;
-
-    return MouseRegion(
-      cursor: widget.disableOnTap ? MouseCursor.defer : SystemMouseCursors.click,
-      child: GestureDetector(
+  Widget build(BuildContext context) => ClickableContainer(
+        enabled: !widget.disableOnTap,
         onTap: widget.disableOnTap ? null : _onTap,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
-          decoration: _decoration(context),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              //
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    //
-                    SizedBox(
-                      height: 20,
-                      child: Row(
-                        children: <Widget>[
-                          //
-                          _rank(),
+        padding: const EdgeInsets.all(16),
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgHover,
+        decoration: _decoration(context),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            //
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  //
+                  SizedBox(
+                    height: 20,
+                    child: Row(
+                      children: <Widget>[
+                        //
+                        _rank(),
 
-                          const SizedBox(width: 4),
+                        const SizedBox(width: 4),
 
-                          Expanded(child: _name()),
-                        ],
-                      ),
+                        Expanded(child: _name()),
+                      ],
                     ),
+                  ),
 
-                    if (widget.highscoresCtrl.world.value.name == 'All')
-                      _info('World: ${widget.item.world?.name ?? ''}'),
+                  if (widget.highscoresCtrl.world.value.name == 'All') _info('World: ${widget.item.world?.name ?? ''}'),
 
-                    if (widget.highscoresCtrl.category.value != 'Rook Master')
-                      _info('Level: ${widget.item.level ?? ''}'),
+                  if (widget.highscoresCtrl.category.value != 'Rook Master') _info('Level: ${widget.item.level ?? ''}'),
 
-                    if (widget.item.onlineTime != null) _info('Online time: ${widget.item.onlineTime ?? ''}'),
+                  if (widget.item.onlineTime != null) _info('Online time: ${widget.item.onlineTime ?? ''}'),
 
-                    if (widget.item.value != null)
-                      _info('$_rankName: ${hideData ? '<primary>???<primary>' : widget.item.stringValue ?? '---'}'),
+                  if (widget.item.value != null) _info('$_rankName: $_value'),
 
-                    if (widget.highscoresCtrl.category.value == 'Rook Master') _skillsPosition(widget.item),
+                  if (widget.highscoresCtrl.category.value == 'Rook Master') _skillsPosition(widget.item),
 
-                    // if (widget.item.supporterTitle != null)
-                    //   _info('\n<primary>${widget.item.supporterTitle ?? ''}<primary>'),
-                  ],
-                ),
+                  // if (widget.item.supporterTitle != null)
+                  //   _info('\n<primary>${widget.item.supporterTitle ?? ''}<primary>'),
+                ],
               ),
+            ),
 
-              const SizedBox(width: 4),
+            const SizedBox(width: 4),
 
-              _infoIcons(context),
-            ],
-          ),
+            _infoIcons(context),
+          ],
         ),
-      ),
-    );
-  }
+      );
 
   void _onTap() {
     dismissKeyboard(context);
@@ -104,9 +95,8 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
   }
 
   BoxDecoration _decoration(BuildContext context) => BoxDecoration(
-        color: AppColors.bgPaper,
-        borderRadius: BorderRadius.circular(11),
-        border: Border.all(color: widget.item.supporterTitle != null ? AppColors.primary : AppColors.bgPaper),
+        borderRadius: BorderRadius.circular(8),
+        border: widget.item.supporterTitle == null ? null : Border.all(color: AppColors.primary),
       );
 
   Widget _rank() => SizedBox(
@@ -153,7 +143,7 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
       );
 
   Widget _info(String text) => Container(
-        margin: const EdgeInsets.only(top: 5),
+        margin: const EdgeInsets.only(top: 4),
         child: BetterText(
           text,
           style: const TextStyle(
@@ -167,6 +157,15 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
     final String name = widget.highscoresCtrl.category.value;
     if (name == 'Rook Master') return 'Total points';
     return name;
+  }
+
+  String get _value {
+    final bool hideData = LIST.premiumCategories.contains(widget.highscoresCtrl.category.value) &&
+        widget.userCtrl.isLoggedIn.value != true;
+
+    if (hideData) return '<primary>???<primary>';
+    if (_rankName == 'Experience gained') return '<green>+${widget.item.stringValue}<green>';
+    return widget.item.stringValue ?? '---';
   }
 
   Widget _skillsPosition(HighscoresEntry entry) => Column(

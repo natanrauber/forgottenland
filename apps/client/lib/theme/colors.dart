@@ -30,5 +30,5 @@ class AppColors {
   static const Color bgHover = Color(0xBE181821);
 
   static const Color textPrimary = Color(0xFFFFFFFF);
-  static const Color textSecondary = Color(0xB2FFFFFF);
+  static const Color textSecondary = Color(0xFFA0A0A0);
 }

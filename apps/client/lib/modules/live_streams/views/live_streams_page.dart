@@ -51,7 +51,7 @@ class _LiveStreamsPageState extends State<LiveStreamsPage> {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         decoration: BoxDecoration(
           color: AppColors.bgPaper,
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: const SelectableText(
           'Live streams on Twitch containing the word "Rookgaard" in their title or tags will be shown here.',
@@ -83,12 +83,12 @@ class _LiveStreamsPageState extends State<LiveStreamsPage> {
       );
 
   Widget _loading() => Container(
-        height: 110,
-        width: 110,
-        padding: const EdgeInsets.all(30),
-        child: const Center(
+        height: 100,
+        width: 100,
+        padding: const EdgeInsets.all(35),
+        child: Center(
           child: CircularProgressIndicator(
-            color: AppColors.textSecondary,
+            color: AppColors.textSecondary.withOpacity(0.5),
           ),
         ),
       );

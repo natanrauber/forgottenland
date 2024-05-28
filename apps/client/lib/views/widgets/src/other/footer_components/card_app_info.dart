@@ -23,7 +23,7 @@ class _CardAppInfoState extends State<CardAppInfo> {
       );
 
   BoxDecoration get _decoration => BoxDecoration(
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: AppColors.bgPaper,
         ),

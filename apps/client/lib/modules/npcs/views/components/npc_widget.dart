@@ -4,6 +4,7 @@ import 'package:forgottenland/modules/npcs/controllers/npcs_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/views/widgets/src/images/web_image.dart';
 import 'package:forgottenland/views/widgets/src/other/better_text.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
 
@@ -54,7 +55,7 @@ class _NpcWidgetState extends State<NpcWidget> {
 
   BoxDecoration _decoration(BuildContext context) => BoxDecoration(
         color: AppColors.bgPaper,
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors.bgPaper),
       );
 
@@ -109,29 +110,28 @@ class _NpcWidgetState extends State<NpcWidget> {
     final StringBuffer buffer = StringBuffer();
     final List<String> aux = (widget.npc.transcripts ?? '').split('\n');
     for (String e in aux) {
-      e = e.contains('Player:') ? '<blue>$e<blue>' : '<green>$e<green>';
+      e = e.contains('Player:') ? '<blue>$e<blue>' : '<lBlue>$e<lBlue>';
       buffer.write('\n$e');
     }
     return buffer.toString();
   }
 
-  Widget _toggleViewButton() => MouseRegion(
-        cursor: isLoading ? MouseCursor.defer : SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: _toggleView,
-          behavior: HitTestBehavior.opaque,
-          child: Container(
-            height: 32,
-            width: 32,
-            alignment: Alignment.center,
-            child: isLoading
-                ? _loading()
-                : Icon(
-                    expandedView ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
-                    size: 17,
-                  ),
-          ),
+  Widget _toggleViewButton() => ClickableContainer(
+        onTap: _toggleView,
+        height: 32,
+        width: 32,
+        alignment: Alignment.center,
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgHover,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
         ),
+        child: isLoading
+            ? _loading()
+            : Icon(
+                expandedView ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
+                size: 17,
+              ),
       );
 
   Future<void> _toggleView() async {

@@ -12,6 +12,7 @@ class ClickableContainer extends StatefulWidget {
     this.width,
     this.constraints,
     this.padding,
+    this.margin,
     this.alignment,
     this.decoration,
   });
@@ -25,6 +26,7 @@ class ClickableContainer extends StatefulWidget {
   final double? width;
   final BoxConstraints? constraints;
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
   final AlignmentGeometry? alignment;
   final BoxDecoration? decoration;
 
@@ -47,6 +49,7 @@ class _ClickableContainerState extends State<ClickableContainer> {
             width: widget.width,
             constraints: widget.constraints,
             padding: widget.padding,
+            margin: widget.margin,
             alignment: widget.alignment,
             decoration: (widget.decoration ?? const BoxDecoration()).copyWith(
               color: _hover ? widget.hoverColor : widget.color,

@@ -111,7 +111,7 @@ class _SplashPageState extends State<SplashPage> {
       );
 
   Widget _sponsorImage() => ClipRRect(
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
           constraints: const BoxConstraints(maxWidth: 800),
           child: Image.asset(
@@ -125,7 +125,7 @@ class _SplashPageState extends State<SplashPage> {
         height: 40,
         decoration: BoxDecoration(
           color: AppColors.bgDefault,
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: BorderRadius.circular(8),
         ),
         alignment: Alignment.center,
         child: const Row(

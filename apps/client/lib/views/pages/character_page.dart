@@ -6,6 +6,7 @@ import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -58,12 +59,12 @@ class _CharacterPageState extends State<CharacterPage> {
   }
 
   Widget _loading() => Container(
-        height: 110,
-        width: 110,
-        padding: const EdgeInsets.all(30),
-        child: const Center(
+        height: 100,
+        width: 100,
+        padding: const EdgeInsets.all(35),
+        child: Center(
           child: CircularProgressIndicator(
-            color: AppColors.textSecondary,
+            color: AppColors.textSecondary.withOpacity(0.5),
           ),
         ),
       );
@@ -96,7 +97,7 @@ class _CharacterPageState extends State<CharacterPage> {
         margin: const EdgeInsets.only(top: 25),
         decoration: BoxDecoration(
           color: AppColors.bgPaper,
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -341,37 +342,33 @@ class _CharacterPageState extends State<CharacterPage> {
         ),
       );
 
-  MouseRegion _buttonViewOfficialWebsite() => MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () => launchUrlString(
-            'https://www.tibia.com/community/?subtopic=characters&name=${characterCtrl.character.value.data?.name}',
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            margin: const EdgeInsets.only(top: 25),
-            decoration: BoxDecoration(
-              color: AppColors.bgPaper,
-              borderRadius: BorderRadius.circular(11),
+  Widget _buttonViewOfficialWebsite() => ClickableContainer(
+        onTap: () => launchUrlString(
+          'https://www.tibia.com/community/?subtopic=characters&name=${characterCtrl.character.value.data?.name}',
+        ),
+        padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.only(top: 25),
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgHover,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              'View on Tibia.com',
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.primary,
+              ),
             ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  'View on Tibia.com',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.primary,
-                  ),
-                ),
-                Icon(
-                  CupertinoIcons.arrow_up_right_square,
-                  size: 18,
-                  color: AppColors.primary,
-                ),
-              ],
+            Icon(
+              CupertinoIcons.arrow_up_right_square,
+              size: 18,
+              color: AppColors.primary,
             ),
-          ),
+          ],
         ),
       );
 }

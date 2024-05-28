@@ -67,7 +67,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   containerBuilder: (_, Widget child) => Container(
                     decoration: BoxDecoration(
                       color: AppColors.bgDefault,
-                      borderRadius: BorderRadius.circular(11),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: child,
                   ),
