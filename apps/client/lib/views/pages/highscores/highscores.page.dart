@@ -147,13 +147,15 @@ class _HighscoresPageState extends State<HighscoresPage> {
     );
   }
 
-  Widget _loading() => Container(
-        height: 100,
-        width: 100,
-        padding: const EdgeInsets.all(35),
-        child: Center(
-          child: CircularProgressIndicator(
-            color: AppColors.textSecondary.withOpacity(0.5),
+  Widget _loading() => Center(
+        child: Container(
+          height: 100,
+          width: 100,
+          padding: const EdgeInsets.all(37.5),
+          child: Center(
+            child: CircularProgressIndicator(
+              color: AppColors.textSecondary.withOpacity(0.5),
+            ),
           ),
         ),
       );
@@ -169,12 +171,12 @@ class _HighscoresPageState extends State<HighscoresPage> {
     return GestureDetector(
       onTap: () => _loadHighscores(newPage: true),
       child: Container(
-        height: 110,
-        width: 110,
+        height: 100,
+        width: 100,
         padding: const EdgeInsets.all(30),
         child: const Icon(
           Icons.refresh,
-          size: 50,
+          size: 40,
           color: AppColors.bgPaper,
         ),
       ),

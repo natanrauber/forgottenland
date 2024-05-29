@@ -58,13 +58,15 @@ class _CharacterPageState extends State<CharacterPage> {
     return _characterData();
   }
 
-  Widget _loading() => Container(
-        height: 100,
-        width: 100,
-        padding: const EdgeInsets.all(35),
-        child: Center(
-          child: CircularProgressIndicator(
-            color: AppColors.textSecondary.withOpacity(0.5),
+  Widget _loading() => Center(
+        child: Container(
+          height: 100,
+          width: 100,
+          padding: const EdgeInsets.all(37.5),
+          child: Center(
+            child: CircularProgressIndicator(
+              color: AppColors.textSecondary.withOpacity(0.5),
+            ),
           ),
         ),
       );

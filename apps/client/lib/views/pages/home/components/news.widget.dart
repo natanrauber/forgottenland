@@ -34,7 +34,7 @@ class _NewsWidgetState extends State<NewsWidget> {
 
   Widget _body() => Obx(
         () => ShimmerLoading(
-          isLoading: homeCtrl.isLoading.value && homeCtrl.news.isEmpty,
+          isLoading: homeCtrl.news.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
             enabled: homeCtrl.news.isEmpty,
             onTap: homeCtrl.getNews,
@@ -46,6 +46,7 @@ class _NewsWidgetState extends State<NewsWidget> {
             ),
             child: Builder(
               builder: (_) {
+                if (homeCtrl.news.isEmpty && homeCtrl.isLoading.value) return _loading();
                 if (homeCtrl.news.isEmpty) return _reloadButton();
                 if (homeCtrl.news.isNotEmpty) return _listBuilder();
                 return Container();
@@ -59,20 +60,25 @@ class _NewsWidgetState extends State<NewsWidget> {
         child: Container(
           height: 100,
           width: 100,
-          padding: EdgeInsets.all(homeCtrl.isLoading.value ? 35 : 30),
-          child: homeCtrl.isLoading.value
-              ? _loading()
-              : Icon(
-                  Icons.refresh,
-                  size: 40,
-                  color: AppColors.textSecondary.withOpacity(0.5),
-                ),
+          padding: const EdgeInsets.all(30),
+          child: Icon(
+            Icons.refresh,
+            size: 40,
+            color: AppColors.textSecondary.withOpacity(0.5),
+          ),
         ),
       );
 
   Widget _loading() => Center(
-        child: CircularProgressIndicator(
-          color: AppColors.textSecondary.withOpacity(0.5),
+        child: Container(
+          height: 100,
+          width: 100,
+          padding: const EdgeInsets.all(37.5),
+          child: Center(
+            child: CircularProgressIndicator(
+              color: AppColors.textSecondary.withOpacity(0.5),
+            ),
+          ),
         ),
       );
 

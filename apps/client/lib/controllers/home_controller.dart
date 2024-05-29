@@ -35,8 +35,8 @@ class HomeController extends Controller {
     return response;
   }
 
-  Future<MyHttpResponse> getOverview({bool showLoading = true}) async {
-    if (showLoading) isLoading.value = true;
+  Future<MyHttpResponse> getOverview() async {
+    isLoading.value = true;
 
     final MyHttpResponse response = await httpClient.get('${PATH.forgottenLandApi}/highscores/overview');
 
@@ -59,7 +59,7 @@ class HomeController extends Controller {
       (_) {
         if (isLoading.value) return;
         if (Get.currentRoute != Routes.home.name) return;
-        getOverview(showLoading: false);
+        getOverview();
       },
     );
     Timer.periodic(

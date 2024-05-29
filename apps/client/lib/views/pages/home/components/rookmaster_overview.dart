@@ -36,7 +36,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
 
   Widget _body() => Obx(
         () => ShimmerLoading(
-          isLoading: homeCtrl.isLoading.value,
+          isLoading: homeCtrl.rookmaster.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
             onTap: homeCtrl.rookmaster.isEmpty
                 ? homeCtrl.getOverview
@@ -50,7 +50,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
             ),
             child: Builder(
               builder: (_) {
-                if (homeCtrl.isLoading.value) return _loading();
+                if (homeCtrl.rookmaster.isEmpty && homeCtrl.isLoading.value) return _loading();
                 if (homeCtrl.rookmaster.isEmpty) return _reloadButton();
                 if (homeCtrl.rookmaster.isNotEmpty) return _listBuilder();
                 return Container();
@@ -77,7 +77,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         child: Container(
           height: 125,
           width: 125,
-          padding: const EdgeInsets.all(47.5),
+          padding: const EdgeInsets.all(50),
           child: Center(
             child: CircularProgressIndicator(
               color: AppColors.textSecondary.withOpacity(0.5),
@@ -106,7 +106,7 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
               alignment: Alignment.centerLeft,
               children: <Widget>[
                 _itemRank(item),
-                if (item.isOnline) _onlineIndicator(),
+                if (item.isOnline && !homeCtrl.isLoading.value) _onlineIndicator(),
               ],
             ),
             const SizedBox(width: 2),
@@ -122,7 +122,9 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         style: TextStyle(
           fontSize: 12,
           height: 19 / 12,
-          color: item.isOnline ? Colors.transparent : AppColors.textSecondary.withOpacity(0.5),
+          color: item.isOnline && !homeCtrl.isLoading.value
+              ? Colors.transparent
+              : AppColors.textSecondary.withOpacity(0.5),
         ),
       );
 
