@@ -120,6 +120,7 @@ class _NewsWidgetState extends State<NewsWidget> {
         hoverColor: AppColors.bgHover,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
+          border: item.date == DT.tibia.today() ? Border.all(color: AppColors.primary) : null,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
