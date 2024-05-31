@@ -320,7 +320,7 @@ class ETL implements IETL {
         response = await httpClient.get('${env['PATH_TIBIA_DATA']}/world/$world');
         if (response.success) {
           Online aux = Online.fromJsonTibiaDataAPI(response.dataAsMap);
-          aux.list.removeWhere((e) => e.vocation != 'None' || (e.level ?? 0) < 5);
+          aux.list.removeWhere((e) => e.vocation != 'None' || (e.level ?? 0) < 10);
           for (var e in aux.list) {
             e.world = world.name;
           }
