@@ -42,6 +42,7 @@ class HighscoresEntry {
     name = online.name;
     level = online.level;
     vocation = online.vocation;
+    world = World(name: online.world);
     value = online.time;
     isOnline = online.isOnline;
 

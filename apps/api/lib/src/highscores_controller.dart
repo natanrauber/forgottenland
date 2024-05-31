@@ -31,14 +31,24 @@ class HighscoresController {
 
   Future<Response> getFromTibiaData(String? world, String? category, int page) async {
     try {
-      MyHttpResponse response = await httpClient.get(
-        '${env['PATH_TIBIA_DATA']}/highscores/$world/$category/none/$page',
-      );
-      Record record = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
+      Record? record = await _getFromTibiaData(world, category, page);
+      if (record == null) return ApiResponse.noContent();
       return ApiResponse.success(data: record.toJson());
     } catch (e) {
       return handleError(e);
     }
+  }
+
+  Future<Record?> _getFromTibiaData(String? world, String? category, int page) async {
+    MyHttpResponse response = await httpClient.get(
+      '${env['PATH_TIBIA_DATA']}/highscores/$world/$category/none/$page',
+    );
+    if (!response.success) return null;
+    if (response.dataAsMap['highscores'] is! Map<String, dynamic>) return null;
+
+    Record record = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
+    if (record.list.isEmpty) return null;
+    return record;
   }
 
   List<T> _filterWorld<T>(String world, List<T> list) {
@@ -170,6 +180,7 @@ class HighscoresController {
         dateToCategory['experiencegained+today']!,
       );
       Record? rRookmaster = await _getRookmaster('all', 1);
+      Record? rExperience = await _getFromTibiaData('all', 'experience', 1);
 
       Online? onlineNow = await onlineCtrl.onlineNow();
       if (onlineNow != null) {
@@ -183,6 +194,9 @@ class HighscoresController {
           if (rRookmaster?.list.any((HighscoresEntry e) => e.name == online.name) ?? false) {
             rRookmaster?.list.firstWhere((HighscoresEntry e) => e.name == online.name).isOnline = true;
           }
+          if (rExperience?.list.any((HighscoresEntry e) => e.name == online.name) ?? false) {
+            rExperience?.list.firstWhere((HighscoresEntry e) => e.name == online.name).isOnline = true;
+          }
         }
       }
 
@@ -190,6 +204,7 @@ class HighscoresController {
         experiencegained: _overviewSublist<HighscoresEntry>(rExpgain?.list),
         onlinetime: _overviewSublist<OnlineEntry>(rOnlinetime?.list),
         rookmaster: _overviewSublist<HighscoresEntry>(rRookmaster?.list),
+        experience: _overviewSublist<HighscoresEntry>(rExperience?.list),
         timestamp: DT.tibia.timeStamp(),
       );
       return ApiResponse.success(data: overview.toJson());
