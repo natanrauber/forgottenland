@@ -123,7 +123,7 @@ class _AppPageState extends State<AppPage> {
                                         ? _disabledPageBody()
                                         : Column(
                                             children: <Widget>[
-                                              if (widget.topWidget != null && width <= 1280)
+                                              if (widget.topWidget != null && width < 1280)
                                                 Container(
                                                   margin: const EdgeInsets.only(bottom: 16),
                                                   child: widget.topWidget,

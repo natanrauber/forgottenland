@@ -96788,7 +96788,7 @@ b=a0.a.x.Wa(B.aa)
 if(a0.gQo())a2=a0.abt()
 else{a2=A.a([],q)
 a=a0.a.e
-if(a!=null&&r<=1280)a2.push(A.u(a1,a,B.e,a1,a1,a1,a1,a1,B.IW,a1,a1,a1,a1))
+if(a!=null&&r<1280)a2.push(A.u(a1,a,B.e,a1,a1,a1,a1,a1,B.IW,a1,a1,a1,a1))
 a=a0.a.d
 a2.push(a)
 a2=A.aL(a2,B.u,B.k,B.l)}f=A.aPL(A.u(a1,a2,B.e,a1,new A.aF(0,1/0,d-e.fx.b-o-b,1/0),a1,a1,a1,a1,a1,a1,a1,a1),f,B.bD,B.aa)
