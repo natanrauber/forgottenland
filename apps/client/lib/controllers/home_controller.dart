@@ -17,6 +17,7 @@ class HomeController extends Controller {
   RxList<HighscoresEntry> overviewOnlinetime = <HighscoresEntry>[].obs;
   RxList<HighscoresEntry> overviewRookmaster = <HighscoresEntry>[].obs;
   RxList<HighscoresEntry> overviewExperience = <HighscoresEntry>[].obs;
+  RxList<HighscoresEntry> overviewOnline = <HighscoresEntry>[].obs;
 
   Timer? timer;
 
@@ -50,6 +51,7 @@ class HomeController extends Controller {
           overview.onlinetime.map((OnlineEntry e) => HighscoresEntry.fromOnlineEntry(e)).toList();
       overviewRookmaster.value = overview.rookmaster.toList();
       overviewExperience.value = overview.experience.toList();
+      overviewOnline.value = overview.online.map((OnlineEntry e) => HighscoresEntry.fromOnlineEntry(e)).toList();
     }
 
     isLoading.value = false;

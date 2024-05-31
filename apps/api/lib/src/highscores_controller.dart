@@ -181,10 +181,10 @@ class HighscoresController {
       );
       Record? rRookmaster = await _getRookmaster('all', 1);
       Record? rExperience = await _getFromTibiaData('all', 'experience', 1);
+      Online? rOnline = await onlineCtrl.onlineNow();
 
-      Online? onlineNow = await onlineCtrl.onlineNow();
-      if (onlineNow != null) {
-        for (OnlineEntry online in onlineNow.list) {
+      if (rOnline != null) {
+        for (OnlineEntry online in rOnline.list) {
           if (rOnlinetime?.list.any((OnlineEntry e) => e.name == online.name) ?? false) {
             rOnlinetime?.list.firstWhere((OnlineEntry e) => e.name == online.name).isOnline = true;
           }
@@ -205,6 +205,7 @@ class HighscoresController {
         onlinetime: _overviewSublist<OnlineEntry>(rOnlinetime?.list),
         rookmaster: _overviewSublist<HighscoresEntry>(rRookmaster?.list),
         experience: _overviewSublist<HighscoresEntry>(rExperience?.list),
+        online: _overviewSublist<OnlineEntry>(rOnline?.list, length: 25),
         timestamp: DT.tibia.timeStamp(),
       );
       return ApiResponse.success(data: overview.toJson());
@@ -213,9 +214,9 @@ class HighscoresController {
     }
   }
 
-  List<E> _overviewSublist<E>(List<E>? list) {
+  List<E> _overviewSublist<E>(List<E>? list, {int length = 5}) {
     if (list == null) return <E>[];
-    if (list.length <= 5) return list;
-    return list.sublist(0, 5);
+    if (list.length <= length) return list;
+    return list.sublist(0, length);
   }
 }

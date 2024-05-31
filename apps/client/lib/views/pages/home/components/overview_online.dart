@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forgottenland/controllers/online_controller.dart';
+import 'package:forgottenland/controllers/home_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/src/routes.dart';
 import 'package:forgottenland/views/widgets/src/other/better_text.dart';
@@ -15,7 +15,7 @@ class OverviewOnline extends StatefulWidget {
 }
 
 class _OverviewOnlineState extends State<OverviewOnline> {
-  final OnlineController onlineCtrl = Get.find<OnlineController>();
+  final HomeController homeCtrl = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) => Obx(
@@ -42,11 +42,11 @@ class _OverviewOnlineState extends State<OverviewOnline> {
       );
 
   Widget _body() => ShimmerLoading(
-        isLoading: onlineCtrl.filteredList.isEmpty && onlineCtrl.isLoading.value,
+        isLoading: homeCtrl.overviewOnline.isEmpty && homeCtrl.isLoading.value,
         child: ClickableContainer(
           height: 695,
-          enabled: onlineCtrl.filteredList.isEmpty,
-          onTap: onlineCtrl.getOnlineCharacters,
+          enabled: homeCtrl.overviewOnline.isEmpty,
+          onTap: homeCtrl.getOverview,
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.all(12),
           color: AppColors.bgPaper,
@@ -56,9 +56,9 @@ class _OverviewOnlineState extends State<OverviewOnline> {
           ),
           child: Builder(
             builder: (_) {
-              if (onlineCtrl.filteredList.isEmpty && onlineCtrl.isLoading.value) return _loading();
-              if (onlineCtrl.filteredList.isEmpty) return _reloadButton();
-              if (onlineCtrl.filteredList.isNotEmpty) return _listBuilder();
+              if (homeCtrl.overviewOnline.isEmpty && homeCtrl.isLoading.value) return _loading();
+              if (homeCtrl.overviewOnline.isEmpty) return _reloadButton();
+              if (homeCtrl.overviewOnline.isNotEmpty) return _listBuilder();
               return Container();
             },
           ),
@@ -95,8 +95,8 @@ class _OverviewOnlineState extends State<OverviewOnline> {
         children: <Widget>[
           ListView.builder(
             shrinkWrap: true,
-            itemCount: onlineCtrl.filteredList.length > 25 ? 25 : onlineCtrl.filteredList.length,
-            itemBuilder: (_, int index) => _item(onlineCtrl.filteredList[index]),
+            itemCount: homeCtrl.overviewOnline.length > 25 ? 25 : homeCtrl.overviewOnline.length,
+            itemBuilder: (_, int index) => _item(homeCtrl.overviewOnline[index]),
           ),
           Expanded(child: Container()),
           _buttonSeeAll(),
@@ -108,7 +108,7 @@ class _OverviewOnlineState extends State<OverviewOnline> {
         margin: const EdgeInsets.only(bottom: 6),
         child: Row(
           children: <Widget>[
-            if (onlineCtrl.isLoading.value) const SizedBox(width: 10) else _onlineIndicator(),
+            if (homeCtrl.isLoading.value) const SizedBox(width: 10) else _onlineIndicator(),
             const SizedBox(width: 9),
             _itemName(item),
             const SizedBox(width: 10),

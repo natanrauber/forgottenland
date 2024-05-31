@@ -23,9 +23,6 @@ class _HomePageState extends State<HomePage> {
   final OnlineController onlineCtrl = Get.find<OnlineController>();
 
   Future<void> _loadHomeData() async {
-    onlineCtrl.getOnlineCharacters();
-    onlineCtrl.runTimer();
-
     if (homeCtrl.news.isEmpty) await homeCtrl.getNews();
     homeCtrl.getOverview();
     homeCtrl.runTimer();
