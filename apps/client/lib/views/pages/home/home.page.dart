@@ -72,13 +72,13 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: Column(
                   children: <Widget>[
-                    OverviewRookmaster(),
-                    const SizedBox(height: 16, width: 16),
-                    OverviewExperience(),
-                    const SizedBox(height: 16, width: 16),
                     OverviewExpgain(),
                     const SizedBox(height: 16, width: 16),
                     OverviewOnlinetime(),
+                    const SizedBox(height: 16, width: 16),
+                    OverviewRookmaster(),
+                    const SizedBox(height: 16, width: 16),
+                    OverviewExperience(),
                   ],
                 ),
               ),
@@ -109,13 +109,13 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: Column(
                   children: <Widget>[
-                    OverviewRookmaster(),
-                    const SizedBox(height: 16, width: 16),
-                    OverviewExperience(),
-                    const SizedBox(height: 16, width: 16),
                     OverviewExpgain(),
                     const SizedBox(height: 16, width: 16),
                     OverviewOnlinetime(),
+                    const SizedBox(height: 16, width: 16),
+                    OverviewRookmaster(),
+                    const SizedBox(height: 16, width: 16),
+                    OverviewExperience(),
                   ],
                 ),
               ),
