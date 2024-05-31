@@ -14,22 +14,26 @@ class AppPage extends StatefulWidget {
   const AppPage({
     required this.screenName,
     this.body,
+    this.topWidget,
     this.postFrameCallback,
     this.onRefresh,
     this.onNotification,
     this.padding = const EdgeInsets.fromLTRB(16, 16, 16, 60),
     this.canPop = true,
     this.maxWidth = 800,
+    this.fullScreen = false,
   });
 
   final String screenName;
   final Widget? body;
+  final Widget? topWidget;
   final Future<void> Function()? postFrameCallback;
   final Future<void> Function()? onRefresh;
   final bool Function(ScrollNotification)? onNotification;
   final EdgeInsetsGeometry? padding;
   final bool canPop;
   final double maxWidth;
+  final bool fullScreen;
 
   @override
   State<AppPage> createState() => _AppPageState();
@@ -55,14 +59,16 @@ class _AppPageState extends State<AppPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double maxWidth = widget.fullScreen ? 1280 : widget.maxWidth;
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     final double appBarHeight = AppHeader().preferredSize.height;
     double topMargin = height > 700 ? height - 700 : 0;
     if (topMargin > height * 0.18) topMargin = height * 0.18;
-    final double sideMargin = width > widget.maxWidth ? ((width / 2) - (widget.maxWidth / 2)) + 0 : 0;
+    final double sideMargin = width > maxWidth ? ((width / 2) - (maxWidth / 2)) + 0 : 0;
     if (topMargin > sideMargin) topMargin = sideMargin;
     if (width <= 800) topMargin = 0;
+    if (widget.fullScreen && widget.topWidget != null) topMargin = 0;
 
     return PopScope(
       canPop: widget.canPop,
@@ -83,31 +89,56 @@ class _AppPageState extends State<AppPage> {
                   children: <Widget>[
                     //
                     Container(
+                      margin: EdgeInsets.fromLTRB(
+                        sideMargin,
+                        topMargin == 0 && !widget.fullScreen ? 0 : height / 2,
+                        sideMargin,
+                        0,
+                      ),
                       constraints: BoxConstraints(minHeight: height - appBarHeight - topMargin),
-                      margin: EdgeInsets.fromLTRB(sideMargin, topMargin * 2, sideMargin, 0),
                       decoration: _bodyDecoration,
                     ),
 
                     SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
-                      child: Container(
-                        margin: EdgeInsets.fromLTRB(sideMargin, topMargin, sideMargin, 0),
-                        decoration: _bodyDecoration,
-                        child: Column(
-                          children: <Widget>[
-                            //
-                            SingleChildScrollView(
-                              physics: const NeverScrollableScrollPhysics(),
-                              padding: widget.padding,
-                              child: Container(
-                                constraints: _bodyConstraints,
-                                child: _featureDisabled ? _disabledPageBody() : widget.body,
-                              ),
+                      child: Column(
+                        children: <Widget>[
+                          if (widget.topWidget != null && width >= 1280)
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 16, horizontal: sideMargin),
+                              child: widget.topWidget,
                             ),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(sideMargin, topMargin, sideMargin, 0),
+                            decoration: _bodyDecoration,
+                            child: Column(
+                              children: <Widget>[
+                                //
+                                SingleChildScrollView(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: widget.padding,
+                                  child: Container(
+                                    constraints: _bodyConstraints,
+                                    child: _featureDisabled
+                                        ? _disabledPageBody()
+                                        : Column(
+                                            children: <Widget>[
+                                              if (widget.topWidget != null && width <= 1280)
+                                                Container(
+                                                  margin: const EdgeInsets.only(bottom: 16),
+                                                  child: widget.topWidget,
+                                                ),
+                                              widget.body ?? Container(),
+                                            ],
+                                          ),
+                                  ),
+                                ),
 
-                            AppFooter(),
-                          ],
-                        ),
+                                AppFooter(),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

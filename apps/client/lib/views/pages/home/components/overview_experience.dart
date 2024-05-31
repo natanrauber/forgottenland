@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/controllers/home_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/src/routes.dart';
@@ -10,13 +9,12 @@ import 'package:forgottenland/views/widgets/src/other/shimmer_loading.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
 
-class RookmasterOverview extends StatefulWidget {
+class OverviewExperience extends StatefulWidget {
   @override
-  State<RookmasterOverview> createState() => _RookmasterOverviewState();
+  State<OverviewExperience> createState() => _OverviewExperienceState();
 }
 
-class _RookmasterOverviewState extends State<RookmasterOverview> {
-  final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
+class _OverviewExperienceState extends State<OverviewExperience> {
   final HomeController homeCtrl = Get.find<HomeController>();
 
   @override
@@ -29,18 +27,26 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
         ],
       );
 
-  Widget _title() => const Padding(
-        padding: EdgeInsets.only(left: 3),
-        child: SelectableText('Rook Master'),
+  Widget _title() => Container(
+        height: 22,
+        padding: const EdgeInsets.only(left: 3),
+        child: const SelectableText(
+          'Top level',
+          style: TextStyle(
+            fontSize: 14,
+            height: 22 / 14,
+          ),
+        ),
       );
 
   Widget _body() => Obx(
         () => ShimmerLoading(
-          isLoading: homeCtrl.rookmaster.isEmpty && homeCtrl.isLoading.value,
+          isLoading: homeCtrl.overviewExperience.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
-            onTap: homeCtrl.rookmaster.isEmpty
+            height: 143,
+            onTap: homeCtrl.overviewExperience.isEmpty
                 ? homeCtrl.getOverview
-                : () => Get.toNamed('${Routes.highscores.name}/rookmaster'),
+                : () => Get.toNamed('${Routes.highscores.name}/experience'),
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
             color: AppColors.bgPaper,
@@ -50,9 +56,9 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
             ),
             child: Builder(
               builder: (_) {
-                if (homeCtrl.rookmaster.isEmpty && homeCtrl.isLoading.value) return _loading();
-                if (homeCtrl.rookmaster.isEmpty) return _reloadButton();
-                if (homeCtrl.rookmaster.isNotEmpty) return _listBuilder();
+                if (homeCtrl.overviewExperience.isEmpty && homeCtrl.isLoading.value) return _loading();
+                if (homeCtrl.overviewExperience.isEmpty) return _reloadButton();
+                if (homeCtrl.overviewExperience.isNotEmpty) return _listBuilder();
                 return Container();
               },
             ),
@@ -89,11 +95,11 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
   Widget _listBuilder() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (homeCtrl.rookmaster.isNotEmpty) _item(homeCtrl.rookmaster[0]),
-          if (homeCtrl.rookmaster.length >= 2) _item(homeCtrl.rookmaster[1]),
-          if (homeCtrl.rookmaster.length >= 3) _item(homeCtrl.rookmaster[2]),
-          if (homeCtrl.rookmaster.length >= 4) _item(homeCtrl.rookmaster[3]),
-          if (homeCtrl.rookmaster.length >= 5) _item(homeCtrl.rookmaster[4]),
+          if (homeCtrl.overviewExperience.isNotEmpty) _item(homeCtrl.overviewExperience[0]),
+          if (homeCtrl.overviewExperience.length >= 2) _item(homeCtrl.overviewExperience[1]),
+          if (homeCtrl.overviewExperience.length >= 3) _item(homeCtrl.overviewExperience[2]),
+          if (homeCtrl.overviewExperience.length >= 4) _item(homeCtrl.overviewExperience[3]),
+          if (homeCtrl.overviewExperience.length >= 5) _item(homeCtrl.overviewExperience[4]),
         ],
       );
 
@@ -146,7 +152,8 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
       );
 
   Widget _itemValue(HighscoresEntry item) => BetterText(
-        '${item.value ?? ''}/8000 <blue>${(((item.value ?? 0) / 8000) * 100).toStringAsFixed(2)}%<blue>',
+        _itemValueText(item),
+        selectable: false,
         style: TextStyle(
           fontSize: 12,
           height: 19 / 12,
@@ -154,4 +161,9 @@ class _RookmasterOverviewState extends State<RookmasterOverview> {
           overflow: TextOverflow.ellipsis,
         ),
       );
+
+  String _itemValueText(HighscoresEntry item) {
+    if (MediaQuery.of(context).size.width < 1280) return '<blue>${item.level ?? ''}<blue>';
+    return '${item.world ?? ''} <blue>${item.level ?? ''}<blue>';
+  }
 }

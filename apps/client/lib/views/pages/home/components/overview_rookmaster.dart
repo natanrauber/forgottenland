@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/controllers/home_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/src/routes.dart';
+import 'package:forgottenland/views/widgets/src/other/better_text.dart';
 import 'package:forgottenland/views/widgets/src/other/blinking_circle.dart';
 import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:forgottenland/views/widgets/src/other/shimmer_loading.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
 
-class OnlinetimeOverview extends StatefulWidget {
+class OverviewRookmaster extends StatefulWidget {
   @override
-  State<OnlinetimeOverview> createState() => _OnlinetimeOverviewState();
+  State<OverviewRookmaster> createState() => _OverviewRookmasterState();
 }
 
-class _OnlinetimeOverviewState extends State<OnlinetimeOverview> {
-  final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
+class _OverviewRookmasterState extends State<OverviewRookmaster> {
   final HomeController homeCtrl = Get.find<HomeController>();
 
   @override
@@ -28,23 +27,28 @@ class _OnlinetimeOverviewState extends State<OnlinetimeOverview> {
         ],
       );
 
-  Widget _title() => const Padding(
-        padding: EdgeInsets.only(left: 3),
-        child: SelectableText('Online time'),
+  Widget _title() => Container(
+        height: 22,
+        padding: const EdgeInsets.only(left: 3),
+        child: const SelectableText(
+          'Rook Master',
+          style: TextStyle(
+            fontSize: 14,
+            height: 22 / 14,
+          ),
+        ),
       );
 
   Widget _body() => Obx(
         () => ShimmerLoading(
-          isLoading: homeCtrl.onlinetime.isEmpty && homeCtrl.isLoading.value,
+          isLoading: homeCtrl.overviewRookmaster.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
-            onTap: homeCtrl.onlinetime.isEmpty
+            height: 143,
+            onTap: homeCtrl.overviewRookmaster.isEmpty
                 ? homeCtrl.getOverview
-                : () async {
-                    final String timeframe = highscoresCtrl.timeframe.value.toLowerCase().replaceAll(' ', '');
-                    return Get.toNamed('${Routes.highscores.name}/onlinetime/$timeframe');
-                  },
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
+                : () => Get.toNamed('${Routes.highscores.name}/rookmaster'),
             alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
             color: AppColors.bgPaper,
             hoverColor: AppColors.bgHover,
             decoration: BoxDecoration(
@@ -52,9 +56,9 @@ class _OnlinetimeOverviewState extends State<OnlinetimeOverview> {
             ),
             child: Builder(
               builder: (_) {
-                if (homeCtrl.onlinetime.isEmpty && homeCtrl.isLoading.value) return _loading();
-                if (homeCtrl.onlinetime.isEmpty) return _reloadButton();
-                if (homeCtrl.onlinetime.isNotEmpty) return _listBuilder();
+                if (homeCtrl.overviewRookmaster.isEmpty && homeCtrl.isLoading.value) return _loading();
+                if (homeCtrl.overviewRookmaster.isEmpty) return _reloadButton();
+                if (homeCtrl.overviewRookmaster.isNotEmpty) return _listBuilder();
                 return Container();
               },
             ),
@@ -91,11 +95,11 @@ class _OnlinetimeOverviewState extends State<OnlinetimeOverview> {
   Widget _listBuilder() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (homeCtrl.onlinetime.isNotEmpty) _item(homeCtrl.onlinetime[0]),
-          if (homeCtrl.onlinetime.length >= 2) _item(homeCtrl.onlinetime[1]),
-          if (homeCtrl.onlinetime.length >= 3) _item(homeCtrl.onlinetime[2]),
-          if (homeCtrl.onlinetime.length >= 4) _item(homeCtrl.onlinetime[3]),
-          if (homeCtrl.onlinetime.length >= 5) _item(homeCtrl.onlinetime[4]),
+          if (homeCtrl.overviewRookmaster.isNotEmpty) _item(homeCtrl.overviewRookmaster[0]),
+          if (homeCtrl.overviewRookmaster.length >= 2) _item(homeCtrl.overviewRookmaster[1]),
+          if (homeCtrl.overviewRookmaster.length >= 3) _item(homeCtrl.overviewRookmaster[2]),
+          if (homeCtrl.overviewRookmaster.length >= 4) _item(homeCtrl.overviewRookmaster[3]),
+          if (homeCtrl.overviewRookmaster.length >= 5) _item(homeCtrl.overviewRookmaster[4]),
         ],
       );
 
@@ -147,18 +151,19 @@ class _OnlinetimeOverviewState extends State<OnlinetimeOverview> {
         ),
       );
 
-  Widget _itemValue(HighscoresEntry item) => Text(
-        item.onlineTime ?? '',
+  Widget _itemValue(HighscoresEntry item) => BetterText(
+        _itemValueText(item),
+        selectable: false,
         style: TextStyle(
           fontSize: 12,
           height: 19 / 12,
-          color: _itemValueColor(item),
+          color: AppColors.textSecondary.withOpacity(0.5),
           overflow: TextOverflow.ellipsis,
         ),
       );
 
-  Color _itemValueColor(HighscoresEntry item) {
-    if ((int.tryParse(item.onlineTime?.substring(0, 2) ?? '') ?? 0) >= 8) return Colors.red;
-    return AppColors.textPrimary;
+  String _itemValueText(HighscoresEntry item) {
+    if (MediaQuery.of(context).size.width < 1280) return '<blue>${item.stringValue ?? ''}<blue>';
+    return '${item.world ?? ''} <blue>${item.stringValue ?? ''}<blue>';
   }
 }

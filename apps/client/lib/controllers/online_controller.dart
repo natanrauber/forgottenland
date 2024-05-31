@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/rxmodels/world_rxmodel.dart';
 import 'package:forgottenland/utils/src/paths.dart';
+import 'package:forgottenland/utils/src/routes.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/instance_manager.dart';
+import 'package:get/get.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
 import 'package:utils/utils.dart';
@@ -107,5 +109,16 @@ class OnlineController extends Controller {
     if (response.success) _populateList(onlineTimes, response);
 
     isLoading.value = false;
+  }
+
+  void runTimer() {
+    Timer.periodic(
+      const Duration(minutes: 5),
+      (_) {
+        if (isLoading.value) return;
+        if (Get.currentRoute != Routes.home.name) return;
+        getOnlineCharacters();
+      },
+    );
   }
 }

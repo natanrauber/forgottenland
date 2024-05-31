@@ -3,10 +3,12 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.bin": "bc25c4eba78f00dc230e64495f51b2eb",
-"assets/AssetManifest.bin.json": "1f2753d90d9ebe83233d825e65a75a86",
-"assets/AssetManifest.json": "cca82621d5b91049bc0a3b375a96b077",
+const RESOURCES = {"assets/AssetManifest.bin": "873d17b37219885df00280f765e5904d",
+"assets/AssetManifest.bin.json": "93bf4dbcfd1badc7c08a610abdc330d4",
+"assets/AssetManifest.json": "d2221fe6188f1c81f01d6be9fd36fc7c",
+"assets/assets/favicon.png": "0017b6b780af4d2e45443254c296bc2d",
 "assets/assets/fonts/MartianMono/MartianMono.ttf": "57c5283f93150a30e372b120eecac3eb",
+"assets/assets/icon.png": "e69b3f29e48939e53f8a523792f8abfa",
 "assets/assets/icons/battleye_type/green.png": "04760c0dfe66cb7c60fc4e40696411ad",
 "assets/assets/icons/battleye_type/none.png": "c2e4c427c21a5a45a2a966ee03e5b8c0",
 "assets/assets/icons/battleye_type/yellow.png": "a6dcd931ab7868ffbb754215a5f348eb",
@@ -34,7 +36,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "bc25c4eba78f00dc230e64495f51b2eb
 "assets/assets/icons/tibia_coin_trusted.png": "74c41bbf1d4b258dfcdf39db60c021ab",
 "assets/assets/images/background/25th_anniversary.jpg": "5e1984966e44b0441402bde4d10de48a",
 "assets/assets/images/background/offline.jpg": "40a2833ddb19db0187660a8c90ad429c",
-"assets/assets/images/splash/tintas_merighi.jpeg": "318bfa14330f81be376ba6db7ecac033",
+"assets/assets/images/sponsor/sponsor.png": "e28821bea8805732d66420a8d580930e",
 "assets/assets/logo.jpg": "d063f353bee5c15e6672cddc0d32b0c8",
 "assets/assets/logo_alt.png": "9f60c32b8e2732f45130ab9169642ead",
 "assets/assets/outfit/awkn.png": "6ed840ff0ab909c7425bad4879567889",
@@ -43,11 +45,13 @@ const RESOURCES = {"assets/AssetManifest.bin": "bc25c4eba78f00dc230e64495f51b2eb
 "assets/assets/outfit/karkaroff.png": "09be0b26ce34161a6249d0598e1bc8d9",
 "assets/assets/scroll.png": "23cc4d423c57bd8f6857c1975f3df3d8",
 "assets/assets/svg/logo.svg": "3d61ab16145684e9f16bf22b1ac8832a",
+"assets/assets/svg/logo1.svg": "50d2ddf70f77a061eefea7162fb68fd7",
+"assets/assets/svg/logo2.svg": "e342daaea85f3b3db4cc72664a42c11e",
 "assets/FontManifest.json": "5a755bb0baae182a01aeb04231d978e6",
 "assets/fonts/MaterialIcons-Regular.otf": "bd3714e6ee5807818c5d9a1399df6dce",
 "assets/NOTICES": "57c30d945f50b70df56681f943966b0b",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "78d66974271b9d4db2360af8df1a69ec",
-"assets/packages/font_awesome_flutter/lib/fonts/fa-brands-400.ttf": "85111d52a6a0392133a0b9597633740e",
+"assets/packages/font_awesome_flutter/lib/fonts/fa-brands-400.ttf": "17ee8e30dde24e349e70ffcdc0073fb0",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-regular-400.ttf": "f3307f62ddff94d2cd8b103daf8d1b0f",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-solid-900.ttf": "6f5eec31a210f5c8f9c2c3a3e6e6db24",
 "assets/shaders/ink_sparkle.frag": "4096b5150bac93c41cbc9b45276bd90f",
@@ -64,12 +68,12 @@ const RESOURCES = {"assets/AssetManifest.bin": "bc25c4eba78f00dc230e64495f51b2eb
 "icons/Icon-512.png": "29ad10dd0d727da937be68004807a0e4",
 "icons/Icon-maskable-192.png": "60d244f278554c02b48f65affcff5372",
 "icons/Icon-maskable-512.png": "29ad10dd0d727da937be68004807a0e4",
-"index.html": "4004aa4462fd97923be7a6618463eaa6",
-"/": "4004aa4462fd97923be7a6618463eaa6",
-"main.dart.js": "fc8e96012c0f5bf6b8c0593bb3d1d7d0",
+"index.html": "3608a83d6c90601a143bdd8ee8e157ff",
+"/": "3608a83d6c90601a143bdd8ee8e157ff",
+"main.dart.js": "91f1dcad12a489ec92ab1cd2c07555c9",
 "manifest.json": "2ed074af40a8adfa668039a1d47526a8",
 "offline.jpg": "40a2833ddb19db0187660a8c90ad429c",
-"version.json": "95183c2d1117b2b4ab8d42806abbfd09"};
+"version.json": "84d3907a75b1d9d1002d2122de340b8f"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",

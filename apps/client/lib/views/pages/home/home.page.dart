@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/home_controller.dart';
-import 'package:forgottenland/views/pages/home/components/expgain_overview.dart';
+import 'package:forgottenland/controllers/online_controller.dart';
 import 'package:forgottenland/views/pages/home/components/news.widget.dart';
-import 'package:forgottenland/views/pages/home/components/onlinetime_overview.dart';
-import 'package:forgottenland/views/pages/home/components/rookmaster_overview.dart';
+import 'package:forgottenland/views/pages/home/components/overview_experience.dart';
+import 'package:forgottenland/views/pages/home/components/overview_expgain.dart';
+import 'package:forgottenland/views/pages/home/components/overview_online.dart';
+import 'package:forgottenland/views/pages/home/components/overview_onlinetime.dart';
+import 'package:forgottenland/views/pages/home/components/overview_rookmaster.dart';
+import 'package:forgottenland/views/pages/home/components/sponsor_card.dart';
 import 'package:forgottenland/views/widgets/src/home_screen_grid.widget.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
 import 'package:forgottenland/views/widgets/src/other/shimmer_loading.dart';
@@ -16,10 +20,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final HomeController homeCtrl = Get.find<HomeController>();
+  final OnlineController onlineCtrl = Get.find<OnlineController>();
 
   Future<void> _loadHomeData() async {
+    onlineCtrl.getOnlineCharacters();
+    onlineCtrl.runTimer();
+
     if (homeCtrl.news.isEmpty) await homeCtrl.getNews();
-    await homeCtrl.getOverview();
+    homeCtrl.getOverview();
     homeCtrl.runTimer();
   }
 
@@ -27,42 +35,103 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) => AppPage(
         screenName: 'home',
         canPop: false,
+        fullScreen: MediaQuery.of(context).size.width >= 1000,
         postFrameCallback: _loadHomeData,
         onRefresh: _loadHomeData,
         maxWidth: 860,
+        topWidget: MediaQuery.of(context).size.width < 1000 ? null : HomeScreenGrid(),
         body: Shimmer(
-          child: Column(
-            children: <Widget>[
-              _overview(),
-              const SizedBox(height: 16, width: 16),
-              Flex(
-                direction: MediaQuery.of(context).size.width > 750 ? Axis.horizontal : Axis.vertical,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  if (MediaQuery.of(context).size.width > 750) Expanded(child: NewsWidget()),
-                  if (MediaQuery.of(context).size.width > 750) const SizedBox(height: 16, width: 16),
-                  if (MediaQuery.of(context).size.width <= 750) NewsWidget(),
-                  if (MediaQuery.of(context).size.width <= 750) const SizedBox(height: 16, width: 16),
-                  HomeScreenGrid(),
-                ],
-              ),
-            ],
+          child: Builder(
+            builder: (_) {
+              if (MediaQuery.of(context).size.width >= 1000) return _bodyWide();
+              if (MediaQuery.of(context).size.width >= 600) return _bodyMedium();
+              return _bodyNarrow();
+            },
           ),
         ),
       );
 
-  Widget _overview() => Column(
+  Widget _bodyNarrow() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (MediaQuery.of(context).size.width > 600) RookmasterOverview(),
-          if (MediaQuery.of(context).size.width > 600) const SizedBox(height: 16, width: 16),
-          Flex(
-            direction: MediaQuery.of(context).size.width > 600 ? Axis.horizontal : Axis.vertical,
+          SponsorCard(),
+          const SizedBox(height: 16, width: 16),
+          OverviewExpgain(),
+          const SizedBox(height: 16, width: 16),
+          OverviewOnlinetime(),
+          const SizedBox(height: 16, width: 16),
+          NewsWidget(),
+          const SizedBox(height: 16, width: 16),
+          HomeScreenGrid(),
+        ],
+      );
+
+  Widget _bodyMedium() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              if (MediaQuery.of(context).size.width <= 600) ExpgainOverview(),
-              if (MediaQuery.of(context).size.width > 600) Expanded(child: ExpgainOverview()),
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    OverviewRookmaster(),
+                    const SizedBox(height: 16, width: 16),
+                    OverviewExperience(),
+                    const SizedBox(height: 16, width: 16),
+                    OverviewExpgain(),
+                    const SizedBox(height: 16, width: 16),
+                    OverviewOnlinetime(),
+                  ],
+                ),
+              ),
               const SizedBox(height: 16, width: 16),
-              if (MediaQuery.of(context).size.width <= 600) OnlinetimeOverview(),
-              if (MediaQuery.of(context).size.width > 600) Expanded(child: OnlinetimeOverview()),
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    SponsorCard(),
+                    const SizedBox(height: 16, width: 16),
+                    NewsWidget(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16, width: 16),
+          HomeScreenGrid(),
+        ],
+      );
+
+  Widget _bodyWide() => Column(
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(child: OverviewOnline()),
+              const SizedBox(height: 16, width: 16),
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    OverviewRookmaster(),
+                    const SizedBox(height: 16, width: 16),
+                    OverviewExperience(),
+                    const SizedBox(height: 16, width: 16),
+                    OverviewExpgain(),
+                    const SizedBox(height: 16, width: 16),
+                    OverviewOnlinetime(),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16, width: 16),
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    SponsorCard(),
+                    const SizedBox(height: 16, width: 16),
+                    NewsWidget(),
+                  ],
+                ),
+              ),
             ],
           ),
         ],

@@ -12,27 +12,39 @@ Map<String, Map<String, dynamic>> _tags = <String, Map<String, dynamic>>{
   },
   '<primary>': <String, dynamic>{
     'regex': '<primary>(.*?)<primary>',
-    'style': const TextStyle(color: AppColors.primary),
+    'style': const TextStyle(color: AppColors.primary, decorationColor: AppColors.primary),
   },
   '<blue>': <String, dynamic>{
     'regex': '<blue>(.*?)<blue>',
-    'style': const TextStyle(color: AppColors.blue),
+    'style': const TextStyle(color: AppColors.blue, decorationColor: AppColors.blue),
   },
   '<lBlue>': <String, dynamic>{
     'regex': '<lBlue>(.*?)<lBlue>',
-    'style': const TextStyle(color: AppColors.lightBlue),
+    'style': const TextStyle(color: AppColors.lightBlue, decorationColor: AppColors.lightBlue),
   },
   '<green>': <String, dynamic>{
     'regex': '<green>(.*?)<green>',
-    'style': const TextStyle(color: AppColors.green),
+    'style': const TextStyle(color: AppColors.green, decorationColor: AppColors.green),
+  },
+  '<yellow>': <String, dynamic>{
+    'regex': '<yellow>(.*?)<yellow>',
+    'style': const TextStyle(color: AppColors.yellow, decorationColor: AppColors.yellow),
+  },
+  '<orange>': <String, dynamic>{
+    'regex': '<orange>(.*?)<orange>',
+    'style': const TextStyle(color: Colors.orange, decorationColor: Colors.orange),
+  },
+  '<red>': <String, dynamic>{
+    'regex': '<red>(.*?)<red>',
+    'style': const TextStyle(color: AppColors.red, decorationColor: AppColors.red),
+  },
+  '<white>': <String, dynamic>{
+    'regex': '<white>(.*?)<white>',
+    'style': const TextStyle(color: Colors.white, decorationColor: Colors.white),
   },
   '<small>': <String, dynamic>{
     'regex': '<small>(.*?)<small>',
     'style': const TextStyle(fontSize: 12),
-  },
-  '<error>': <String, dynamic>{
-    'regex': '<error>(.*?)<error>',
-    'style': const TextStyle(color: AppColors.red),
   },
   '<u>': <String, dynamic>{
     'regex': '<u>(.*?)<u>',

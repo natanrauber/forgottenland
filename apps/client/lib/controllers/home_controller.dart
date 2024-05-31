@@ -13,9 +13,10 @@ class HomeController extends Controller {
   final IHttpClient httpClient;
 
   RxList<News> news = <News>[].obs;
-  RxList<HighscoresEntry> experiencegained = <HighscoresEntry>[].obs;
-  RxList<HighscoresEntry> onlinetime = <HighscoresEntry>[].obs;
-  RxList<HighscoresEntry> rookmaster = <HighscoresEntry>[].obs;
+  RxList<HighscoresEntry> overviewExpgain = <HighscoresEntry>[].obs;
+  RxList<HighscoresEntry> overviewOnlinetime = <HighscoresEntry>[].obs;
+  RxList<HighscoresEntry> overviewRookmaster = <HighscoresEntry>[].obs;
+  RxList<HighscoresEntry> overviewExperience = <HighscoresEntry>[].obs;
 
   Timer? timer;
 
@@ -44,9 +45,11 @@ class HomeController extends Controller {
       final Overview overview = Overview.fromJson(
         (response.dataAsMap['data'] as Map<String, dynamic>?) ?? <String, dynamic>{},
       );
-      experiencegained.value = overview.experiencegained.toList();
-      onlinetime.value = overview.onlinetime.map((OnlineEntry e) => HighscoresEntry.fromOnlineEntry(e)).toList();
-      rookmaster.value = overview.rookmaster.toList();
+      overviewExpgain.value = overview.experiencegained.toList();
+      overviewOnlinetime.value =
+          overview.onlinetime.map((OnlineEntry e) => HighscoresEntry.fromOnlineEntry(e)).toList();
+      overviewRookmaster.value = overview.rookmaster.toList();
+      overviewExperience.value = overview.experience.toList();
     }
 
     isLoading.value = false;

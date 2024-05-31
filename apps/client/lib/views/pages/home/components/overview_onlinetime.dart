@@ -3,18 +3,19 @@ import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/controllers/home_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/src/routes.dart';
+import 'package:forgottenland/views/widgets/src/other/better_text.dart';
 import 'package:forgottenland/views/widgets/src/other/blinking_circle.dart';
 import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:forgottenland/views/widgets/src/other/shimmer_loading.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
 
-class ExpgainOverview extends StatefulWidget {
+class OverviewOnlinetime extends StatefulWidget {
   @override
-  State<ExpgainOverview> createState() => _ExpgainOverviewState();
+  State<OverviewOnlinetime> createState() => _OverviewOnlinetimeState();
 }
 
-class _ExpgainOverviewState extends State<ExpgainOverview> {
+class _OverviewOnlinetimeState extends State<OverviewOnlinetime> {
   final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
   final HomeController homeCtrl = Get.find<HomeController>();
 
@@ -28,20 +29,28 @@ class _ExpgainOverviewState extends State<ExpgainOverview> {
         ],
       );
 
-  Widget _title() => const Padding(
-        padding: EdgeInsets.only(left: 3),
-        child: SelectableText('Exp gained'),
+  Widget _title() => Container(
+        height: 22,
+        padding: const EdgeInsets.only(left: 3),
+        child: const SelectableText(
+          'Online time',
+          style: TextStyle(
+            fontSize: 14,
+            height: 22 / 14,
+          ),
+        ),
       );
 
   Widget _body() => Obx(
         () => ShimmerLoading(
-          isLoading: homeCtrl.experiencegained.isEmpty && homeCtrl.isLoading.value,
+          isLoading: homeCtrl.overviewOnlinetime.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
-            onTap: homeCtrl.experiencegained.isEmpty
+            height: 143,
+            onTap: homeCtrl.overviewOnlinetime.isEmpty
                 ? homeCtrl.getOverview
                 : () async {
                     final String timeframe = highscoresCtrl.timeframe.value.toLowerCase().replaceAll(' ', '');
-                    return Get.toNamed('${Routes.highscores.name}/experiencegained/$timeframe');
+                    return Get.toNamed('${Routes.highscores.name}/onlinetime/$timeframe');
                   },
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
             alignment: Alignment.centerLeft,
@@ -52,9 +61,9 @@ class _ExpgainOverviewState extends State<ExpgainOverview> {
             ),
             child: Builder(
               builder: (_) {
-                if (homeCtrl.experiencegained.isEmpty && homeCtrl.isLoading.value) return _loading();
-                if (homeCtrl.experiencegained.isEmpty) return _reloadButton();
-                if (homeCtrl.experiencegained.isNotEmpty) return _listBuilder();
+                if (homeCtrl.overviewOnlinetime.isEmpty && homeCtrl.isLoading.value) return _loading();
+                if (homeCtrl.overviewOnlinetime.isEmpty) return _reloadButton();
+                if (homeCtrl.overviewOnlinetime.isNotEmpty) return _listBuilder();
                 return Container();
               },
             ),
@@ -91,11 +100,11 @@ class _ExpgainOverviewState extends State<ExpgainOverview> {
   Widget _listBuilder() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (homeCtrl.experiencegained.isNotEmpty) _item(homeCtrl.experiencegained[0]),
-          if (homeCtrl.experiencegained.length >= 2) _item(homeCtrl.experiencegained[1]),
-          if (homeCtrl.experiencegained.length >= 3) _item(homeCtrl.experiencegained[2]),
-          if (homeCtrl.experiencegained.length >= 4) _item(homeCtrl.experiencegained[3]),
-          if (homeCtrl.experiencegained.length >= 5) _item(homeCtrl.experiencegained[4]),
+          if (homeCtrl.overviewOnlinetime.isNotEmpty) _item(homeCtrl.overviewOnlinetime[0]),
+          if (homeCtrl.overviewOnlinetime.length >= 2) _item(homeCtrl.overviewOnlinetime[1]),
+          if (homeCtrl.overviewOnlinetime.length >= 3) _item(homeCtrl.overviewOnlinetime[2]),
+          if (homeCtrl.overviewOnlinetime.length >= 4) _item(homeCtrl.overviewOnlinetime[3]),
+          if (homeCtrl.overviewOnlinetime.length >= 5) _item(homeCtrl.overviewOnlinetime[4]),
         ],
       );
 
@@ -147,13 +156,26 @@ class _ExpgainOverviewState extends State<ExpgainOverview> {
         ),
       );
 
-  Widget _itemValue(HighscoresEntry item) => Text(
-        '+${item.stringValue}',
-        style: const TextStyle(
+  Widget _itemValue(HighscoresEntry item) => BetterText(
+        _itemValueText(item),
+        selectable: false,
+        style: TextStyle(
           fontSize: 12,
           height: 19 / 12,
-          color: Colors.green,
+          color: AppColors.textSecondary.withOpacity(0.5),
           overflow: TextOverflow.ellipsis,
         ),
       );
+
+  String _itemValueText(HighscoresEntry item) {
+    final bool narrow = MediaQuery.of(context).size.width < 1280;
+    final bool orange = (int.tryParse(item.onlineTime?.substring(0, 2) ?? '') ?? 0) >= 6;
+    final bool red = (int.tryParse(item.onlineTime?.substring(0, 2) ?? '') ?? 0) >= 10;
+    if (narrow && red) return '<red>${item.onlineTime ?? ''}<red>';
+    if (narrow && orange) return '<orange>${item.onlineTime ?? ''}<orange>';
+    if (narrow) return item.onlineTime ?? '';
+    if (red) return '${item.world ?? ''} <red>${item.onlineTime ?? ''}<red>';
+    if (orange) return '${item.world ?? ''} <orange>${item.onlineTime ?? ''}<orange>';
+    return '${item.world ?? ''} <white>${item.onlineTime ?? ''}<white>';
+  }
 }
