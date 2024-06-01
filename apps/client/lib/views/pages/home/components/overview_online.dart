@@ -45,7 +45,7 @@ class _OverviewOnlineState extends State<OverviewOnline> {
         isLoading: homeCtrl.overviewOnline.isEmpty && homeCtrl.isLoading.value,
         child: ClickableContainer(
           height: 695,
-          enabled: homeCtrl.overviewOnline.isEmpty,
+          enabled: !homeCtrl.isLoading.value && homeCtrl.overviewOnline.isEmpty,
           onTap: homeCtrl.getOverview,
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.all(12),

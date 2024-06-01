@@ -45,7 +45,7 @@ class _OverviewOnlinetimeState extends State<OverviewOnlinetime> {
         () => ShimmerLoading(
           isLoading: homeCtrl.overviewOnlinetime.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
-            enabled: !homeCtrl.isLoading.value,
+            enabled: _isEnabled,
             height: 143,
             onTap: homeCtrl.overviewOnlinetime.isEmpty
                 ? homeCtrl.getOverview
@@ -71,6 +71,11 @@ class _OverviewOnlinetimeState extends State<OverviewOnlinetime> {
           ),
         ),
       );
+
+  bool get _isEnabled {
+    if (homeCtrl.isLoading.value && homeCtrl.overviewOnlinetime.isEmpty) return false;
+    return true;
+  }
 
   Widget _reloadButton() => Center(
         child: Container(

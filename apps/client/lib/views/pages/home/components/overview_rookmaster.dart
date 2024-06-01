@@ -43,7 +43,7 @@ class _OverviewRookmasterState extends State<OverviewRookmaster> {
         () => ShimmerLoading(
           isLoading: homeCtrl.overviewRookmaster.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
-            enabled: !homeCtrl.isLoading.value,
+            enabled: _isEnabled,
             height: 143,
             onTap: homeCtrl.overviewRookmaster.isEmpty
                 ? homeCtrl.getOverview
@@ -66,6 +66,11 @@ class _OverviewRookmasterState extends State<OverviewRookmaster> {
           ),
         ),
       );
+
+  bool get _isEnabled {
+    if (homeCtrl.isLoading.value && homeCtrl.overviewRookmaster.isEmpty) return false;
+    return true;
+  }
 
   Widget _reloadButton() => Center(
         child: Container(

@@ -45,7 +45,7 @@ class _OverviewExpgainState extends State<OverviewExpgain> {
         () => ShimmerLoading(
           isLoading: homeCtrl.overviewExpgain.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
-            enabled: !homeCtrl.isLoading.value,
+            enabled: _isEnabled,
             height: 143,
             onTap: homeCtrl.overviewExpgain.isEmpty
                 ? homeCtrl.getOverview
@@ -71,6 +71,11 @@ class _OverviewExpgainState extends State<OverviewExpgain> {
           ),
         ),
       );
+
+  bool get _isEnabled {
+    if (homeCtrl.isLoading.value && homeCtrl.overviewExpgain.isEmpty) return false;
+    return true;
+  }
 
   Widget _reloadButton() => Center(
         child: Container(

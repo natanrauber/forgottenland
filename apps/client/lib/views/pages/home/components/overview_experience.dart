@@ -43,7 +43,7 @@ class _OverviewExperienceState extends State<OverviewExperience> {
         () => ShimmerLoading(
           isLoading: homeCtrl.overviewExperience.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
-            enabled: !homeCtrl.isLoading.value,
+            enabled: _isEnabled,
             height: 143,
             onTap: homeCtrl.overviewExperience.isEmpty
                 ? homeCtrl.getOverview
@@ -66,6 +66,11 @@ class _OverviewExperienceState extends State<OverviewExperience> {
           ),
         ),
       );
+
+  bool get _isEnabled {
+    if (homeCtrl.isLoading.value && homeCtrl.overviewExperience.isEmpty) return false;
+    return true;
+  }
 
   Widget _reloadButton() => Center(
         child: Container(
