@@ -6,6 +6,7 @@ import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/images/svg_image.dart';
+import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
@@ -24,58 +25,62 @@ class _OnlineFiltersState extends State<OnlineFilters> {
 
   @override
   Widget build(BuildContext context) => Obx(
-        () => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            //
-            SizedBox(
-              height: 53,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
+        () => Container(
+          decoration: BoxDecoration(
+            color: AppColors.bgDefault,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              //
+              const SizedBox(height: 11),
+
+              SizedBox(
+                height: 53,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 5, 16, 0),
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  children: <Widget>[
+                    _world(),
+                    _battleyeType(),
+                    _location(),
+                    _pvpType(),
+                    _worldType(),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 5),
+
+              Container(
+                height: 53,
+                padding: const EdgeInsets.fromLTRB(16, 5, 16, 0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(child: _searchBar()),
+                    if (anyFilterSelected) const SizedBox(width: 10),
+                    if (anyFilterSelected) _clearButton(),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  //
-                  _world(),
-
-                  const SizedBox(width: 10),
-
-                  _battleyeType(),
-
-                  const SizedBox(width: 10),
-
-                  _location(),
-
-                  const SizedBox(width: 10),
-
-                  _pvpType(),
-
-                  const SizedBox(width: 10),
-
-                  _worldType(),
+                  _selectedFilters(),
+                  const SizedBox(width: 20),
+                  _amount(),
                 ],
               ),
-            ),
 
-            const SizedBox(height: 5),
-
-            Container(
-              height: 53,
-              padding: const EdgeInsets.only(top: 5),
-              child: _searchBar(),
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _selectedFilters(),
-                const SizedBox(width: 20),
-                _amount(),
-              ],
-            ),
-          ],
+              const SizedBox(height: 12),
+            ],
+          ),
         ),
       );
 
@@ -86,9 +91,11 @@ class _OnlineFiltersState extends State<OnlineFilters> {
     required List<T>? itemList,
     void Function(T?)? onChanged,
     bool bigger = false,
+    EdgeInsets margin = const EdgeInsets.only(right: 10),
   }) =>
-      SizedBox(
+      Container(
         width: _dropdownWidth(bigger),
+        margin: margin,
         child: CustomDropdown<T>(
           loading: onlineCtrl.isLoading.value,
           enabled: enabled,
@@ -218,21 +225,18 @@ class _OnlineFiltersState extends State<OnlineFilters> {
     );
   }
 
-  Widget _searchBar() => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        child: CustomTextField(
-          loading: onlineCtrl.isLoading.isTrue,
-          label: 'Search',
-          controller: onlineCtrl.searchController,
-          onChanged: (_) {
-            if (timer.isActive) timer.cancel();
+  Widget _searchBar() => CustomTextField(
+        loading: onlineCtrl.isLoading.isTrue,
+        label: 'Search',
+        controller: onlineCtrl.searchController,
+        onChanged: (_) {
+          if (timer.isActive) timer.cancel();
 
-            timer = Timer(
-              const Duration(seconds: 1),
-              () => _search(),
-            );
-          },
-        ),
+          timer = Timer(
+            const Duration(seconds: 1),
+            () => _search(),
+          );
+        },
       );
 
   void _search() {
@@ -241,9 +245,43 @@ class _OnlineFiltersState extends State<OnlineFilters> {
     onlineCtrl.filterList();
   }
 
+  Widget _clearButton() => ClickableContainer(
+        onTap: onlineCtrl.isLoading.value ? null : _clearFilters,
+        height: 48,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgHover,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          'Clear',
+          style: TextStyle(
+            color: onlineCtrl.isLoading.value ? AppColors.textSecondary : AppColors.primary,
+          ),
+        ),
+      );
+
+  void _clearFilters() {
+    onlineCtrl.world.value = World(name: 'All');
+    onlineCtrl.battleyeType.value = 'All';
+    onlineCtrl.location.value = 'All';
+    onlineCtrl.pvpType.value = 'All';
+    onlineCtrl.worldType.value = 'All';
+
+    onlineCtrl.enableBattleyeType.value = true;
+    onlineCtrl.enableLocation.value = true;
+    onlineCtrl.enablePvpType.value = true;
+    onlineCtrl.enableWorldType.value = true;
+
+    onlineCtrl.searchController.clear();
+    onlineCtrl.filterList();
+  }
+
   Widget _selectedFilters() => Expanded(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(25, 10, 25, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 19),
           child: Text(
             _selectedFiltersText,
             style: const TextStyle(
@@ -266,8 +304,10 @@ class _OnlineFiltersState extends State<OnlineFilters> {
     return '$text.';
   }
 
+  bool get anyFilterSelected => _selectedFiltersText.contains(',');
+
   Widget _amount() => Padding(
-        padding: const EdgeInsets.fromLTRB(25, 10, 25, 0),
+        padding: const EdgeInsets.symmetric(horizontal: 19),
         child: Text(
           _amountText,
           style: const TextStyle(

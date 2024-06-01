@@ -139,8 +139,8 @@ class _HighscoresPageState extends State<HighscoresPage> {
     final HighscoresEntry item = highscoresCtrl.filteredList[index];
 
     return HighscoresItemCard(
-      index: index,
       item: item,
+      index: index,
       characterCtrl: characterCtrl,
       highscoresCtrl: highscoresCtrl,
       userCtrl: userCtrl,

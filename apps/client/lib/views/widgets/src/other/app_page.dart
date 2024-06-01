@@ -196,15 +196,13 @@ class _AppPageState extends State<AppPage> {
     double height;
     double width;
     double topMargin;
-    double sideMargin;
     double borderRadius;
 
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     topMargin = height > 700 ? height - 700 : 0;
     if (topMargin > height * 0.18) topMargin = height * 0.18;
-    sideMargin = width >= 800 ? ((width / 2) - 400) + 0 : 0;
-    borderRadius = (topMargin > 0 && sideMargin > 0) ? 8 : 0;
+    borderRadius = (width >= widget.maxWidth) ? 8 : 0;
 
     return BoxDecoration(
       borderRadius: BorderRadius.only(

@@ -21,7 +21,6 @@ class HighscoresItemCard extends StatefulWidget {
 
   final int index;
   final HighscoresEntry item;
-
   final CharacterController characterCtrl;
   final HighscoresController highscoresCtrl;
   final UserController userCtrl;
@@ -72,6 +71,13 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
     dismissKeyboard(context);
     if (widget.highscoresCtrl.category.value == 'Rook Master') return setState(() => expand = !expand);
     _loadCharacter(context);
+  }
+
+  Future<void> _loadCharacter(BuildContext context) async {
+    if (widget.item.name == null) return;
+    widget.characterCtrl.searchCtrl.text = widget.item.name!;
+    Get.toNamed(Routes.character.name);
+    widget.characterCtrl.searchCharacter();
   }
 
   BoxDecoration get _decoration => BoxDecoration(
@@ -146,12 +152,6 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         ),
       );
 
-  String get _rankName {
-    final String name = widget.highscoresCtrl.category.value;
-    if (name == 'Rook Master') return 'Total points';
-    return name;
-  }
-
   String get _value {
     final bool hideData = LIST.premiumCategories.contains(widget.highscoresCtrl.category.value) &&
         widget.userCtrl.isLoggedIn.value != true;
@@ -160,6 +160,12 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
     if (_rankName == 'Experience gained') return '$_rankName <green>+${widget.item.stringValue}<green>';
     if (_rankName == 'Online time') return _onlineTimeValue;
     return '$_rankName <blue>${widget.item.stringValue ?? ''}<blue>';
+  }
+
+  String get _rankName {
+    final String name = widget.highscoresCtrl.category.value;
+    if (name == 'Rook Master') return 'Total points';
+    return name;
   }
 
   String get _onlineTimeValue {
@@ -323,11 +329,4 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
   //   }
   //   return widget.item.rank.toString();
   // }
-
-  Future<void> _loadCharacter(BuildContext context) async {
-    if (widget.item.name == null) return;
-    widget.characterCtrl.searchCtrl.text = widget.item.name!;
-    Get.toNamed(Routes.character.name);
-    widget.characterCtrl.searchCharacter();
-  }
 }

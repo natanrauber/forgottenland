@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/controllers/online_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/views/pages/online/components/online_entry_widget.dart';
@@ -13,28 +14,33 @@ class OnlineCharactersPage extends StatefulWidget {
 }
 
 class _OnlineCharactersPageState extends State<OnlineCharactersPage> {
+  final CharacterController characterCtrl = Get.find<CharacterController>();
   final OnlineController onlineCtrl = Get.find<OnlineController>();
 
   @override
-  Widget build(BuildContext context) => AppPage(
-        screenName: 'online',
-        postFrameCallback: onlineCtrl.getOnlineCharacters,
-        onRefresh: onlineCtrl.getOnlineCharacters,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        body: Column(
-          children: <Widget>[
-            //
-            OnlineFilters(),
+  Widget build(BuildContext context) {
+    final bool wide = MediaQuery.of(context).size.width >= 800;
 
-            const SizedBox(height: 20),
+    return AppPage(
+      screenName: 'online',
+      postFrameCallback: onlineCtrl.getOnlineCharacters,
+      onRefresh: onlineCtrl.getOnlineCharacters,
+      padding: wide ? const EdgeInsets.fromLTRB(16, 16, 16, 60) : EdgeInsets.zero,
+      topWidget: wide ? OnlineFilters() : null,
+      body: Column(
+        children: <Widget>[
+          //
+          if (!wide) OnlineFilters(),
+          if (!wide) const SizedBox(height: 16),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: _body(),
-            ),
-          ],
-        ),
-      );
+          Padding(
+            padding: wide ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 16),
+            child: _body(),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _body() => Obx(
         () {
@@ -66,11 +72,13 @@ class _OnlineCharactersPageState extends State<OnlineCharactersPage> {
       );
 
   Widget _itemBuilder(BuildContext context, int index) {
-    final HighscoresEntry entry = onlineCtrl.filteredList[index];
+    final HighscoresEntry item = onlineCtrl.filteredList[index];
 
-    return Padding(
-      padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
-      child: OnlineEntryWidget(entry),
+    return OnlineEntryWidget(
+      index: index,
+      item: item,
+      characterCtrl: characterCtrl,
+      onlineCtrl: onlineCtrl,
     );
   }
 
