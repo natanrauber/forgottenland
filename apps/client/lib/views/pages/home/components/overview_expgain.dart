@@ -45,6 +45,7 @@ class _OverviewExpgainState extends State<OverviewExpgain> {
         () => ShimmerLoading(
           isLoading: homeCtrl.overviewExpgain.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
+            enabled: !homeCtrl.isLoading.value,
             height: 143,
             onTap: homeCtrl.overviewExpgain.isEmpty
                 ? homeCtrl.getOverview

@@ -4,7 +4,7 @@ class LIST {
   static const List<String> category = <String>[
     'Experience',
     // 'Achievements',
-    'Magic',
+    // 'Magic',
     'Fist',
     'Axe',
     'Club',

@@ -45,6 +45,7 @@ class _OverviewOnlinetimeState extends State<OverviewOnlinetime> {
         () => ShimmerLoading(
           isLoading: homeCtrl.overviewOnlinetime.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
+            enabled: !homeCtrl.isLoading.value,
             height: 143,
             onTap: homeCtrl.overviewOnlinetime.isEmpty
                 ? homeCtrl.getOverview

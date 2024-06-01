@@ -31,54 +31,59 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
 
   @override
   Widget build(BuildContext context) => Obx(
-        () => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            //
-            SizedBox(
-              height: 53,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                children: <Widget>[
-                  //
-                  _category(),
+        () => Container(
+          decoration: BoxDecoration(
+            color: AppColors.bgDefault,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              //
+              const SizedBox(height: 11),
 
-                  _timeframe(),
-
-                  _world(),
-
-                  _battleyeType(),
-
-                  _location(),
-
-                  _pvpType(),
-
-                  _worldType(),
-                ],
+              SizedBox(
+                height: 53,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 5, 16, 0),
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  children: <Widget>[
+                    _category(),
+                    _timeframe(),
+                    _world(),
+                    _battleyeType(),
+                    _location(),
+                    _pvpType(),
+                    _worldType(),
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 5),
+              const SizedBox(height: 5),
 
-            Container(
-              height: 53,
-              padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(child: _searchBar()),
-                  if (anyFilterSelected) const SizedBox(width: 10),
-                  if (anyFilterSelected) _clearButton(),
-                ],
+              Container(
+                height: 53,
+                padding: const EdgeInsets.fromLTRB(16, 5, 16, 0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(child: _searchBar()),
+                    if (anyFilterSelected) const SizedBox(width: 10),
+                    if (anyFilterSelected) _clearButton(),
+                  ],
+                ),
               ),
-            ),
 
-            _selectedFilters(),
+              const SizedBox(height: 10),
+              _selectedFilters(),
 
-            if (highscoresCtrl.rankLastUpdate != null) _lastUpdated(),
-          ],
+              if (highscoresCtrl.rankLastUpdate != null) const SizedBox(height: 3),
+              if (highscoresCtrl.rankLastUpdate != null) _lastUpdated(),
+
+              const SizedBox(height: 12),
+            ],
+          ),
         ),
       );
 
@@ -111,9 +116,9 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
   double _dropdownWidth(bool bigger) {
     final double width = MediaQuery.of(context).size.width;
 
-    if (width < 460) return (bigger ? 1.5 : 1) * (width - 50) / 2;
-    if (width < 630) return (bigger ? 1.5 : 1) * (width - 60) / 3;
-    if (width < 800) return (bigger ? 1.5 : 1) * (width - 70) / 4;
+    if (width < 460) return (bigger ? 1.5 : 1) * (width - 42) / 2;
+    if (width < 630) return (bigger ? 1.5 : 1) * (width - 52) / 3;
+    if (width < 800) return (bigger ? 1.5 : 1) * (width - 62) / 4;
     return (bigger ? 1.5 : 1) * (800 - 70) / 4;
   }
 
@@ -247,11 +252,13 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
     highscoresCtrl.enablePvpType.value = true;
     highscoresCtrl.enableWorldType.value = true;
 
+    highscoresCtrl.searchController.clear();
+
     _loadHighscores();
   }
 
   Widget _selectedFilters() => Padding(
-        padding: const EdgeInsets.fromLTRB(25, 10, 25, 0),
+        padding: const EdgeInsets.symmetric(horizontal: 19),
         child: Text(
           _selectedFiltersText,
           style: const TextStyle(
@@ -271,6 +278,7 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
     if (highscoresCtrl.location.value != 'All') text = '$text, ${highscoresCtrl.location.value}';
     if (highscoresCtrl.pvpType.value != 'All') text = '$text, ${highscoresCtrl.pvpType.value}';
     if (highscoresCtrl.worldType.value != 'All') text = '$text, ${highscoresCtrl.worldType.value} World';
+    if (highscoresCtrl.searchController.text.isNotEmpty) text = '$text, "${highscoresCtrl.searchController.text}"';
 
     return '$text.';
   }
@@ -282,7 +290,7 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
   }
 
   Widget _lastUpdated() => Padding(
-        padding: const EdgeInsets.fromLTRB(25, 10, 25, 0),
+        padding: const EdgeInsets.symmetric(horizontal: 19),
         child: Text(
           'Updated: ${highscoresCtrl.rankLastUpdate?.replaceAll('-', '.')}',
           style: const TextStyle(

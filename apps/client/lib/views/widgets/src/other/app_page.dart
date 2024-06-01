@@ -67,8 +67,8 @@ class _AppPageState extends State<AppPage> {
     if (topMargin > height * 0.18) topMargin = height * 0.18;
     final double sideMargin = width > maxWidth ? ((width / 2) - (maxWidth / 2)) + 0 : 0;
     if (topMargin > sideMargin) topMargin = sideMargin;
-    if (width <= 800) topMargin = 0;
-    if (widget.fullScreen && widget.topWidget != null) topMargin = 0;
+    if (width < 800) topMargin = 0;
+    if (widget.topWidget != null) topMargin = 0;
 
     return PopScope(
       canPop: widget.canPop,
@@ -91,7 +91,7 @@ class _AppPageState extends State<AppPage> {
                     Container(
                       margin: EdgeInsets.fromLTRB(
                         sideMargin,
-                        topMargin == 0 && !widget.fullScreen ? 0 : height / 2,
+                        topMargin == 0 && widget.topWidget == null ? 0 : height / 2,
                         sideMargin,
                         0,
                       ),
@@ -103,7 +103,7 @@ class _AppPageState extends State<AppPage> {
                       physics: const BouncingScrollPhysics(),
                       child: Column(
                         children: <Widget>[
-                          if (widget.topWidget != null && width >= 1280)
+                          if (widget.topWidget != null)
                             Container(
                               margin: EdgeInsets.symmetric(vertical: 16, horizontal: sideMargin),
                               child: widget.topWidget,
@@ -119,18 +119,7 @@ class _AppPageState extends State<AppPage> {
                                   padding: widget.padding,
                                   child: Container(
                                     constraints: _bodyConstraints,
-                                    child: _featureDisabled
-                                        ? _disabledPageBody()
-                                        : Column(
-                                            children: <Widget>[
-                                              if (widget.topWidget != null && width < 1280)
-                                                Container(
-                                                  margin: const EdgeInsets.only(bottom: 16),
-                                                  child: widget.topWidget,
-                                                ),
-                                              widget.body ?? Container(),
-                                            ],
-                                          ),
+                                    child: _featureDisabled ? _disabledPageBody() : widget.body ?? Container(),
                                   ),
                                 ),
 
@@ -214,8 +203,8 @@ class _AppPageState extends State<AppPage> {
     width = MediaQuery.of(context).size.width;
     topMargin = height > 700 ? height - 700 : 0;
     if (topMargin > height * 0.18) topMargin = height * 0.18;
-    sideMargin = width > 800 ? ((width / 2) - 400) + 0 : 0;
-    borderRadius = (topMargin > 0 && sideMargin > 0) ? 11 : 0;
+    sideMargin = width >= 800 ? ((width / 2) - 400) + 0 : 0;
+    borderRadius = (topMargin > 0 && sideMargin > 0) ? 8 : 0;
 
     return BoxDecoration(
       borderRadius: BorderRadius.only(
@@ -238,7 +227,7 @@ class _AppPageState extends State<AppPage> {
     appBarHeight = AppHeader().preferredSize.height;
     topMargin = height > 700 ? height - 700 : 0;
     if (topMargin > height * 0.18) topMargin = height * 0.18;
-    if (width <= 800) topMargin = 0;
+    if (width < 800) topMargin = 0;
     verticalPadding = widget.padding?.along(Axis.vertical) ?? 0;
 
     return BoxConstraints(

@@ -14,7 +14,6 @@ class HighscoresItemCard extends StatefulWidget {
   const HighscoresItemCard({
     required this.index,
     required this.item,
-    this.disableOnTap = false,
     required this.characterCtrl,
     required this.highscoresCtrl,
     required this.userCtrl,
@@ -22,7 +21,6 @@ class HighscoresItemCard extends StatefulWidget {
 
   final int index;
   final HighscoresEntry item;
-  final bool disableOnTap;
 
   final CharacterController characterCtrl;
   final HighscoresController highscoresCtrl;
@@ -37,101 +35,94 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
 
   @override
   Widget build(BuildContext context) => ClickableContainer(
-        enabled: !widget.disableOnTap,
-        onTap: widget.disableOnTap ? null : _onTap,
-        padding: const EdgeInsets.all(16),
-        color: AppColors.bgPaper,
+        onTap: _onTap,
+        padding: const EdgeInsets.all(12),
+        color: widget.index.isEven ? AppColors.bgPaper : AppColors.bgPaper.withOpacity(0.5),
         hoverColor: AppColors.bgHover,
-        decoration: _decoration(context),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            //
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  //
-                  SizedBox(
-                    height: 20,
-                    child: Row(
-                      children: <Widget>[
-                        //
-                        _rank(),
-
-                        const SizedBox(width: 4),
-
-                        Expanded(child: _name()),
-                      ],
-                    ),
-                  ),
-
-                  if (widget.highscoresCtrl.world.value.name == 'All') _info('World: ${widget.item.world?.name ?? ''}'),
-
-                  if (widget.highscoresCtrl.category.value != 'Rook Master') _info('Level: ${widget.item.level ?? ''}'),
-
-                  if (widget.item.onlineTime != null) _info('Online time: ${widget.item.onlineTime ?? ''}'),
-
-                  if (widget.item.value != null) _info('$_rankName: $_value'),
-
-                  if (widget.highscoresCtrl.category.value == 'Rook Master') _skillsPosition(widget.item),
-
-                  // if (widget.item.supporterTitle != null)
-                  //   _info('\n<primary>${widget.item.supporterTitle ?? ''}<primary>'),
-                ],
-              ),
-            ),
-
-            const SizedBox(width: 4),
-
-            _infoIcons(context),
-          ],
-        ),
+        decoration: _decoration,
+        child: _body(),
       );
+
+  Widget _body() {
+    final bool wide = MediaQuery.of(context).size.width >= 600;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        SizedBox(
+          height: 20,
+          child: Row(
+            children: <Widget>[
+              _rank(),
+              const SizedBox(width: 4),
+              Expanded(child: _name()),
+              if (wide) const SizedBox(width: 10),
+              if (wide) _info(_value, opacity: 0.5),
+            ],
+          ),
+        ),
+        _info('${widget.item.level ?? ''} ${widget.item.world?.name ?? ''}', opacity: 0.5),
+        if (!wide) _info(_value, opacity: 0.5),
+        if (widget.highscoresCtrl.category.value == 'Rook Master' && expand) _skillsPosition(widget.item),
+      ],
+    );
+  }
 
   void _onTap() {
     dismissKeyboard(context);
+    if (widget.highscoresCtrl.category.value == 'Rook Master') return setState(() => expand = !expand);
     _loadCharacter(context);
   }
 
-  BoxDecoration _decoration(BuildContext context) => BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
+  BoxDecoration get _decoration => BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(widget.index == 0 ? 8 : 0),
+          topRight: Radius.circular(widget.index == 0 ? 8 : 0),
+          bottomLeft: Radius.circular(widget.index == widget.highscoresCtrl.filteredList.length - 1 ? 8 : 0),
+          bottomRight: Radius.circular(widget.index == widget.highscoresCtrl.filteredList.length - 1 ? 8 : 0),
+        ),
         border: widget.item.supporterTitle == null ? null : Border.all(color: AppColors.primary),
       );
 
-  Widget _rank() => SizedBox(
-        height: 20,
-        child: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            //
-            _rankImage(),
-
-            Text(
-              _rankValue ?? '',
-              style: const TextStyle(
-                fontSize: 11,
-                height: 13 / 11,
-                fontWeight: FontWeight.w600,
-                color: AppColors.bgDefault,
-              ),
-            ),
-          ],
+  Widget _rank() => Container(
+        height: 18,
+        width: 11 + ((_rankValue ?? '').length * 7),
+        margin: const EdgeInsets.symmetric(vertical: 1),
+        padding: const EdgeInsets.all(2),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(100),
+          border: Border.all(),
+        ),
+        child: Text(
+          _rankValue ?? '',
+          style: const TextStyle(
+            fontSize: 11,
+            height: 14 / 11,
+            fontWeight: FontWeight.w600,
+            color: AppColors.bgDefault,
+          ),
         ),
       );
 
-  Widget _rankImage() {
-    final int length = (_rankValue ?? ' ').length;
-    final AssetImage? image = widget.highscoresCtrl.images['assets/icons/rank/rank$length.png'];
-    if (image == null) return Container();
-    return Image(image: image);
-  }
+  // Widget _rankImage() {
+  //   final int length = (_rankValue ?? ' ').length;
+  //   final AssetImage? image = widget.highscoresCtrl.images['assets/icons/rank/rank$length.png'];
+  //   if (image == null) return Container();
+  //   return Image(image: image);
+  // }
 
   String? get _rankValue {
-    if (_showGlobalRank) return (widget.index + 1).toString();
-    if (widget.highscoresCtrl.category.value == 'Experience gained') return (widget.index + 1).toString();
-    if (widget.highscoresCtrl.category.value == 'Online time') return (widget.index + 1).toString();
+    if (_showFilteredRank) return (widget.index + 1).toString();
     return widget.item.rank?.toString();
+  }
+
+  bool get _showFilteredRank {
+    // if (widget.highscoresCtrl.category.value == 'Experience gained') return true;
+    // if (widget.highscoresCtrl.category.value == 'Online time') return true;
+    if (widget.highscoresCtrl.searchController.text.isNotEmpty) return false;
+    return widget.highscoresCtrl.rawList.length != widget.highscoresCtrl.filteredList.length;
   }
 
   Widget _name() => Text(
@@ -142,13 +133,15 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         ),
       );
 
-  Widget _info(String text) => Container(
-        margin: const EdgeInsets.only(top: 4),
+  Widget _info(String text, {double opacity = 0.75}) => Padding(
+        padding: const EdgeInsets.only(top: 2),
         child: BetterText(
           text,
-          style: const TextStyle(
+          selectable: false,
+          maxLines: 1,
+          style: TextStyle(
             fontSize: 12,
-            color: AppColors.textSecondary,
+            color: AppColors.textSecondary.withOpacity(opacity),
           ),
         ),
       );
@@ -164,179 +157,172 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
         widget.userCtrl.isLoggedIn.value != true;
 
     if (hideData) return '<primary>???<primary>';
-    if (_rankName == 'Experience gained') return '<green>+${widget.item.stringValue}<green>';
-    return widget.item.stringValue ?? '---';
+    if (_rankName == 'Experience gained') return '$_rankName <green>+${widget.item.stringValue}<green>';
+    if (_rankName == 'Online time') return _onlineTimeValue;
+    return '$_rankName <blue>${widget.item.stringValue ?? ''}<blue>';
+  }
+
+  String get _onlineTimeValue {
+    final String timeframe = widget.highscoresCtrl.timeframe.value;
+    final int hours = int.tryParse(widget.item.onlineTime?.split('h').first ?? '') ?? 0;
+    int days = 0;
+    if (widget.item.onlineTime?.split('d').length != 1) {
+      days = int.tryParse(widget.item.onlineTime?.split('d').first ?? '') ?? 0;
+    }
+
+    if (timeframe.contains('7')) {
+      if (days >= 3) return '$_rankName <red>${widget.item.onlineTime ?? ''}<red>';
+      if (days >= 2) return '$_rankName <orange>${widget.item.onlineTime ?? ''}<orange>';
+      return '$_rankName <yellow>${widget.item.onlineTime ?? ''}<yellow>';
+    }
+    if (timeframe.contains('30')) {
+      if (days >= 12) return '$_rankName <red>${widget.item.onlineTime ?? ''}<red>';
+      if (days >= 7) return '$_rankName <orange>${widget.item.onlineTime ?? ''}<orange>';
+      return '$_rankName <yellow>${widget.item.onlineTime ?? ''}<yellow>';
+    }
+    if (timeframe.contains('365')) {
+      if (days >= 150) return '$_rankName <red>${widget.item.onlineTime ?? ''}<red>';
+      if (days >= 90) return '$_rankName <orange>${widget.item.onlineTime ?? ''}<orange>';
+      return '$_rankName <yellow>${widget.item.onlineTime ?? ''}<yellow>';
+    }
+    if (hours >= 10) return '$_rankName <red>${widget.item.onlineTime ?? ''}<red>';
+    if (hours >= 6) return '$_rankName <orange>${widget.item.onlineTime ?? ''}<orange>';
+    return '$_rankName <yellow>${widget.item.onlineTime ?? ''}<yellow>';
   }
 
   Widget _skillsPosition(HighscoresEntry entry) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _info(''),
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () => setState(() => expand = !expand),
-              child: Row(
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text(
-                    'Details',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(width: 2),
-                  Container(
-                    padding: const EdgeInsets.only(top: 1),
-                    child: Icon(
-                      expand ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
-                      size: 14,
-                    ),
-                  ),
+                  _info('Level:'),
+                  _info('Fist:'),
+                  _info('Axe:'),
+                  _info('Club:'),
+                  _info('Sword:'),
+                  _info('Distance:'),
+                  _info('Shielding:'),
+                  _info('Fishing:'),
                 ],
               ),
-            ),
-          ),
-          if (expand)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _info('Level:'),
-                    _info('Fist:'),
-                    _info('Axe:'),
-                    _info('Club:'),
-                    _info('Sword:'),
-                    _info('Distance:'),
-                    _info('Shielding:'),
-                    _info('Fishing:'),
-                  ],
-                ),
-                const SizedBox(width: 3),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _info('${entry.level ?? 'n/a'}'),
-                    _info('${entry.expanded?.fist.value ?? 'n/a'}'),
-                    _info('${entry.expanded?.axe.value ?? 'n/a'}'),
-                    _info('${entry.expanded?.club.value ?? 'n/a'}'),
-                    _info('${entry.expanded?.sword.value ?? 'n/a'}'),
-                    _info('${entry.expanded?.distance.value ?? 'n/a'}'),
-                    _info('${entry.expanded?.shielding.value ?? 'n/a'}'),
-                    _info('${entry.expanded?.fishing.value ?? 'n/a'}'),
-                  ],
-                ),
-                const SizedBox(width: 3),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _info(entry.expanded?.experience.value == null ? '' : '#${entry.expanded?.experience.position}'),
-                    _info(entry.expanded?.fist.value == null ? '' : '#${entry.expanded?.fist.position}'),
-                    _info(entry.expanded?.axe.value == null ? '' : '#${entry.expanded?.axe.position}'),
-                    _info(entry.expanded?.club.value == null ? '' : '#${entry.expanded?.club.position}'),
-                    _info(entry.expanded?.sword.value == null ? '' : '#${entry.expanded?.sword.position}'),
-                    _info(entry.expanded?.distance.value == null ? '' : '#${entry.expanded?.distance.position}'),
-                    _info(entry.expanded?.shielding.value == null ? '' : '#${entry.expanded?.shielding.position}'),
-                    _info(entry.expanded?.fishing.value == null ? '' : '#${entry.expanded?.fishing.position}'),
-                  ],
-                ),
-                const SizedBox(width: 3),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _info(entry.expanded?.experience.value == null ? '' : '+${entry.expanded?.experience.points}'),
-                    _info(entry.expanded?.fist.value == null ? '' : '+${entry.expanded?.fist.points}'),
-                    _info(entry.expanded?.axe.value == null ? '' : '+${entry.expanded?.axe.points}'),
-                    _info(entry.expanded?.club.value == null ? '' : '+${entry.expanded?.club.points}'),
-                    _info(entry.expanded?.sword.value == null ? '' : '+${entry.expanded?.sword.points}'),
-                    _info(entry.expanded?.distance.value == null ? '' : '+${entry.expanded?.distance.points}'),
-                    _info(entry.expanded?.shielding.value == null ? '' : '+${entry.expanded?.shielding.points}'),
-                    _info(entry.expanded?.fishing.value == null ? '' : '+${entry.expanded?.fishing.points}'),
-                  ],
-                ),
-              ],
-            ),
-        ],
-      );
-
-  Widget _infoIcons(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          //
-          if (_showGlobalRank) _globalRank(),
-
-          _battleyeTypeIcon(),
-
-          _pvpType(),
-        ],
-      );
-
-  bool get _showGlobalRank {
-    if (widget.highscoresCtrl.rawList.length != widget.highscoresCtrl.filteredList.length) return true;
-    return false;
-  }
-
-  Widget _infoIcon({required Widget child}) => Container(
-        height: 20,
-        margin: const EdgeInsets.only(bottom: 4),
-        child: child,
-      );
-
-  Widget _battleyeTypeIcon() {
-    final String? type = widget.item.world?.battleyeType?.toLowerCase();
-    final AssetImage? image = widget.highscoresCtrl.images['assets/icons/battleye_type/$type.png'];
-    if (image == null) return _infoIcon(child: Container());
-    return _infoIcon(child: Image(image: image));
-  }
-
-  Widget _pvpType() {
-    final String? type = widget.item.world?.pvpType?.toLowerCase().replaceAll(' ', '_');
-    final AssetImage? image = widget.highscoresCtrl.images['assets/icons/pvp_type/$type.png'];
-    if (image == null) return _infoIcon(child: Container());
-    return _infoIcon(child: Image(image: image));
-  }
-
-  Widget _globalRank() => _infoIcon(
-        child: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            //
-            _globalRankImage(),
-
-            Container(
-              padding: const EdgeInsets.only(left: 16),
-              child: Text(
-                _globalRankValue ?? '',
-                style: const TextStyle(
-                  fontSize: 11,
-                  height: 13 / 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.bgDefault,
-                ),
+              const SizedBox(width: 3),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _info('${entry.level ?? 'n/a'}'),
+                  _info('${entry.expanded?.fist.value ?? 'n/a'}'),
+                  _info('${entry.expanded?.axe.value ?? 'n/a'}'),
+                  _info('${entry.expanded?.club.value ?? 'n/a'}'),
+                  _info('${entry.expanded?.sword.value ?? 'n/a'}'),
+                  _info('${entry.expanded?.distance.value ?? 'n/a'}'),
+                  _info('${entry.expanded?.shielding.value ?? 'n/a'}'),
+                  _info('${entry.expanded?.fishing.value ?? 'n/a'}'),
+                ],
               ),
-            ),
-          ],
-        ),
+              const SizedBox(width: 3),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _info(entry.expanded?.experience.value == null ? '' : '#${entry.expanded?.experience.position}'),
+                  _info(entry.expanded?.fist.value == null ? '' : '#${entry.expanded?.fist.position}'),
+                  _info(entry.expanded?.axe.value == null ? '' : '#${entry.expanded?.axe.position}'),
+                  _info(entry.expanded?.club.value == null ? '' : '#${entry.expanded?.club.position}'),
+                  _info(entry.expanded?.sword.value == null ? '' : '#${entry.expanded?.sword.position}'),
+                  _info(entry.expanded?.distance.value == null ? '' : '#${entry.expanded?.distance.position}'),
+                  _info(entry.expanded?.shielding.value == null ? '' : '#${entry.expanded?.shielding.position}'),
+                  _info(entry.expanded?.fishing.value == null ? '' : '#${entry.expanded?.fishing.position}'),
+                ],
+              ),
+              const SizedBox(width: 3),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _info(entry.expanded?.experience.value == null ? '' : '+${entry.expanded?.experience.points}'),
+                  _info(entry.expanded?.fist.value == null ? '' : '+${entry.expanded?.fist.points}'),
+                  _info(entry.expanded?.axe.value == null ? '' : '+${entry.expanded?.axe.points}'),
+                  _info(entry.expanded?.club.value == null ? '' : '+${entry.expanded?.club.points}'),
+                  _info(entry.expanded?.sword.value == null ? '' : '+${entry.expanded?.sword.points}'),
+                  _info(entry.expanded?.distance.value == null ? '' : '+${entry.expanded?.distance.points}'),
+                  _info(entry.expanded?.shielding.value == null ? '' : '+${entry.expanded?.shielding.points}'),
+                  _info(entry.expanded?.fishing.value == null ? '' : '+${entry.expanded?.fishing.points}'),
+                ],
+              ),
+            ],
+          ),
+        ],
       );
 
-  Widget _globalRankImage() {
-    final int length = (_globalRankValue ?? ' ').length;
-    final AssetImage? image = widget.highscoresCtrl.images['assets/icons/rank/globalrank$length.png'];
-    if (image == null) return Container();
-    return Image(image: image);
-  }
+  // Widget _infoIcons(BuildContext context) => Column(
+  //       crossAxisAlignment: CrossAxisAlignment.end,
+  //       children: <Widget>[
+  //         if (_showGlobalRank) _globalRank(),
+  //         _battleyeTypeIcon(),
+  //         _pvpType(),
+  //       ],
+  //     );
 
-  String? get _globalRankValue {
-    if (widget.highscoresCtrl.category.value == 'Experience gained') {
-      return (widget.highscoresCtrl.rawList.indexOf(widget.item) + 1).toString();
-    }
-    if (widget.highscoresCtrl.category.value == 'Online time') {
-      return (widget.highscoresCtrl.rawList.indexOf(widget.item) + 1).toString();
-    }
-    return widget.item.rank.toString();
-  }
+  // Widget _infoIcon({required Widget child}) => Container(
+  //       height: 20,
+  //       margin: const EdgeInsets.only(bottom: 4),
+  //       child: child,
+  //     );
+
+  // Widget _battleyeTypeIcon() {
+  //   final String? type = widget.item.world?.battleyeType?.toLowerCase();
+  //   final AssetImage? image = widget.highscoresCtrl.images['assets/icons/battleye_type/$type.png'];
+  //   if (image == null) return _infoIcon(child: Container());
+  //   return _infoIcon(child: Image(image: image));
+  // }
+
+  // Widget _pvpType() {
+  //   final String? type = widget.item.world?.pvpType?.toLowerCase().replaceAll(' ', '_');
+  //   final AssetImage? image = widget.highscoresCtrl.images['assets/icons/pvp_type/$type.png'];
+  //   if (image == null) return _infoIcon(child: Container());
+  //   return _infoIcon(child: Image(image: image));
+  // }
+
+  // Widget _globalRank() => _infoIcon(
+  //       child: Stack(
+  //         alignment: Alignment.center,
+  //         children: <Widget>[
+  //           _globalRankImage(),
+  //           Container(
+  //             padding: const EdgeInsets.only(left: 16),
+  //             child: Text(
+  //               _globalRankValue ?? '',
+  //               style: const TextStyle(
+  //                 fontSize: 11,
+  //                 height: 13 / 11,
+  //                 fontWeight: FontWeight.w600,
+  //                 color: AppColors.bgDefault,
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+
+  // Widget _globalRankImage() {
+  //   final int length = (_globalRankValue ?? ' ').length;
+  //   final AssetImage? image = widget.highscoresCtrl.images['assets/icons/rank/globalrank$length.png'];
+  //   if (image == null) return Container();
+  //   return Image(image: image);
+  // }
+
+  // String? get _globalRankValue {
+  //   if (widget.highscoresCtrl.category.value == 'Experience gained') {
+  //     return (widget.highscoresCtrl.rawList.indexOf(widget.item) + 1).toString();
+  //   }
+  //   if (widget.highscoresCtrl.category.value == 'Online time') {
+  //     return (widget.highscoresCtrl.rawList.indexOf(widget.item) + 1).toString();
+  //   }
+  //   return widget.item.rank.toString();
+  // }
 
   Future<void> _loadCharacter(BuildContext context) async {
     if (widget.item.name == null) return;

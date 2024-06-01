@@ -53,26 +53,30 @@ class _HighscoresPageState extends State<HighscoresPage> {
   }
 
   @override
-  Widget build(BuildContext context) => AppPage(
-        screenName: 'highscores',
-        postFrameCallback: _postFrameCallback,
-        onRefresh: _loadHighscores,
-        onNotification: _onScrollNotification,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        body: Column(
-          children: <Widget>[
-            //
-            HighscoresFilterBar(),
+  Widget build(BuildContext context) {
+    final bool wide = MediaQuery.of(context).size.width >= 800;
 
-            const SizedBox(height: 20),
+    return AppPage(
+      screenName: 'highscores',
+      postFrameCallback: _postFrameCallback,
+      onRefresh: _loadHighscores,
+      onNotification: _onScrollNotification,
+      padding: wide ? const EdgeInsets.fromLTRB(16, 16, 16, 60) : EdgeInsets.zero,
+      topWidget: wide ? HighscoresFilterBar() : null,
+      body: Column(
+        children: <Widget>[
+          //
+          if (!wide) HighscoresFilterBar(),
+          if (!wide) const SizedBox(height: 5),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: _body(),
-            ),
-          ],
-        ),
-      );
+          Padding(
+            padding: wide ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 16),
+            child: _body(),
+          ),
+        ],
+      ),
+    );
+  }
 
   bool _onScrollNotification(ScrollNotification scrollInfo) {
     double maxScroll;
@@ -134,16 +138,12 @@ class _HighscoresPageState extends State<HighscoresPage> {
 
     final HighscoresEntry item = highscoresCtrl.filteredList[index];
 
-    return Padding(
-      padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
-      child: HighscoresItemCard(
-        index: index,
-        item: item,
-        disableOnTap: highscoresCtrl.category.value == 'Rook Master',
-        characterCtrl: characterCtrl,
-        highscoresCtrl: highscoresCtrl,
-        userCtrl: userCtrl,
-      ),
+    return HighscoresItemCard(
+      index: index,
+      item: item,
+      characterCtrl: characterCtrl,
+      highscoresCtrl: highscoresCtrl,
+      userCtrl: userCtrl,
     );
   }
 

@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
         postFrameCallback: _loadHomeData,
         onRefresh: _loadHomeData,
         maxWidth: 860,
-        topWidget: MediaQuery.of(context).size.width < 1000 ? null : HomeScreenGrid(),
+        topWidget: MediaQuery.of(context).size.width >= 1280 ? HomeScreenGrid() : null,
         body: Shimmer(
           child: Builder(
             builder: (_) {
@@ -101,6 +101,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _bodyWide() => Column(
         children: <Widget>[
+          if (MediaQuery.of(context).size.width < 1280) HomeScreenGrid(),
+          if (MediaQuery.of(context).size.width < 1280) const SizedBox(height: 16, width: 16),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

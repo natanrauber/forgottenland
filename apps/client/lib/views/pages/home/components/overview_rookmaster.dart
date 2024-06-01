@@ -43,6 +43,7 @@ class _OverviewRookmasterState extends State<OverviewRookmaster> {
         () => ShimmerLoading(
           isLoading: homeCtrl.overviewRookmaster.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
+            enabled: !homeCtrl.isLoading.value,
             height: 143,
             onTap: homeCtrl.overviewRookmaster.isEmpty
                 ? homeCtrl.getOverview

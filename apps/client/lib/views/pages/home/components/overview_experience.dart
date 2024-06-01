@@ -43,6 +43,7 @@ class _OverviewExperienceState extends State<OverviewExperience> {
         () => ShimmerLoading(
           isLoading: homeCtrl.overviewExperience.isEmpty && homeCtrl.isLoading.value,
           child: ClickableContainer(
+            enabled: !homeCtrl.isLoading.value,
             height: 143,
             onTap: homeCtrl.overviewExperience.isEmpty
                 ? homeCtrl.getOverview
