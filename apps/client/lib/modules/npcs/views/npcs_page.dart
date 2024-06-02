@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:forgottenland/modules/npcs/controllers/npcs_controller.dart';
 import 'package:forgottenland/modules/npcs/views/components/npc_widget.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/theme/theme.dart';
+import 'package:forgottenland/views/widgets/src/fields/custom_text_field.widget.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
 import 'package:forgottenland/views/widgets/src/other/error_builder.dart';
 import 'package:get/get.dart';
@@ -16,6 +19,8 @@ class NpcsPage extends StatefulWidget {
 class _NpcsPageState extends State<NpcsPage> {
   NpcsController npcsCtrl = Get.find<NpcsController>();
 
+  Timer searchTimer = Timer(Duration.zero, () {});
+
   @override
   Widget build(BuildContext context) => AppPage(
         screenName: 'npcs',
@@ -25,6 +30,8 @@ class _NpcsPageState extends State<NpcsPage> {
           children: <Widget>[
             _title(),
             _divider(),
+            _searchBar(),
+            const SizedBox(height: 10),
             _body(),
           ],
         ),
@@ -38,6 +45,20 @@ class _NpcsPageState extends State<NpcsPage> {
   Widget _divider() => Container(
         margin: const EdgeInsets.only(top: 10, bottom: 20),
         child: const Divider(height: 1),
+      );
+
+  Widget _searchBar() => CustomTextField(
+        loading: npcsCtrl.isLoading.isTrue,
+        label: 'Search',
+        controller: npcsCtrl.searchController,
+        onChanged: (_) {
+          if (searchTimer.isActive) searchTimer.cancel();
+
+          searchTimer = Timer(
+            const Duration(milliseconds: 250),
+            () => npcsCtrl.filterList(),
+          );
+        },
       );
 
   Widget _body() => Obx(

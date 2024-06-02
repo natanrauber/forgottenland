@@ -25,32 +25,8 @@ class _NpcWidgetState extends State<NpcWidget> {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.fromLTRB(25, 20, 20, 20),
         decoration: _decoration(context),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      _sprite(),
-                      const SizedBox(width: 10),
-                      Expanded(child: _name()),
-                      const SizedBox(width: 5),
-                      _toggleViewButton(),
-                    ],
-                  ),
-                  if (expandedView) _divider(),
-                  if (expandedView) _text(),
-                ],
-              ),
-            ),
-          ],
-        ),
+        child: expandedView ? _expandedBody() : _header(),
       );
 
   BoxDecoration _decoration(BuildContext context) => BoxDecoration(
@@ -59,15 +35,43 @@ class _NpcWidgetState extends State<NpcWidget> {
         border: Border.all(color: AppColors.bgPaper),
       );
 
+  Widget _header() => ClickableContainer(
+        onTap: _toggleView,
+        padding: const EdgeInsets.all(12),
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgHover,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: <Widget>[
+            _sprite(),
+            const SizedBox(width: 10),
+            Expanded(child: _name()),
+            const SizedBox(width: 5),
+            _toggleViewButton(),
+          ],
+        ),
+      );
+
+  Widget _expandedBody() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _header(),
+          _divider(margin: const EdgeInsets.symmetric(horizontal: 12)),
+          _text(),
+        ],
+      );
+
   Widget _sprite() => WebImage(
         widget.npc.imgUrl,
-        backgroundColor: AppColors.bgPaper,
-        borderColor: AppColors.bgPaper,
+        backgroundColor: Colors.transparent,
+        borderColor: Colors.transparent,
       );
 
   Widget _name() {
     if (expandedView) {
-      return SelectableText(
+      return Text(
         widget.npc.name ?? '',
         style: const TextStyle(
           fontSize: 13,
@@ -90,19 +94,22 @@ class _NpcWidgetState extends State<NpcWidget> {
     );
   }
 
-  Widget _divider() => Container(
-        margin: const EdgeInsets.fromLTRB(0, 10, 0, 15),
+  Widget _divider({EdgeInsetsGeometry? margin}) => Container(
+        margin: margin,
         child: const Divider(height: 1, color: AppColors.bgDefault),
       );
 
-  Widget _text() => BetterText(
-        _resultText,
-        style: const TextStyle(
-          fontSize: 12,
-          height: 18 / 12,
-          color: AppColors.textSecondary,
+  Widget _text() => Padding(
+        padding: const EdgeInsets.all(12),
+        child: BetterText(
+          _resultText,
+          style: const TextStyle(
+            fontSize: 12,
+            height: 18 / 12,
+            color: AppColors.textSecondary,
+          ),
+          textAlign: TextAlign.left,
         ),
-        textAlign: TextAlign.left,
       );
 
   String get _resultText {
@@ -111,7 +118,7 @@ class _NpcWidgetState extends State<NpcWidget> {
     final List<String> aux = (widget.npc.transcripts ?? '').split('\n');
     for (String e in aux) {
       e = e.contains('Player:') ? '<blue>$e<blue>' : '<lBlue>$e<lBlue>';
-      buffer.write('\n$e');
+      buffer.write(buffer.isEmpty ? e : '\n$e');
     }
     return buffer.toString();
   }
