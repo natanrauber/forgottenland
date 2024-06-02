@@ -55,7 +55,7 @@ class _BooksPageState extends State<BooksPage> {
           if (searchTimer.isActive) searchTimer.cancel();
 
           searchTimer = Timer(
-            const Duration(milliseconds: 500),
+            const Duration(milliseconds: 250),
             () => booksCtrl.filterList(),
           );
         },

@@ -27,43 +27,68 @@ class _BookWidgetState extends State<BookWidget> {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.fromLTRB(25, 20, 20, 20),
         decoration: _decoration(context),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      _sprites(),
-                      const SizedBox(width: 5),
-                      Expanded(child: _name()),
-                      const SizedBox(width: 5),
-                      _toggleViewButton(),
-                    ],
-                  ),
-                  if (expandedView && _authorText != null) _divider(),
-                  if (expandedView && _authorText != null) _author(),
-                  if (expandedView || _descriptionText != null) _divider(),
-                  if (!expandedView && _descriptionText != null) _description(),
-                  if (expandedView) _text(),
-                  if (expandedView) _divider(),
-                  if (expandedView) _locations(),
-                ],
-              ),
+        child: expandedView ? _expandedBody() : _collapsedBody(),
+      );
+
+  Widget _collapsedBody() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _header(),
+          if (_descriptionText != null) ...<Widget>[
+            _divider(margin: const EdgeInsets.symmetric(horizontal: 12)),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: _description(),
             ),
           ],
-        ),
+        ],
+      );
+
+  Widget _expandedBody() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _header(),
+          _divider(margin: const EdgeInsets.symmetric(horizontal: 12)),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                if (_authorText != null) _author(),
+                if (_authorText != null) _divider(margin: const EdgeInsets.symmetric(vertical: 12)),
+                _text(),
+                _divider(margin: const EdgeInsets.symmetric(vertical: 12)),
+                _locations(),
+              ],
+            ),
+          ),
+        ],
       );
 
   BoxDecoration _decoration(BuildContext context) => BoxDecoration(
         color: AppColors.bgPaper,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors.bgPaper),
+      );
+
+  Widget _header() => ClickableContainer(
+        onTap: _toggleView,
+        padding: const EdgeInsets.all(12),
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgHover,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: <Widget>[
+            _sprites(),
+            const SizedBox(width: 5),
+            Expanded(child: _name()),
+            const SizedBox(width: 5),
+            _toggleViewButton(),
+          ],
+        ),
       );
 
   Widget _sprites() => Container(
@@ -99,8 +124,8 @@ class _BookWidgetState extends State<BookWidget> {
               src,
               fit: BoxFit.none,
               width: snapshot.data?.width.toDouble(),
-              backgroundColor: AppColors.bgPaper,
-              borderColor: AppColors.bgPaper,
+              backgroundColor: Colors.transparent,
+              borderColor: Colors.transparent,
             ),
           );
         }
@@ -111,7 +136,7 @@ class _BookWidgetState extends State<BookWidget> {
 
   Widget _name() {
     if (expandedView) {
-      return SelectableText(
+      return Text(
         widget.book.name ?? '',
         style: const TextStyle(
           fontSize: 13,
@@ -184,8 +209,8 @@ class _BookWidgetState extends State<BookWidget> {
     return result;
   }
 
-  Widget _divider() => Container(
-        margin: const EdgeInsets.fromLTRB(0, 10, 0, 15),
+  Widget _divider({EdgeInsetsGeometry? margin}) => Container(
+        margin: margin,
         child: const Divider(height: 1, color: AppColors.bgDefault),
       );
 
