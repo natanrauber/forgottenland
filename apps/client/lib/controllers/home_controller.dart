@@ -6,6 +6,7 @@ import 'package:forgottenland/utils/src/routes.dart';
 import 'package:get/get.dart';
 import 'package:http_client/http_client.dart';
 import 'package:models/models.dart';
+import 'package:utils/utils.dart';
 
 class HomeController extends Controller {
   HomeController(this.httpClient);
@@ -19,7 +20,8 @@ class HomeController extends Controller {
   RxList<HighscoresEntry> overviewExperience = <HighscoresEntry>[].obs;
   RxList<HighscoresEntry> overviewOnline = <HighscoresEntry>[].obs;
 
-  Timer? timer;
+  Timer? timerOverview;
+  Timer? timerNews;
 
   Future<MyHttpResponse> getNews({bool showLoading = true}) async {
     if (showLoading) isLoading.value = true;
@@ -59,21 +61,27 @@ class HomeController extends Controller {
   }
 
   void runTimer() {
-    Timer.periodic(
-      const Duration(minutes: 5),
-      (_) {
-        if (isLoading.value) return;
-        if (Get.currentRoute != Routes.home.name) return;
-        getOverview();
-      },
-    );
-    Timer.periodic(
-      const Duration(hours: 1),
-      (_) {
-        if (isLoading.value) return;
-        if (Get.currentRoute != Routes.home.name) return;
-        getNews(showLoading: false);
-      },
-    );
+    if (timerOverview == null) {
+      timerOverview = Timer.periodic(
+        const Duration(minutes: 5),
+        (_) {
+          if (isLoading.value) return;
+          if (Get.currentRoute != Routes.home.name) return;
+          getOverview();
+        },
+      );
+      customPrint('Overview timer started.');
+    }
+    if (timerNews == null) {
+      timerNews = Timer.periodic(
+        const Duration(hours: 1),
+        (_) {
+          if (isLoading.value) return;
+          if (Get.currentRoute != Routes.home.name) return;
+          getNews(showLoading: false);
+        },
+      );
+      customPrint('News timer started.');
+    }
   }
 }
