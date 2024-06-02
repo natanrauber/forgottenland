@@ -4,104 +4,86 @@ import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
 import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:utils/utils.dart';
 
 class GuildPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AppPage(
         screenName: 'about_fl',
-        padding: const EdgeInsets.symmetric(vertical: 20),
         body: Column(
           children: <Widget>[
             //
             Container(
               constraints: const BoxConstraints(maxWidth: 600),
-              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: <Widget>[
                   //
-                  ClipOval(
-                    child: Container(
-                      height: 200,
-                      width: 200,
-                      padding: const EdgeInsets.all(10),
+                  const SizedBox(height: 16),
+
+                  Container(
+                    height: 200,
+                    width: 200,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
                       color: Colors.black,
-                      child: Image.asset(
-                        'assets/logo.jpg',
-                        fit: BoxFit.contain,
-                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Image.asset(
+                      'assets/logo.jpg',
+                      fit: BoxFit.contain,
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 30),
 
                   _text(
-                    '     We live and fight for a forgotten land, where the first mysteries intrigued the first warriors. In time, many have left us, entering the depths of oblivion forever. Through this union, we forge eternal alliances, where we insert our name in history.',
+                    'We live and fight for a forgotten land, where the first mysteries intrigued the first warriors. In time, many have left us, entering the depths of oblivion forever. Through this union, we forge eternal alliances, where we insert our name in history.',
                   ),
 
                   const SizedBox(height: 20),
 
                   _text(
-                    '     The guild was founded on Calmera on Apr 14 2020. It is currently active and always open for applications.',
+                    'The guild was founded on Calmera on Apr 14 2020. It is currently active and always open for applications.',
                   ),
 
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 50),
 
-                  _text(
-                    'You can find us on instagram:',
-                  ),
+                  _viewOnTibiaWebsiteButton(),
+
+                  const SizedBox(height: 50),
                 ],
               ),
             ),
-
-            Container(
-              height: 120,
-              alignment: Alignment.center,
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(right: 40),
-                itemCount: LIST.member.length,
-                itemBuilder: _itemBuilder,
-              ),
-            ),
-
-            const SizedBox(height: 50),
-
-            _viewOnTibiaWebsiteButton(),
-
-            const SizedBox(height: 50),
           ],
         ),
       );
 
-  Widget _text(String text) => SelectableText(
-        text,
-        style: const TextStyle(
-          color: AppColors.textSecondary,
+  Widget _text(String text) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 3),
+        child: SelectableText(
+          text,
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+          ),
+          textAlign: TextAlign.justify,
         ),
-        textAlign: TextAlign.justify,
       );
 
-  Widget _itemBuilder(BuildContext context, int index) => ClickableContainer(
-        onTap: () {
-          if (MAP.instagram[LIST.member[index]] != null) {
-            launchUrlString(
-              MAP.instagram[LIST.member[index]]!,
-            );
-          }
-        },
-        width: 120,
-        child: Image.asset('assets/outfit/${LIST.member[index]}.png'),
-      );
+  // Widget _itemBuilder(BuildContext context, int index) => ClickableContainer(
+  //       onTap: () {
+  //         if (MAP.instagram[LIST.member[index]] != null) {
+  //           launchUrlString(
+  //             MAP.instagram[LIST.member[index]]!,
+  //           );
+  //         }
+  //       },
+  //       width: 120,
+  //       child: Image.asset('assets/outfit/${LIST.member[index]}.png'),
+  //     );
 
   Widget _viewOnTibiaWebsiteButton() => ClickableContainer(
         onTap: () => launchUrlString(
           'https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Forgotten+Land',
         ),
-        constraints: const BoxConstraints(maxWidth: 600),
-        margin: const EdgeInsets.all(20),
         padding: const EdgeInsets.all(20),
         color: AppColors.bgPaper,
         hoverColor: AppColors.bgHover,
