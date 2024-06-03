@@ -4,6 +4,7 @@ import 'package:forgottenland/controllers/controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
 import 'package:forgottenland/rxmodels/world_rxmodel.dart';
 import 'package:forgottenland/utils/src/paths.dart';
+import 'package:forgottenland/utils/src/routes.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:http_client/http_client.dart';
@@ -31,6 +32,8 @@ class OnlineController extends Controller {
   RxBool enableLocation = true.obs;
   RxBool enablePvpType = true.obs;
   RxBool enableWorldType = true.obs;
+
+  Timer? timer;
 
   Future<void> getOnlineCharacters() async {
     if (isLoading.isTrue) return;
@@ -108,5 +111,26 @@ class OnlineController extends Controller {
     if (response.success) _populateList(onlineTimes, response);
 
     isLoading.value = false;
+  }
+
+  void runTimer() {
+    if (timer == null) {
+      timer = Timer.periodic(
+        const Duration(minutes: 5),
+        (_) {
+          if (Get.currentRoute != Routes.online.name) return cancelTimer();
+          if (isLoading.value) return;
+          getOnlineCharacters();
+        },
+      );
+      customPrint('Periodic timer started: online [5 min]');
+    }
+  }
+
+  void cancelTimer() {
+    if (timer == null) return;
+    timer?.cancel();
+    timer = null;
+    customPrint('Periodic timer stopped: online');
   }
 }

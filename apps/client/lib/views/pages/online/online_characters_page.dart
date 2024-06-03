@@ -17,14 +17,25 @@ class _OnlineCharactersPageState extends State<OnlineCharactersPage> {
   final CharacterController characterCtrl = Get.find<CharacterController>();
   final OnlineController onlineCtrl = Get.find<OnlineController>();
 
+  Future<void> _loadOnlineData() async {
+    await onlineCtrl.getOnlineCharacters();
+    onlineCtrl.runTimer();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    onlineCtrl.cancelTimer();
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool wide = MediaQuery.of(context).size.width >= 800;
 
     return AppPage(
       screenName: 'online',
-      postFrameCallback: onlineCtrl.getOnlineCharacters,
-      onRefresh: onlineCtrl.getOnlineCharacters,
+      postFrameCallback: _loadOnlineData,
+      onRefresh: _loadOnlineData,
       padding: wide ? const EdgeInsets.fromLTRB(16, 16, 16, 60) : EdgeInsets.zero,
       topWidget: wide ? OnlineFilters() : null,
       body: Column(

@@ -70,7 +70,7 @@ class HomeController extends Controller {
           getOverview();
         },
       );
-      customPrint('Overview timer started.');
+      customPrint('Periodic timer started: overview [5 min]');
     }
     if (timerNews == null) {
       timerNews = Timer.periodic(
@@ -83,7 +83,7 @@ class HomeController extends Controller {
           getNews(showLoading: false);
         },
       );
-      customPrint('News timer started.');
+      customPrint('Periodic timer started: news [1 hour]');
     }
   }
 }
