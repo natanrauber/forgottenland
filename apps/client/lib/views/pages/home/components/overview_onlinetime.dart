@@ -176,7 +176,7 @@ class _OverviewOnlinetimeState extends State<OverviewOnlinetime> {
   String _itemValueText(HighscoresEntry item) {
     final bool narrow = MediaQuery.of(context).size.width < 1280;
     final bool orange = (int.tryParse(item.onlineTime?.substring(0, 2) ?? '') ?? 0) >= 6;
-    final bool red = (int.tryParse(item.onlineTime?.substring(0, 2) ?? '') ?? 0) >= 10;
+    final bool red = (int.tryParse(item.onlineTime?.substring(0, 2) ?? '') ?? 0) >= 9;
     if (narrow && red) return '<red>${item.onlineTime ?? ''}<red>';
     if (narrow && orange) return '<orange>${item.onlineTime ?? ''}<orange>';
     if (narrow) return item.onlineTime ?? '';

@@ -251,30 +251,61 @@ class _CharacterPageState extends State<CharacterPage> {
         if (onlinetime?.today?.onlineTime != null)
           <String, String>{
             'name': 'Today:',
-            'value': '<yellow>${onlinetime?.today?.onlineTime ?? ''}<yellow>',
+            'value': _onlineTimeValue('today', onlinetime?.today?.onlineTime),
           },
         if (onlinetime?.yesterday?.onlineTime != null)
           <String, String>{
             'name': 'Yesterday:',
-            'value': '<yellow>${onlinetime?.yesterday?.onlineTime ?? ''}<yellow>',
+            'value': _onlineTimeValue('yesterday', onlinetime?.yesterday?.onlineTime),
           },
         if (onlinetime?.last7days?.onlineTime != null)
           <String, String>{
             'name': '7 days:',
-            'value': '<yellow>${onlinetime?.last7days?.onlineTime ?? ''}<yellow>',
+            'value': _onlineTimeValue('7', onlinetime?.last7days?.onlineTime),
           },
         if (onlinetime?.last30days?.onlineTime != null)
           <String, String>{
             'name': '30 days:',
-            'value': '<yellow>${onlinetime?.last30days?.onlineTime ?? ''}<yellow>',
+            'value': _onlineTimeValue('30', onlinetime?.last30days?.onlineTime),
           },
         if (onlinetime?.last365days?.onlineTime != null)
           <String, String>{
             'name': '365 days:',
-            'value': '<yellow>${onlinetime?.last365days?.onlineTime ?? ''}<yellow>',
+            'value': _onlineTimeValue('365', onlinetime?.last365days?.onlineTime),
           },
       ],
     );
+  }
+
+  String _onlineTimeValue(String timeframe, String? time) {
+    final int hours = int.tryParse(time?.split('h').first ?? '') ?? 0;
+    int days = 0;
+    if (time?.split('d').length != 1) {
+      days = int.tryParse(time?.split('d').first ?? '') ?? 0;
+    }
+
+    if (timeframe.contains('7')) {
+      if (days >= 3) return '<red>${time ?? ''}<red>';
+      if (days >= 2) return '<orange>${time ?? ''}<orange>';
+      if (days >= 1) return '<yellow>${time ?? ''}<yellow>';
+      return time ?? '';
+    }
+    if (timeframe.contains('30')) {
+      if (days >= 12) return '<red>${time ?? ''}<red>';
+      if (days >= 8) return '<orange>${time ?? ''}<orange>';
+      if (days >= 4) return '<yellow>${time ?? ''}<yellow>';
+      return time ?? '';
+    }
+    if (timeframe.contains('365')) {
+      if (days >= 135) return '<red>${time ?? ''}<red>';
+      if (days >= 90) return '<orange>${time ?? ''}<orange>';
+      if (days >= 45) return '<yellow>${time ?? ''}<yellow>';
+      return time ?? '';
+    }
+    if (hours >= 9) return '<red>${time ?? ''}<red>';
+    if (hours >= 6) return '<orange>${time ?? ''}<orange>';
+    if (hours >= 3) return '<yellow>${time ?? ''}<yellow>';
+    return time ?? '';
   }
 
   Widget _buttonViewOfficialWebsite() => ClickableContainer(

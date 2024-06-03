@@ -183,15 +183,15 @@ class _HighscoresItemCardState extends State<HighscoresItemCard> {
     }
     if (timeframe.contains('30')) {
       if (days >= 12) return '$_rankName <red>${widget.item.onlineTime ?? ''}<red>';
-      if (days >= 7) return '$_rankName <orange>${widget.item.onlineTime ?? ''}<orange>';
+      if (days >= 8) return '$_rankName <orange>${widget.item.onlineTime ?? ''}<orange>';
       return '$_rankName <yellow>${widget.item.onlineTime ?? ''}<yellow>';
     }
     if (timeframe.contains('365')) {
-      if (days >= 150) return '$_rankName <red>${widget.item.onlineTime ?? ''}<red>';
+      if (days >= 135) return '$_rankName <red>${widget.item.onlineTime ?? ''}<red>';
       if (days >= 90) return '$_rankName <orange>${widget.item.onlineTime ?? ''}<orange>';
       return '$_rankName <yellow>${widget.item.onlineTime ?? ''}<yellow>';
     }
-    if (hours >= 10) return '$_rankName <red>${widget.item.onlineTime ?? ''}<red>';
+    if (hours >= 9) return '$_rankName <red>${widget.item.onlineTime ?? ''}<red>';
     if (hours >= 6) return '$_rankName <orange>${widget.item.onlineTime ?? ''}<orange>';
     return '$_rankName <yellow>${widget.item.onlineTime ?? ''}<yellow>';
   }
