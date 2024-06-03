@@ -83,7 +83,7 @@ class BetterText extends StatelessWidget {
   final TextAlign? textAlign;
   final TextDirection? textDirection;
   final int? maxLines;
-  final bool selectable; // overflow not working with selectable
+  final bool selectable; // overflow does not work with selectable
 
   @override
   Widget build(BuildContext context) => selectable
@@ -121,11 +121,8 @@ class BetterText extends StatelessWidget {
   String _applyStyles(Pattern pattern, List<InlineSpan> children) => text.splitMapJoin(
         pattern,
         onMatch: (Match match) {
-          String? formattedText;
-          TextStyle newStyle;
-
-          newStyle = const TextStyle().merge(style);
-          formattedText = match[0];
+          String? formattedText = match[0];
+          TextStyle newStyle = const TextStyle();
 
           for (final String tag in _tags.keys) {
             if (RegExp(_tags[tag]!['regex']! as String).hasMatch(match[0]!)) {
@@ -134,27 +131,20 @@ class BetterText extends StatelessWidget {
             }
           }
 
-          children.add(
-            TextSpan(
-              text: formattedText,
-              style: newStyle,
-            ),
-          );
+          if (formattedText != null && formattedText.isNotEmpty) {
+            children.add(
+              TextSpan(
+                text: formattedText,
+                style: newStyle,
+              ),
+            );
+          }
 
           return '';
         },
         onNonMatch: (String text) {
-          children.add(TextSpan(text: text, style: style));
+          if (text.isNotEmpty) children.add(TextSpan(text: text, style: style));
           return '';
         },
-      );
-
-  TextSpan normalSpan(String text) => TextSpan(text: text);
-
-  TextSpan boldSpan(String text) => TextSpan(
-        text: text,
-        style: const TextStyle(
-          fontWeight: FontWeight.w700,
-        ),
       );
 }

@@ -100,7 +100,7 @@ class _AppPageState extends State<AppPage> {
                     ),
 
                     SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                       child: Column(
                         children: <Widget>[
                           if (widget.topWidget != null)
@@ -149,7 +149,7 @@ class _AppPageState extends State<AppPage> {
   }
 
   Widget _disabledPageBody() => Container(
-        margin: const EdgeInsets.all(20),
+        margin: const EdgeInsets.all(16),
         child: Column(
           children: <Widget>[
             SelectableText.rich(

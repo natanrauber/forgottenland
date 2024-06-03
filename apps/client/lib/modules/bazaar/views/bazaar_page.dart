@@ -56,10 +56,10 @@ class _BazaarPageState extends State<BazaarPage> {
       );
 
   Widget _listBuilder() => ListView.builder(
+        shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: bazaarCtrl.filteredList.length,
         itemBuilder: _itemBuilder,
-        shrinkWrap: true,
       );
 
   Widget _itemBuilder(BuildContext context, int index) {

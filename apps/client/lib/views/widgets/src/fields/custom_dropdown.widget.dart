@@ -173,7 +173,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
   TextFieldProps get _searchFieldProps => TextFieldProps(
         cursorColor: Colors.white,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         style: appTheme().textTheme.bodyMedium?.copyWith(
               color: AppColors.textPrimary,
             ),

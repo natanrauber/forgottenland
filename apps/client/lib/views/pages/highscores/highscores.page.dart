@@ -118,10 +118,10 @@ class _HighscoresPageState extends State<HighscoresPage> {
         if (hideData) _loginText(),
 
         ListView.builder(
+          shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: itemCount + 1,
           itemBuilder: (BuildContext context, int index) => _itemBuilder(context, index, itemCount),
-          shrinkWrap: true,
         ),
       ],
     );

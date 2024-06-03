@@ -95,6 +95,7 @@ class _OverviewOnlineState extends State<OverviewOnline> {
         children: <Widget>[
           ListView.builder(
             shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: homeCtrl.overviewOnline.length > 25 ? 25 : homeCtrl.overviewOnline.length,
             itemBuilder: (_, int index) => _item(homeCtrl.overviewOnline[index]),
           ),

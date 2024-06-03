@@ -54,7 +54,6 @@ class _SplashPageState extends State<SplashPage> {
         appBar: AppHeader(),
         body: Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.all(20),
           decoration: _backgroundDecoration,
           child: _loading(),
         ),

@@ -17,7 +17,7 @@ class _CardAppInfoState extends State<CardAppInfo> {
   Widget build(BuildContext context) => Container(
         width: double.maxFinite,
         margin: const EdgeInsets.symmetric(horizontal: 20),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         decoration: _decoration,
         child: _body(),
       );

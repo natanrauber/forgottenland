@@ -84,7 +84,7 @@ class GuildPage extends StatelessWidget {
         onTap: () => launchUrlString(
           'https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Forgotten+Land',
         ),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         color: AppColors.bgPaper,
         hoverColor: AppColors.bgHover,
         decoration: BoxDecoration(

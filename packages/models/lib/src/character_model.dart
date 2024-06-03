@@ -195,10 +195,12 @@ class HighscoresEntryTimeframes {
     if (json['yesterday'] is Map) yesterday = HighscoresEntry.fromJson(json['yesterday'] as Map<String, dynamic>);
     if (json['last7days'] is Map) last7days = HighscoresEntry.fromJson(json['last7days'] as Map<String, dynamic>);
     if (json['last30days'] is Map) last30days = HighscoresEntry.fromJson(json['last30days'] as Map<String, dynamic>);
+    if (json['last365days'] is Map) last365days = HighscoresEntry.fromJson(json['last365days'] as Map<String, dynamic>);
   }
 
   HighscoresEntry? today;
   HighscoresEntry? yesterday;
   HighscoresEntry? last7days;
   HighscoresEntry? last30days;
+  HighscoresEntry? last365days;
 }

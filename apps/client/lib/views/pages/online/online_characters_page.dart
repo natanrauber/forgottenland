@@ -65,10 +65,10 @@ class _OnlineCharactersPageState extends State<OnlineCharactersPage> {
       );
 
   Widget _listBuilder() => ListView.builder(
+        shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: onlineCtrl.filteredList.length,
         itemBuilder: _itemBuilder,
-        shrinkWrap: true,
       );
 
   Widget _itemBuilder(BuildContext context, int index) {

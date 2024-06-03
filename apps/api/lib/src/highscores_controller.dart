@@ -84,7 +84,7 @@ class HighscoresController {
     if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
-      Record? record = await _getExpGain(world, category, page, table, date);
+      Record? record = await localGetExpGain(world, category, page, table, date);
       if (record == null) return ApiResponse.noContent();
       return ApiResponse.success(data: record.toJson());
     } catch (e) {
@@ -92,7 +92,7 @@ class HighscoresController {
     }
   }
 
-  Future<Record?> _getExpGain(String world, String category, int? page, String table, String date) async {
+  Future<Record?> localGetExpGain(String world, String category, int? page, String table, String date) async {
     dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
     if (response is! Map<String, dynamic>) return null;
     if (response['data'] is! Map<String, dynamic>) return null;
@@ -115,7 +115,7 @@ class HighscoresController {
     if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
-      Online? online = await _getOnlineTime(world, category, page, table, date);
+      Online? online = await localGetOnlineTime(world, category, page, table, date);
       if (online == null) return ApiResponse.noContent();
       return ApiResponse.success(data: online.toJson());
     } catch (e) {
@@ -123,7 +123,7 @@ class HighscoresController {
     }
   }
 
-  Future<Online?> _getOnlineTime(String world, String category, int? page, String table, String date) async {
+  Future<Online?> localGetOnlineTime(String world, String category, int? page, String table, String date) async {
     dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
     if (response is! Map<String, dynamic>) return null;
     if (response['data'] is! Map<String, dynamic>) return null;
@@ -141,7 +141,7 @@ class HighscoresController {
     if (page != null && page < 0) return ApiResponse.error('Invalid page number');
 
     try {
-      Record? record = await _getRookmaster(world, page);
+      Record? record = await localGetRookmaster(world, page);
       if (record == null) return ApiResponse.noContent();
       return ApiResponse.success(data: record.toJson());
     } catch (e) {
@@ -149,7 +149,7 @@ class HighscoresController {
     }
   }
 
-  Future<Record?> _getRookmaster(String world, int? page) async {
+  Future<Record?> localGetRookmaster(String world, int? page) async {
     dynamic response = await databaseClient.from('rook-master').select().order('date').limit(1).maybeSingle();
     if (response == null) return null;
 
@@ -165,21 +165,21 @@ class HighscoresController {
 
   Future<Response> overview(Request request) async {
     try {
-      Online? rOnlinetime = await _getOnlineTime(
+      Online? rOnlinetime = await localGetOnlineTime(
         'all',
         'onlinetime+today',
         1,
         tableToCategory['onlinetime+today']!,
         dateToCategory['onlinetime+today']!,
       );
-      Record? rExpgain = await _getExpGain(
+      Record? rExpgain = await localGetExpGain(
         'all',
         'experiencegained+today',
         1,
         tableToCategory['experiencegained+today']!,
         dateToCategory['experiencegained+today']!,
       );
-      Record? rRookmaster = await _getRookmaster('all', 1);
+      Record? rRookmaster = await localGetRookmaster('all', 1);
       Record? rExperience = await _getFromTibiaData('all', 'experience', 1);
       Online? rOnline = await onlineCtrl.onlineNow();
 
