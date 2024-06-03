@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/online_controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
@@ -20,8 +18,6 @@ class OnlineFilters extends StatefulWidget {
 class _OnlineFiltersState extends State<OnlineFilters> {
   final OnlineController onlineCtrl = Get.find<OnlineController>();
   final WorldsController worldsCtrl = Get.find<WorldsController>();
-
-  Timer timer = Timer(Duration.zero, () {});
 
   @override
   Widget build(BuildContext context) => Obx(
@@ -61,6 +57,8 @@ class _OnlineFiltersState extends State<OnlineFilters> {
                 child: Row(
                   children: <Widget>[
                     Expanded(child: _searchBar()),
+                    const SizedBox(width: 10),
+                    _searchButton(),
                     if (anyFilterSelected) const SizedBox(width: 10),
                     if (anyFilterSelected) _clearButton(),
                   ],
@@ -94,7 +92,7 @@ class _OnlineFiltersState extends State<OnlineFilters> {
     EdgeInsets margin = const EdgeInsets.only(right: 10),
   }) =>
       Container(
-        width: _dropdownWidth(bigger),
+        width: _dropdownWidth,
         margin: margin,
         child: CustomDropdown<T>(
           loading: onlineCtrl.isLoading.value,
@@ -110,13 +108,12 @@ class _OnlineFiltersState extends State<OnlineFilters> {
         ),
       );
 
-  double _dropdownWidth(bool bigger) {
+  double get _dropdownWidth {
     final double width = MediaQuery.of(context).size.width;
-
-    if (width < 460) return (bigger ? 1.5 : 1) * (width - 50) / 2;
-    if (width < 630) return (bigger ? 1.5 : 1) * (width - 60) / 3;
-    if (width < 800) return (bigger ? 1.5 : 1) * (width - 70) / 4;
-    return (bigger ? 1.5 : 1) * (800 - 70) / 4;
+    if (width < 460) return (width - 42) / 2;
+    if (width < 630) return (width - 52) / 3;
+    if (width < 800) return (width - 62) / 4;
+    return (800 - 62) / 4;
   }
 
   Widget _popupItemBuilder(dynamic value, bool enabled, dynamic selectedItem, String labelText) => Padding(
@@ -229,14 +226,7 @@ class _OnlineFiltersState extends State<OnlineFilters> {
         loading: onlineCtrl.isLoading.isTrue,
         label: 'Search',
         controller: onlineCtrl.searchController,
-        onChanged: (_) {
-          if (timer.isActive) timer.cancel();
-
-          timer = Timer(
-            const Duration(seconds: 1),
-            () => _search(),
-          );
-        },
+        onEditingComplete: _search,
       );
 
   void _search() {
@@ -245,11 +235,31 @@ class _OnlineFiltersState extends State<OnlineFilters> {
     onlineCtrl.filterList();
   }
 
+  Widget _searchButton() => ClickableContainer(
+        onTap: _search,
+        height: 48,
+        constraints: BoxConstraints(minWidth: (_dropdownWidth - 10) / 2),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        alignment: Alignment.center,
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgDefault,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          'Search',
+          style: TextStyle(
+            color: onlineCtrl.isLoading.value ? AppColors.textSecondary : AppColors.primary,
+          ),
+        ),
+      );
+
   Widget _clearButton() => ClickableContainer(
         onTap: onlineCtrl.isLoading.value ? null : _clearFilters,
         height: 48,
-        alignment: Alignment.center,
+        constraints: BoxConstraints(minWidth: (_dropdownWidth - 10) / 2),
         padding: const EdgeInsets.symmetric(horizontal: 12),
+        alignment: Alignment.center,
         color: AppColors.bgPaper,
         hoverColor: AppColors.bgHover,
         decoration: BoxDecoration(
@@ -300,6 +310,7 @@ class _OnlineFiltersState extends State<OnlineFilters> {
     if (onlineCtrl.location.value != 'All') text = '$text, ${onlineCtrl.location.value}';
     if (onlineCtrl.pvpType.value != 'All') text = '$text, ${onlineCtrl.pvpType.value}';
     if (onlineCtrl.worldType.value != 'All') text = '$text, ${onlineCtrl.worldType.value} World';
+    if (onlineCtrl.searchController.text.isNotEmpty) text = '$text, "${onlineCtrl.searchController.text}"';
 
     return '$text.';
   }

@@ -23,6 +23,7 @@ class CustomTextField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.onSaved,
+    this.onEditingComplete,
     this.obscureText = false,
     this.suffixIcon,
     this.loading = false,
@@ -37,6 +38,7 @@ class CustomTextField extends StatelessWidget {
   final Validator validator;
   final OnChanged onChanged;
   final OnSaved onSaved;
+  final void Function()? onEditingComplete;
   final bool obscureText;
   final Widget? suffixIcon;
   final bool loading;
@@ -59,6 +61,7 @@ class CustomTextField extends StatelessWidget {
               autovalidateMode: AutovalidateMode.onUserInteraction,
               onChanged: onChanged,
               onSaved: onSaved,
+              onEditingComplete: onEditingComplete,
             ),
           ),
 

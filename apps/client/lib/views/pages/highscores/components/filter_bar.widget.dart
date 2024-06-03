@@ -21,8 +21,6 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
   final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
   final WorldsController worldsCtrl = Get.find<WorldsController>();
 
-  Timer timer = Timer(Duration.zero, () {});
-
   Future<void> _loadHighscores({bool newPage = false}) async {
     if (highscoresCtrl.supporters.isEmpty) await highscoresCtrl.getSupporters();
     if (highscoresCtrl.hidden.isEmpty) await highscoresCtrl.getHidden();
@@ -69,6 +67,8 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
                 child: Row(
                   children: <Widget>[
                     Expanded(child: _searchBar()),
+                    const SizedBox(width: 10),
+                    _searchButton(),
                     if (anyFilterSelected) const SizedBox(width: 10),
                     if (anyFilterSelected) _clearButton(),
                   ],
@@ -93,11 +93,10 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
     T? selectedItem,
     required List<T>? itemList,
     void Function(T?)? onChanged,
-    bool bigger = false,
     EdgeInsets margin = const EdgeInsets.only(right: 10),
   }) =>
       Container(
-        width: _dropdownWidth(bigger),
+        width: _dropdownWidth,
         margin: margin,
         child: CustomDropdown<T>(
           loading: highscoresCtrl.isLoading.value,
@@ -113,13 +112,12 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
         ),
       );
 
-  double _dropdownWidth(bool bigger) {
+  double get _dropdownWidth {
     final double width = MediaQuery.of(context).size.width;
-
-    if (width < 460) return (bigger ? 1.5 : 1) * (width - 42) / 2;
-    if (width < 630) return (bigger ? 1.5 : 1) * (width - 52) / 3;
-    if (width < 800) return (bigger ? 1.5 : 1) * (width - 62) / 4;
-    return (bigger ? 1.5 : 1) * (800 - 70) / 4;
+    if (width < 460) return (width - 42) / 2;
+    if (width < 630) return (width - 52) / 3;
+    if (width < 800) return (width - 62) / 4;
+    return (800 - 62) / 4;
   }
 
   Widget _popupItemBuilder(dynamic value, bool enabled, dynamic selectedItem, String labelText) => Padding(
@@ -206,14 +204,7 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
         loading: highscoresCtrl.isLoading.isTrue,
         label: 'Search',
         controller: highscoresCtrl.searchController,
-        onChanged: (_) {
-          if (timer.isActive) timer.cancel();
-
-          timer = Timer(
-            const Duration(seconds: 1),
-            () => _search(),
-          );
-        },
+        onEditingComplete: _search,
       );
 
   void _search() {
@@ -222,11 +213,31 @@ class _HighscoresFilterBarState extends State<HighscoresFilterBar> {
     highscoresCtrl.filterList();
   }
 
+  Widget _searchButton() => ClickableContainer(
+        onTap: _search,
+        height: 48,
+        constraints: BoxConstraints(minWidth: (_dropdownWidth - 10) / 2),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        alignment: Alignment.center,
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgDefault,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          'Search',
+          style: TextStyle(
+            color: highscoresCtrl.isLoading.value ? AppColors.textSecondary : AppColors.primary,
+          ),
+        ),
+      );
+
   Widget _clearButton() => ClickableContainer(
         onTap: highscoresCtrl.isLoading.value ? null : _clearFilters,
         height: 48,
-        alignment: Alignment.center,
+        constraints: BoxConstraints(minWidth: (_dropdownWidth - 10) / 2),
         padding: const EdgeInsets.symmetric(horizontal: 12),
+        alignment: Alignment.center,
         color: AppColors.bgPaper,
         hoverColor: AppColors.bgHover,
         decoration: BoxDecoration(

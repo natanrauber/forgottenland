@@ -69,7 +69,7 @@ class CharacterData {
     name = json['name'] as String?;
     formerNames = json['former_names'] as List<dynamic>?;
     title = json['title'] as String?;
-    title = title?.split(' ').first;
+    title = title?.split('(').first.trim();
     sex = json['sex'] as String?;
     vocation = json['vocation'] as String?;
     level = json['level'] as int?;

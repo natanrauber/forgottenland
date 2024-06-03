@@ -1,10 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/character_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
-import 'package:forgottenland/utils/utils.dart';
+import 'package:forgottenland/utils/src/dismiss_keyboard.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
 import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
 import 'package:forgottenland/views/widgets/widgets.dart';
@@ -20,16 +18,24 @@ class CharacterPage extends StatefulWidget {
 class _CharacterPageState extends State<CharacterPage> {
   final CharacterController characterCtrl = Get.find<CharacterController>();
 
-  Timer timer = Timer(Duration.zero, () {});
-  bool expandRookMaster = false;
-
   @override
   Widget build(BuildContext context) => Obx(
         () => AppPage(
           screenName: 'character',
+          padding: const EdgeInsets.fromLTRB(16, 11, 16, 60),
           body: Column(
             children: <Widget>[
-              _searchField(),
+              Container(
+                height: 53,
+                padding: const EdgeInsets.only(top: 5),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(child: _searchField()),
+                    const SizedBox(width: 10),
+                    _searchButton(),
+                  ],
+                ),
+              ),
               _body(),
             ],
           ),
@@ -39,18 +45,32 @@ class _CharacterPageState extends State<CharacterPage> {
   CustomTextField _searchField() => CustomTextField(
         label: 'Character Name',
         controller: characterCtrl.searchCtrl,
-        onChanged: (String? value) {
-          if (timer.isActive) timer.cancel();
-          if (value != null && value != '') {
-            timer = Timer(
-              const Duration(seconds: 1),
-              () {
-                dismissKeyboard(context);
-                characterCtrl.searchCharacter();
-              },
-            );
-          }
-        },
+        onEditingComplete: _search,
+      );
+
+  void _search() {
+    dismissKeyboard(context);
+    characterCtrl.searchCtrl.text = characterCtrl.searchCtrl.text.trim();
+    if (characterCtrl.searchCtrl.text.isEmpty) return;
+    characterCtrl.searchCharacter();
+  }
+
+  Widget _searchButton() => ClickableContainer(
+        onTap: _search,
+        height: 48,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        color: AppColors.bgPaper,
+        hoverColor: AppColors.bgHover,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          'Search',
+          style: TextStyle(
+            color: characterCtrl.isLoading.value ? AppColors.textSecondary : AppColors.primary,
+          ),
+        ),
       );
 
   Widget _body() {
