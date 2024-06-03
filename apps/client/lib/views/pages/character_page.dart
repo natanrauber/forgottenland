@@ -121,7 +121,13 @@ class _CharacterPageState extends State<CharacterPage> {
                     if (list[index]['value'] != null) ...<Widget>[
                       const SizedBox(width: 1),
                       Flexible(
-                        flex: MediaQuery.of(context).size.width >= 600 ? 4 : 3,
+                        flex: MediaQuery.of(context).size.width >= 800
+                            ? 6
+                            : MediaQuery.of(context).size.width >= 600
+                                ? 5
+                                : MediaQuery.of(context).size.width >= 400
+                                    ? 4
+                                    : 3,
                         child: Container(
                           decoration: const BoxDecoration(
                             border: Border(
