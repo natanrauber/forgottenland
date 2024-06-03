@@ -222,6 +222,6 @@ class HighscoresController extends Controller {
         count++;
       }
     }
-    customPrint('Pre-cached $count/${images.length} images', color: PrintColor.yellow);
+    customPrint('Pre-cached $count/${images.length} images');
   }
 }

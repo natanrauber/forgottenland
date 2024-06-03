@@ -20,7 +20,7 @@ Future<void> main() async {
 
 Future<void> _initializeFirebase() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  customPrint('Firebase projectId: ${DefaultFirebaseOptions.currentPlatform.projectId}', color: PrintColor.yellow);
+  customPrint('Firebase projectId: ${DefaultFirebaseOptions.currentPlatform.projectId}');
   await FirebaseAnalytics.instance.logAppOpen();
 
   // Pass all uncaught "fatal" errors from the framework to Crashlytics

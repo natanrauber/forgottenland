@@ -3,10 +3,11 @@ import 'package:utils/utils.dart';
 
 void printRequest(MyHttpResponse response, {bool printResponseData = false}) {
   String method = '${response.requestOptions?.method}';
-  String endpoint = '${response.requestOptions?.baseUrl}${response.requestOptions?.path}';
-  String statusMessage = '${response.response?.statusMessage}';
+  String endpoint = _getRelativePath(response.requestOptions?.path);
+  String statusMessage = ': ${response.response?.statusMessage}';
+  if ((response.response?.statusMessage ?? '').isEmpty) statusMessage = '';
   String statusCode = '${response.statusCode}';
-  String request = '>> $method on "$endpoint": $statusMessage [$statusCode]';
+  String request = '[$statusCode] $method on "$endpoint"$statusMessage';
 
   if (response.error) {
     customPrint(request, color: PrintColor.red);
@@ -22,4 +23,11 @@ void printRequest(MyHttpResponse response, {bool printResponseData = false}) {
 
   customPrint(request, color: PrintColor.yellow);
   if (printResponseData) customPrint(response.dataAsMap, type: PrintType.json, color: PrintColor.yellow);
+}
+
+String _getRelativePath(String? path) {
+  if (path == null) return 'null';
+  String a = path.split('://').last;
+  String b = a.split('/').first;
+  return a.replaceAll(b, '');
 }
