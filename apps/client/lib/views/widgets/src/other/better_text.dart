@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:forgottenland/theme/colors.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 Map<String, Map<String, dynamic>> _tags = <String, Map<String, dynamic>>{
   '<sb>': <String, dynamic>{
@@ -54,6 +56,14 @@ Map<String, Map<String, dynamic>> _tags = <String, Map<String, dynamic>>{
     'regex': '<u>(.*?)<u>',
     'style': const TextStyle(decoration: TextDecoration.underline),
   },
+  '<a>': <String, dynamic>{
+    'regex': '<a>(.*?)<a>',
+    'style': const TextStyle(
+      color: AppColors.blue,
+      decorationColor: AppColors.blue,
+      decoration: TextDecoration.underline,
+    ),
+  },
 };
 
 /// This text support tags to change text style
@@ -76,6 +86,7 @@ class BetterText extends StatelessWidget {
     this.textDirection,
     this.maxLines,
     this.selectable = true,
+    this.hyperlink,
   });
 
   final String text;
@@ -84,6 +95,7 @@ class BetterText extends StatelessWidget {
   final TextDirection? textDirection;
   final int? maxLines;
   final bool selectable; // overflow does not work with selectable
+  final String? hyperlink;
 
   @override
   Widget build(BuildContext context) => selectable
@@ -123,11 +135,15 @@ class BetterText extends StatelessWidget {
         onMatch: (Match match) {
           String? formattedText = match[0];
           TextStyle newStyle = const TextStyle();
+          GestureRecognizer? recognizer;
 
           for (final String tag in _tags.keys) {
             if (RegExp(_tags[tag]!['regex']! as String).hasMatch(match[0]!)) {
               formattedText = formattedText?.replaceAll(tag, '');
               newStyle = newStyle.merge(_tags[tag]!['style'] as TextStyle);
+              if (tag == '<a>' && hyperlink != null) {
+                recognizer = TapGestureRecognizer()..onTap = () => launchUrlString(hyperlink!);
+              }
             }
           }
 
@@ -136,6 +152,7 @@ class BetterText extends StatelessWidget {
               TextSpan(
                 text: formattedText,
                 style: newStyle,
+                recognizer: recognizer,
               ),
             );
           }

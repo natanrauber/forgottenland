@@ -141,13 +141,7 @@ class _CharacterPageState extends State<CharacterPage> {
                     if (list[index]['value'] != null) ...<Widget>[
                       const SizedBox(width: 1),
                       Flexible(
-                        flex: MediaQuery.of(context).size.width >= 800
-                            ? 6
-                            : MediaQuery.of(context).size.width >= 600
-                                ? 5
-                                : MediaQuery.of(context).size.width >= 400
-                                    ? 4
-                                    : 3,
+                        flex: _flex,
                         child: Container(
                           decoration: const BoxDecoration(
                             border: Border(
@@ -156,7 +150,10 @@ class _CharacterPageState extends State<CharacterPage> {
                               ),
                             ),
                           ),
-                          child: _info(list[index]['value'] ?? ''),
+                          child: _info(
+                            list[index]['value'] ?? '',
+                            hyperlink: list[index]['hyperlink'] ?? '',
+                          ),
                         ),
                       ),
                     ],
@@ -167,6 +164,13 @@ class _CharacterPageState extends State<CharacterPage> {
           ),
         ],
       );
+
+  int get _flex {
+    int flex = (MediaQuery.of(context).size.width - 50) ~/ 100;
+    if (flex < 3) flex = 3;
+    if (flex > 5) flex = 5;
+    return flex;
+  }
 
   Widget _title(String title) => Container(
         height: 22,
@@ -180,7 +184,7 @@ class _CharacterPageState extends State<CharacterPage> {
         ),
       );
 
-  Widget _info(String text) => Container(
+  Widget _info(String text, {String? hyperlink}) => Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         alignment: Alignment.centerLeft,
         child: BetterText(
@@ -190,6 +194,7 @@ class _CharacterPageState extends State<CharacterPage> {
             height: 16 / 13,
             color: AppColors.textSecondary,
           ),
+          hyperlink: hyperlink,
         ),
       );
 
@@ -208,6 +213,13 @@ class _CharacterPageState extends State<CharacterPage> {
         //   'value': data?.achievementPoints?.toString() ?? '',
         // },
         <String, String>{'name': 'World:', 'value': data?.world ?? ''},
+        if (data?.guild != null)
+          <String, String>{
+            'name': MediaQuery.of(context).size.width >= 380 ? 'Guild Membership:' : 'Guild:',
+            'value': '${data?.guild?.rank ?? ''} of the <a>${data?.guild?.name ?? ''}<a>',
+            'hyperlink':
+                'https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=${data?.guild?.name?.replaceAll(' ', '+') ?? ''}',
+          },
         if (data?.comment != null) <String, String>{'name': 'Comment:', 'value': data?.comment ?? ''},
       ],
     );
