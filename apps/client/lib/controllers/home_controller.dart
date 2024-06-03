@@ -65,8 +65,8 @@ class HomeController extends Controller {
       timerOverview = Timer.periodic(
         const Duration(minutes: 5),
         (_) {
-          if (isLoading.value) return;
           if (Get.currentRoute != Routes.home.name) return;
+          if (isLoading.value) return;
           getOverview();
         },
       );
@@ -75,9 +75,11 @@ class HomeController extends Controller {
     if (timerNews == null) {
       timerNews = Timer.periodic(
         const Duration(hours: 1),
-        (_) {
-          if (isLoading.value) return;
+        (_) async {
           if (Get.currentRoute != Routes.home.name) return;
+          do {
+            await Future<dynamic>.delayed(const Duration(seconds: 5));
+          } while (isLoading.value);
           getNews(showLoading: false);
         },
       );
