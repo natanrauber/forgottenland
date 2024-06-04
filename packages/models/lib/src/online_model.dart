@@ -60,6 +60,8 @@ class OnlineEntry {
   int time = 5;
   bool isOnline = false;
 
+  bool match(String text) => name?.toLowerCase() == text;
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['rank'] = rank;

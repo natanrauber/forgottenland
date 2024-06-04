@@ -78,6 +78,8 @@ class HighscoresEntry {
           ? onlineTime?.substring(0, 3)
           : onlineTime?.substring(3, 6);
 
+  bool match(String text) => name?.toLowerCase() == text;
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['rank'] = rank;

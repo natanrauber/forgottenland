@@ -75,7 +75,7 @@ class _CharacterPageState extends State<CharacterPage> {
 
   Widget _body() {
     if (characterCtrl.isLoading.value) return _loading();
-    if (characterCtrl.searchResponse.error) return _errorBuilder();
+    if (characterCtrl.response.error) return _errorBuilder();
     return _characterData();
   }
 
@@ -93,8 +93,8 @@ class _CharacterPageState extends State<CharacterPage> {
       );
 
   Widget _errorBuilder() {
-    if (characterCtrl.searchResponse.statusCode == 404) return ErrorBuilder('Character not found');
-    if (characterCtrl.searchResponse.statusCode == 406) return ErrorBuilder('Character is not in Rookgaard');
+    if (characterCtrl.response.statusCode == 404) return ErrorBuilder('Character not found');
+    if (characterCtrl.response.statusCode == 406) return ErrorBuilder('Character is not in Rookgaard');
     return ErrorBuilder(
       'Internal server error',
       reloadButtonText: 'Try again',

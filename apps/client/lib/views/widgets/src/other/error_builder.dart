@@ -11,6 +11,7 @@ class ErrorBuilder extends Container {
             children: <Widget>[
               Text(
                 text,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: AppColors.textSecondary,
                 ),

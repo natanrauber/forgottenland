@@ -84,7 +84,7 @@ class HighscoresController {
     if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
-      Record? record = await localGetExpGain(world, category, page, table, date);
+      Record? record = await localGetExpGain(world, category, page);
       if (record == null) return ApiResponse.noContent();
       return ApiResponse.success(data: record.toJson());
     } catch (e) {
@@ -92,7 +92,9 @@ class HighscoresController {
     }
   }
 
-  Future<Record?> localGetExpGain(String world, String category, int? page, String table, String date) async {
+  Future<Record?> localGetExpGain(String world, String category, int? page) async {
+    String table = tableToCategory[category]!;
+    String date = dateToCategory[category]!;
     dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
     if (response is! Map<String, dynamic>) return null;
     if (response['data'] is! Map<String, dynamic>) return null;
@@ -115,7 +117,7 @@ class HighscoresController {
     if (table == null || date == null) return ApiResponse.error('Invalid category');
 
     try {
-      Online? online = await localGetOnlineTime(world, category, page, table, date);
+      Online? online = await localGetOnlineTime(world, category, page);
       if (online == null) return ApiResponse.noContent();
       return ApiResponse.success(data: online.toJson());
     } catch (e) {
@@ -123,7 +125,9 @@ class HighscoresController {
     }
   }
 
-  Future<Online?> localGetOnlineTime(String world, String category, int? page, String table, String date) async {
+  Future<Online?> localGetOnlineTime(String world, String category, int? page) async {
+    String? table = tableToCategory[category]!;
+    String? date = dateToCategory[category]!;
     dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
     if (response is! Map<String, dynamic>) return null;
     if (response['data'] is! Map<String, dynamic>) return null;
@@ -165,20 +169,8 @@ class HighscoresController {
 
   Future<Response> overview(Request request) async {
     try {
-      Online? rOnlinetime = await localGetOnlineTime(
-        'all',
-        'onlinetime+today',
-        1,
-        tableToCategory['onlinetime+today']!,
-        dateToCategory['onlinetime+today']!,
-      );
-      Record? rExpgain = await localGetExpGain(
-        'all',
-        'experiencegained+today',
-        1,
-        tableToCategory['experiencegained+today']!,
-        dateToCategory['experiencegained+today']!,
-      );
+      Online? rOnlinetime = await localGetOnlineTime('all', 'onlinetime+today', 1);
+      Record? rExpgain = await localGetExpGain('all', 'experiencegained+today', 1);
       Record? rRookmaster = await localGetRookmaster('all', 1);
       Record? rExperience = await _getFromTibiaData('all', 'experience', 1);
       Online? rOnline = await onlineCtrl.onlineNow();

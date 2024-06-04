@@ -13,26 +13,20 @@ class CharacterController extends Controller {
 
   final TextController searchCtrl = TextController();
   RxCharacter character = Character().obs;
-  MyHttpResponse searchResponse = MyHttpResponse();
+  MyHttpResponse response = MyHttpResponse();
 
-  Future<MyHttpResponse> searchCharacter() async {
+  Future<void> searchCharacter() async {
     isLoading.value = true;
     character.value = Character();
 
     try {
-      searchResponse = await httpClient.get('${PATH.forgottenLandApi}/character/${searchCtrl.text}');
-
-      if (searchResponse.success) {
-        if (searchResponse.dataAsMap['data'] is Map<String, dynamic>) {
-          character.value = Character.fromJson(searchResponse.dataAsMap['data'] as Map<String, dynamic>);
-        }
-      }
+      final String name = searchCtrl.text.toLowerCase();
+      response = await httpClient.get('${PATH.forgottenLandApi}/character/${name.replaceAll(' ', '%20')}');
+      if (response.success) character.value = Character.fromJson(response.dataAsMap['data'] as Map<String, dynamic>);
     } catch (e) {
       customPrint(e, color: PrintColor.red);
     }
 
     isLoading.value = false;
-    update();
-    return searchResponse;
   }
 }
