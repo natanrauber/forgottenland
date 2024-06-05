@@ -133,7 +133,7 @@ class ETL implements IETL {
     try {
       Record result = await _calcExpGainToday();
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-today', DT.tibia.today(), result, canUpdate: true);
+      await _saveExpGain('exp-gain-today', DT.tibia.today(), result, deleteOlder: true, canUpdate: true);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -161,7 +161,7 @@ class ETL implements IETL {
     try {
       Record result = await _getExpGainRange(DT.tibia.yesterday(), DT.tibia.today());
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-last-day', DT.tibia.yesterday(), result);
+      await _saveExpGain('exp-gain-last-day', DT.tibia.yesterday(), result, deleteOlder: false);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -179,7 +179,7 @@ class ETL implements IETL {
     try {
       Record result = await _getExpGainRange(DT.tibia.aWeekAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-last-7-days', DT.tibia.yesterday(), result);
+      await _saveExpGain('exp-gain-last-7-days', DT.tibia.yesterday(), result, deleteOlder: true);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -197,7 +197,7 @@ class ETL implements IETL {
     try {
       Record result = await _getExpGainRange(DT.tibia.aMonthAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-last-30-days', DT.tibia.yesterday(), result);
+      await _saveExpGain('exp-gain-last-30-days', DT.tibia.yesterday(), result, deleteOlder: true);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -215,7 +215,7 @@ class ETL implements IETL {
     try {
       Record result = await _getExpGainRange(DT.tibia.aYearAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-last-365-days', DT.tibia.yesterday(), result);
+      await _saveExpGain('exp-gain-last-365-days', DT.tibia.yesterday(), result, deleteOlder: true);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -264,22 +264,21 @@ class ETL implements IETL {
     }
   }
 
-  Future<dynamic> _saveExpGain(String table, String date, Record data, {bool canUpdate = false}) {
-    if (canUpdate) {
-      var values = <String, dynamic>{
-        'date': date,
-        'world': 'All',
-        'data': data.toJson(),
-        'timestamp': DT.germany.timeStamp(),
-      };
-      return databaseClient.from(table).upsert(values);
-    }
+  Future<void> _saveExpGain(
+    String table,
+    String date,
+    Record data, {
+    required bool deleteOlder,
+    bool canUpdate = false,
+  }) async {
     var values = <String, dynamic>{
       'date': date,
       'world': 'All',
       'data': data.toJson(),
       'timestamp': DT.germany.timeStamp(),
     };
+    if (deleteOlder) await databaseClient.from(table).delete().neq('date', date);
+    if (canUpdate) return databaseClient.from(table).upsert(values);
     return databaseClient.from(table).insert(values);
   }
 
@@ -383,7 +382,7 @@ class ETL implements IETL {
     return result;
   }
 
-  Future<dynamic> _saveOnlineTimePeriod(String table, Duration period) async {
+  Future<void> _saveOnlineTimePeriod(String table, Duration period) async {
     Online? onlineTime = await _getOnlineTimePeriod(table, period);
     if (onlineTime == null) return;
 
@@ -392,7 +391,8 @@ class ETL implements IETL {
       'data': onlineTime.toJson(),
       'timestamp': DT.germany.timeStamp(),
     };
-    return databaseClient.from(table).insert(values);
+    await databaseClient.from(table).insert(values);
+    await databaseClient.from(table).delete().neq('date', DT.tibia.yesterday());
   }
 
   Future<Online?> _getOnlineTimePeriod(String table, Duration period) async {
