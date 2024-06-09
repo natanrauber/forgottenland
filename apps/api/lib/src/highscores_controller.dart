@@ -20,6 +20,27 @@ class HighscoresController {
   final IHttpClient httpClient;
   final IOnlineController onlineCtrl;
 
+  Future<Response> ratinator(Request request) async {
+    Record record = Record(list: <HighscoresEntry>[]);
+    Record fr = Record(list: <HighscoresEntry>[]);
+    try {
+      for (int i = 1; i <= 20; i++) {
+        Record? r = await _getFromTibiaData('all', 'experience', i);
+        record.list.addAll(r?.list ?? <HighscoresEntry>[]);
+      }
+      for (HighscoresEntry e in record.list) {
+        final MyHttpResponse resp = await httpClient.get(
+          'https://api.tibiadata.com/v4/character/${e.name?.replaceAll(' ', '%20')}',
+        );
+        String title = resp.dataAsMap['character']['character']['title'];
+        if (title.contains('Ratinator')) fr.list.add(HighscoresEntry(name: '${e.name}: $title'));
+      }
+      return ApiResponse.success(data: fr.toJson());
+    } catch (e) {
+      return handleError(e);
+    }
+  }
+
   Future<Response> get(Request request, String world, String category, String page) async {
     int pageAux = int.tryParse(page) ?? 1;
 
