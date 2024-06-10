@@ -1,14 +1,14 @@
 name: models
 description: A starting point for Dart libraries or applications.
-version: 24.05.04+1
+version: 24.06.10+1
 
 environment:
-  sdk: ^3.2.0
+  sdk: ^3.3.1
 
 dependencies:
-  intl: ^0.18.1
+  intl: ^0.19.0
   universal_html: ^2.2.4
   utils:
 
 dev_dependencies:
-  lints: ^2.0.0
+  lints: ^4.0.0

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forgottenland/controllers/highscores_controller.dart';
 import 'package:forgottenland/controllers/user_controller.dart';
 import 'package:forgottenland/controllers/worlds_controller.dart';
-import 'package:forgottenland/modules/main/controllers/main_controller.dart';
+import 'package:forgottenland/modules/main/app_controller.dart';
 import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/utils/utils.dart';
@@ -22,7 +22,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   SplashPageArguments? args;
 
-  final MainController mainCtrl = Get.find<MainController>();
+  final AppController appCtrl = Get.find<AppController>();
   final HighscoresController highscoresCtrl = Get.find<HighscoresController>();
   final UserController userCtrl = Get.find<UserController>();
   final SettingsController settingsCtrl = Get.find<SettingsController>();
@@ -45,7 +45,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void _redirect() {
-    mainCtrl.visitedSplash = true;
+    appCtrl.visitedSplash = true;
     Get.offNamed(args?.redirectRoute ?? Routes.home.name);
   }
 

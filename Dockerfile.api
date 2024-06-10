@@ -1,5 +1,5 @@
 # Use latest stable channel SDK.
-FROM dart:3.2.0 AS build
+FROM dart:3.3.1 AS build
 
 # Create working directory
 WORKDIR /tmp

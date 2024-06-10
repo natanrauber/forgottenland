@@ -1,7 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:forgottenland/modules/main/controllers/main_controller.dart';
+import 'package:forgottenland/modules/main/app_controller.dart';
 import 'package:forgottenland/modules/settings/controllers/settings_controller.dart';
 import 'package:forgottenland/modules/settings/models/feature_model.dart';
 import 'package:forgottenland/theme/colors.dart';
@@ -9,6 +9,7 @@ import 'package:forgottenland/utils/utils.dart';
 import 'package:forgottenland/views/widgets/src/other/app_footer.dart';
 import 'package:forgottenland/views/widgets/src/other/app_header.dart';
 import 'package:get/get.dart';
+import 'package:screenshot/screenshot.dart';
 
 class AppPage extends StatefulWidget {
   const AppPage({
@@ -40,15 +41,17 @@ class AppPage extends StatefulWidget {
 }
 
 class _AppPageState extends State<AppPage> {
-  MainController mainCtrl = Get.find<MainController>();
+  AppController appCtrl = Get.find<AppController>();
   SettingsController settingsCtrl = Get.find<SettingsController>();
+
+  ScreenshotController screenshotCtrl = ScreenshotController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      mainCtrl.ensureSplashIsVisited();
-      if (mainCtrl.visitedSplash) {
+      appCtrl.ensureSplashIsVisited();
+      if (appCtrl.visitedSplash) {
         _logScreenEvent();
         if (!_featureDisabled) widget.postFrameCallback?.call();
       }
@@ -72,65 +75,68 @@ class _AppPageState extends State<AppPage> {
 
     return PopScope(
       canPop: widget.canPop,
-      child: GestureDetector(
-        onTap: () => dismissKeyboard(context),
-        child: Scaffold(
-          appBar: AppHeader(),
-          body: Container(
-            height: height,
-            width: width,
-            decoration: _backgroundDecoration,
-            child: RefreshIndicator(
-              onRefresh: widget.onRefresh ?? () async {},
-              child: NotificationListener<ScrollNotification>(
-                onNotification: widget.onNotification,
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: <Widget>[
-                    //
-                    Container(
-                      margin: EdgeInsets.fromLTRB(
-                        sideMargin,
-                        topMargin == 0 && widget.topWidget == null ? 0 : height / 2,
-                        sideMargin,
-                        0,
+      child: Screenshot(
+        controller: screenshotCtrl,
+        child: GestureDetector(
+          onTap: () => dismissKeyboard(context),
+          child: Scaffold(
+            appBar: AppHeader(screenshotCtrl: screenshotCtrl),
+            body: Container(
+              height: height,
+              width: width,
+              decoration: _backgroundDecoration,
+              child: RefreshIndicator(
+                onRefresh: widget.onRefresh ?? () async {},
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: widget.onNotification,
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: <Widget>[
+                      //
+                      Container(
+                        margin: EdgeInsets.fromLTRB(
+                          sideMargin,
+                          topMargin == 0 && widget.topWidget == null ? 0 : height / 2,
+                          sideMargin,
+                          0,
+                        ),
+                        constraints: BoxConstraints(minHeight: height - appBarHeight - topMargin),
+                        decoration: _bodyDecoration,
                       ),
-                      constraints: BoxConstraints(minHeight: height - appBarHeight - topMargin),
-                      decoration: _bodyDecoration,
-                    ),
 
-                    SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                      child: Column(
-                        children: <Widget>[
-                          if (widget.topWidget != null)
+                      SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                        child: Column(
+                          children: <Widget>[
+                            if (widget.topWidget != null)
+                              Container(
+                                margin: EdgeInsets.symmetric(vertical: 16, horizontal: sideMargin),
+                                child: widget.topWidget,
+                              ),
                             Container(
-                              margin: EdgeInsets.symmetric(vertical: 16, horizontal: sideMargin),
-                              child: widget.topWidget,
-                            ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(sideMargin, topMargin, sideMargin, 0),
-                            decoration: _bodyDecoration,
-                            child: Column(
-                              children: <Widget>[
-                                //
-                                SingleChildScrollView(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: widget.padding,
-                                  child: Container(
-                                    constraints: _bodyConstraints,
-                                    child: _featureDisabled ? _disabledPageBody() : widget.body ?? Container(),
+                              margin: EdgeInsets.fromLTRB(sideMargin, topMargin, sideMargin, 0),
+                              decoration: _bodyDecoration,
+                              child: Column(
+                                children: <Widget>[
+                                  //
+                                  SingleChildScrollView(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    padding: widget.padding,
+                                    child: Container(
+                                      constraints: _bodyConstraints,
+                                      child: _featureDisabled ? _disabledPageBody() : widget.body ?? Container(),
+                                    ),
                                   ),
-                                ),
 
-                                AppFooter(),
-                              ],
+                                  AppFooter(),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
