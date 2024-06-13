@@ -1,24 +1,24 @@
 import 'package:utils/utils.dart';
 
-Map<String, String> get dateToCategory => <String, String>{
-      'experiencegained+today': DT.tibia.today(),
-      'experiencegained+yesterday': DT.tibia.yesterday(),
-      'experiencegained+last7days': DT.tibia.yesterday(),
-      'experiencegained+last30days': DT.tibia.yesterday(),
-      'experiencegained+last365days': DT.tibia.yesterday(),
-      'onlinetime+today': DT.tibia.today(),
-      'onlinetime+yesterday': DT.tibia.yesterday(),
-      'onlinetime+last7days': DT.tibia.yesterday(),
-      'onlinetime+last30days': DT.tibia.yesterday(),
-      'onlinetime+last365days': DT.tibia.yesterday(),
+Map<String, Map<String, Object>> get queryFromCategory => <String, Map<String, Object>>{
+      'experiencegained+today': <String, Object>{'date': DT.tibia.today()},
+      'experiencegained+yesterday': <String, Object>{'date': DT.tibia.yesterday()},
+      'experiencegained+last7days': <String, Object>{'period': '7days', 'date': DT.tibia.yesterday()},
+      'experiencegained+last30days': <String, Object>{'period': '30days', 'date': DT.tibia.yesterday()},
+      'experiencegained+last365days': <String, Object>{'period': '365days', 'date': DT.tibia.yesterday()},
+      'onlinetime+today': <String, Object>{'date': DT.tibia.today()},
+      'onlinetime+yesterday': <String, Object>{'date': DT.tibia.yesterday()},
+      'onlinetime+last7days': <String, Object>{'date': DT.tibia.yesterday()},
+      'onlinetime+last30days': <String, Object>{'date': DT.tibia.yesterday()},
+      'onlinetime+last365days': <String, Object>{'date': DT.tibia.yesterday()},
     };
 
-Map<String, String> get tableToCategory => <String, String>{
+Map<String, String> get tableFromCategory => <String, String>{
       'experiencegained+today': 'exp-gain-today',
       'experiencegained+yesterday': 'exp-gain-last-day',
-      'experiencegained+last7days': 'exp-gain-last-7-days',
-      'experiencegained+last30days': 'exp-gain-last-30-days',
-      'experiencegained+last365days': 'exp-gain-last-365-days',
+      'experiencegained+last7days': 'exp-gain-period',
+      'experiencegained+last30days': 'exp-gain-period',
+      'experiencegained+last365days': 'exp-gain-period',
       'onlinetime+today': 'onlinetime',
       'onlinetime+yesterday': 'onlinetime',
       'onlinetime+last7days': 'onlinetime-last7days',

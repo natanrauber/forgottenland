@@ -30,18 +30,14 @@ class ETL implements IETL {
 
   @override
   Future<Response> expRecord(Request request) async {
-    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
-    String supabaseKey = request.headers['supabaseKey'] ?? '';
-    databaseClient.setup(supabaseUrl, supabaseKey);
-    if (await _exists('exp-record', DT.tibia.today())) return ApiResponse.accepted();
+    databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
+    if (await _exists('exp-record', {'date': DT.tibia.today()})) return ApiResponse.accepted();
     return _getCurrentExp('exp-record', 'insert');
   }
 
   @override
   Future<Response> currentExp(Request request) async {
-    String? supabaseUrl = request.headers['supabaseUrl'];
-    String? supabaseKey = request.headers['supabaseKey'];
-    databaseClient.setup(supabaseUrl, supabaseKey);
+    databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
     return _getCurrentExp('current-exp', 'update');
   }
 
@@ -126,9 +122,7 @@ class ETL implements IETL {
 
   @override
   Future<Response> expGainedToday(Request request) async {
-    String? supabaseUrl = request.headers['supabaseUrl'];
-    String? supabaseKey = request.headers['supabaseKey'];
-    databaseClient.setup(supabaseUrl, supabaseKey);
+    databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
 
     try {
       Record result = await _calcExpGainToday();
@@ -152,11 +146,9 @@ class ETL implements IETL {
 
   @override
   Future<Response> expGainedYesterday(Request request) async {
-    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
-    String supabaseKey = request.headers['supabaseKey'] ?? '';
-    databaseClient.setup(supabaseUrl, supabaseKey);
+    databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
 
-    if (await _exists('exp-gain-last-day', DT.tibia.yesterday())) return ApiResponse.accepted();
+    if (await _exists('exp-gain-last-day', {'date': DT.tibia.yesterday()})) return ApiResponse.accepted();
 
     try {
       Record result = await _getExpGainRange(DT.tibia.yesterday(), DT.tibia.today());
@@ -170,16 +162,16 @@ class ETL implements IETL {
 
   @override
   Future<Response> expGainedLast7Days(Request request) async {
-    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
-    String supabaseKey = request.headers['supabaseKey'] ?? '';
-    databaseClient.setup(supabaseUrl, supabaseKey);
+    databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
 
-    if (await _exists('exp-gain-last-7-days', DT.tibia.yesterday())) return ApiResponse.accepted();
+    if (await _exists('exp-gain-period', {'period': '7days', 'date': DT.tibia.yesterday()})) {
+      return ApiResponse.accepted();
+    }
 
     try {
       Record result = await _getExpGainRange(DT.tibia.aWeekAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-last-7-days', DT.tibia.yesterday(), result, deleteOlder: true);
+      await _saveExpGainPeriod('7days', DT.tibia.yesterday(), result);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -188,16 +180,16 @@ class ETL implements IETL {
 
   @override
   Future<Response> expGainedLast30Days(Request request) async {
-    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
-    String supabaseKey = request.headers['supabaseKey'] ?? '';
-    databaseClient.setup(supabaseUrl, supabaseKey);
+    databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
 
-    if (await _exists('exp-gain-last-30-days', DT.tibia.yesterday())) return ApiResponse.accepted();
+    if (await _exists('exp-gain-period', {'period': '30days', 'date': DT.tibia.yesterday()})) {
+      return ApiResponse.accepted();
+    }
 
     try {
       Record result = await _getExpGainRange(DT.tibia.aMonthAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-last-30-days', DT.tibia.yesterday(), result, deleteOlder: true);
+      await _saveExpGainPeriod('30days', DT.tibia.yesterday(), result);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -206,16 +198,16 @@ class ETL implements IETL {
 
   @override
   Future<Response> expGainedLast365Days(Request request) async {
-    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
-    String supabaseKey = request.headers['supabaseKey'] ?? '';
-    databaseClient.setup(supabaseUrl, supabaseKey);
+    databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
 
-    if (await _exists('exp-gain-last-365-days', DT.tibia.yesterday())) return ApiResponse.accepted();
+    if (await _exists('exp-gain-period', {'period': '365days', 'date': DT.tibia.yesterday()})) {
+      return ApiResponse.accepted();
+    }
 
     try {
       Record result = await _getExpGainRange(DT.tibia.aYearAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
-      await _saveExpGain('exp-gain-last-365-days', DT.tibia.yesterday(), result, deleteOlder: true);
+      await _saveExpGainPeriod('365days', DT.tibia.yesterday(), result);
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(e);
@@ -282,8 +274,19 @@ class ETL implements IETL {
     return databaseClient.from(table).insert(values);
   }
 
-  Future<bool> _exists(String table, String date) async {
-    List<dynamic> response = await databaseClient.from(table).select().eq('date', date);
+  Future<void> _saveExpGainPeriod(String period, String date, Record data) async {
+    var values = <String, dynamic>{
+      'period': period,
+      'date': date,
+      'data': data.toJson(),
+      'timestamp': DT.germany.timeStamp(),
+    };
+    await databaseClient.from('exp-gain-period').delete().eq('period', period).neq('date', date);
+    return databaseClient.from('exp-gain-period').insert(values);
+  }
+
+  Future<bool> _exists(String table, Map<String, Object> query) async {
+    List<dynamic> response = await databaseClient.from(table).select().match(query);
     return response.isNotEmpty;
   }
 
@@ -396,7 +399,7 @@ class ETL implements IETL {
   }
 
   Future<Online?> _getOnlineTimePeriod(String table, Duration period) async {
-    if (await _exists(table, DT.tibia.yesterday())) return null;
+    if (await _exists(table, {'date': DT.tibia.yesterday()})) return null;
 
     DateTime start = DT.tibia.now().subtract(period);
     DateTime end = DT.tibia.now().subtract(Duration(days: 1));
@@ -426,10 +429,8 @@ class ETL implements IETL {
 
   @override
   Future<Response> rookmaster(Request request) async {
-    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
-    String supabaseKey = request.headers['supabaseKey'] ?? '';
-    databaseClient.setup(supabaseUrl, supabaseKey);
-    if (await _exists('rook-master', DT.tibia.today())) return ApiResponse.accepted();
+    databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
+    if (await _exists('rook-master', {'date': DT.tibia.today()})) return ApiResponse.accepted();
     return _getRookMaster('rook-master', 'insert');
   }
 
@@ -605,9 +606,7 @@ class ETL implements IETL {
 
   @override
   Future<Response> calcSkillPoints(Request request) async {
-    String supabaseUrl = request.headers['supabaseUrl'] ?? '';
-    String supabaseKey = request.headers['supabaseKey'] ?? '';
-    databaseClient.setup(supabaseUrl, supabaseKey);
+    databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
 
     try {
       String? name = request.params['name'] ?? '';

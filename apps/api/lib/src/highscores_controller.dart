@@ -77,11 +77,10 @@ class HighscoresController {
   }
 
   Future<Response> getExpGain(String world, String category, int? page) async {
-    String? table = tableToCategory[category];
-    String? date = dateToCategory[category];
+    String? table = tableFromCategory[category];
 
     if (page != null && page <= 0) return ApiResponse.error('Invalid page number');
-    if (table == null || date == null) return ApiResponse.error('Invalid category');
+    if (table == null) return ApiResponse.error('Invalid category');
 
     try {
       Record? record = await localGetExpGain(world, category, page);
@@ -93,9 +92,9 @@ class HighscoresController {
   }
 
   Future<Record?> localGetExpGain(String world, String category, int? page) async {
-    String table = tableToCategory[category]!;
-    String date = dateToCategory[category]!;
-    dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
+    String table = tableFromCategory[category]!;
+    Map<String, Object> query = queryFromCategory[category]!;
+    dynamic response = await databaseClient.from(table).select().match(query).maybeSingle();
     if (response is! Map<String, dynamic>) return null;
     if (response['data'] is! Map<String, dynamic>) return null;
 
@@ -110,11 +109,10 @@ class HighscoresController {
   }
 
   Future<Response> getOnlineTime(String world, String category, int? page) async {
-    String? table = tableToCategory[category];
-    String? date = dateToCategory[category];
+    String? table = tableFromCategory[category];
 
     if (page != null && page <= 0) return ApiResponse.error('Invalid page number');
-    if (table == null || date == null) return ApiResponse.error('Invalid category');
+    if (table == null) return ApiResponse.error('Invalid category');
 
     try {
       Online? online = await localGetOnlineTime(world, category, page);
@@ -126,9 +124,9 @@ class HighscoresController {
   }
 
   Future<Online?> localGetOnlineTime(String world, String category, int? page) async {
-    String? table = tableToCategory[category]!;
-    String? date = dateToCategory[category]!;
-    dynamic response = await databaseClient.from(table).select().eq('date', date).maybeSingle();
+    String? table = tableFromCategory[category]!;
+    Map<String, Object> query = queryFromCategory[category]!;
+    dynamic response = await databaseClient.from(table).select().match(query).maybeSingle();
     if (response is! Map<String, dynamic>) return null;
     if (response['data'] is! Map<String, dynamic>) return null;
 
