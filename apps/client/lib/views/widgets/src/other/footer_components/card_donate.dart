@@ -65,7 +65,7 @@ class _CardDonateState extends State<CardDonate> {
 
             if (expanded)
               TextSpan(
-                text: 'Awkn',
+                text: 'Awaken',
                 style: const TextStyle(
                   color: AppColors.blue,
                   decoration: TextDecoration.underline,
@@ -96,7 +96,7 @@ class _CardDonateState extends State<CardDonate> {
       );
 
   Future<void> _pushCharacterPage() async {
-    characterCtrl.searchCtrl.text = 'Awkn';
+    characterCtrl.searchCtrl.text = 'Awaken';
     Get.toNamed(Routes.character.name);
     characterCtrl.searchCharacter();
   }

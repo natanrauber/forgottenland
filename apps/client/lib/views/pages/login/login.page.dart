@@ -166,9 +166,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _exampleButton() => MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
-          onTap: () => launchUrlString(
-            'https://www.tibia.com/community/?subtopic=characters&name=Awkn',
-          ),
+          onTap: () => launchUrlString('https://www.tibia.com/community/?subtopic=characters&name=Awaken'),
           child: const BetterText(
             '<u>See example<u>',
             selectable: false,
@@ -250,7 +248,6 @@ class _LoginPageState extends State<LoginPage> {
             setState(() {});
             return;
           }
-          userCtrl.nameCtrl.text = 'Awkn';
           userCtrl.info = null;
           userCtrl.error = null;
           setState(() {});
