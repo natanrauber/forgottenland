@@ -1,9 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forgottenland/theme/colors.dart';
 import 'package:forgottenland/views/widgets/src/other/app_page.dart';
-import 'package:forgottenland/views/widgets/src/other/clickable_container.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class GuildPage extends StatelessWidget {
   @override
@@ -39,15 +36,15 @@ class GuildPage extends StatelessWidget {
                     'We live and fight for a forgotten land, where the first mysteries intrigued the first warriors. In time, many have left us, entering the depths of oblivion forever. Through this union, we forge eternal alliances, where we insert our name in history.',
                   ),
 
-                  const SizedBox(height: 20),
+                  // const SizedBox(height: 20),
 
-                  _text(
-                    'The guild was founded on Calmera on Apr 14 2020. It is currently active and always open for applications.',
-                  ),
+                  // _text(
+                  //   'The guild was founded on Calmera on Apr 14 2020. It is currently active and always open for applications.',
+                  // ),
 
-                  const SizedBox(height: 50),
+                  // const SizedBox(height: 50),
 
-                  _viewOnTibiaWebsiteButton(),
+                  // _viewOnTibiaWebsiteButton(),
 
                   const SizedBox(height: 50),
                 ],
@@ -80,32 +77,32 @@ class GuildPage extends StatelessWidget {
   //       child: Image.asset('assets/outfit/${LIST.member[index]}.png'),
   //     );
 
-  Widget _viewOnTibiaWebsiteButton() => ClickableContainer(
-        onTap: () => launchUrlString(
-          'https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Forgotten+Land',
-        ),
-        padding: const EdgeInsets.all(12),
-        color: AppColors.bgPaper,
-        hoverColor: AppColors.bgHover,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              'View on Tibia.com',
-              style: TextStyle(
-                fontSize: 13,
-                color: AppColors.primary,
-              ),
-            ),
-            Icon(
-              CupertinoIcons.arrow_up_right_square,
-              size: 18,
-              color: AppColors.primary,
-            ),
-          ],
-        ),
-      );
+  // Widget _viewOnTibiaWebsiteButton() => ClickableContainer(
+  //       onTap: () => launchUrlString(
+  //         'https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Forgotten+Land',
+  //       ),
+  //       padding: const EdgeInsets.all(12),
+  //       color: AppColors.bgPaper,
+  //       hoverColor: AppColors.bgHover,
+  //       decoration: BoxDecoration(
+  //         borderRadius: BorderRadius.circular(8),
+  //       ),
+  //       child: const Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: <Widget>[
+  //           Text(
+  //             'View on Tibia.com',
+  //             style: TextStyle(
+  //               fontSize: 13,
+  //               color: AppColors.primary,
+  //             ),
+  //           ),
+  //           Icon(
+  //             CupertinoIcons.arrow_up_right_square,
+  //             size: 18,
+  //             color: AppColors.primary,
+  //           ),
+  //         ],
+  //       ),
+  //     );
 }
