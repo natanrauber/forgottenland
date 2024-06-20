@@ -63,7 +63,7 @@ class _OverviewExpgainState extends State<OverviewExpgain> {
             child: Builder(
               builder: (_) {
                 if (homeCtrl.overviewExpgain.isEmpty && homeCtrl.isLoading.value) return _loading();
-                if (homeCtrl.overviewExpgain.isEmpty) return _reloadButton();
+                if (homeCtrl.overviewExpgain.isEmpty) return _emptyBuilder();
                 if (homeCtrl.overviewExpgain.isNotEmpty) return _listBuilder();
                 return Container();
               },
@@ -77,17 +77,19 @@ class _OverviewExpgainState extends State<OverviewExpgain> {
     return true;
   }
 
-  Widget _reloadButton() => Center(
-        child: Container(
-          height: 125,
-          width: 125,
-          padding: const EdgeInsets.all(42.5),
-          child: Icon(
-            Icons.refresh,
-            size: 40,
-            color: AppColors.textSecondary.withOpacity(0.5),
+  Widget _emptyBuilder() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image.asset('assets/creatures/skeleton.gif'),
+          const SizedBox(width: 10),
+          const Text(
+            'Waiting for data...',
+            style: TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+            ),
           ),
-        ),
+        ],
       );
 
   Widget _loading() => Center(
