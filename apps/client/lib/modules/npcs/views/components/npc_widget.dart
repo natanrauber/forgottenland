@@ -117,7 +117,7 @@ class _NpcWidgetState extends State<NpcWidget> {
     final StringBuffer buffer = StringBuffer();
     final List<String> aux = (widget.npc.transcripts ?? '').split('\n');
     for (String e in aux) {
-      e = e.contains('Player:') ? '<blue>$e<blue>' : '<lBlue>$e<lBlue>';
+      e = e.contains('Player:') ? '<blue>${e.trim()}<blue>' : '<lBlue>${e.trim()}<lBlue>';
       buffer.write(buffer.isEmpty ? e : '\n$e');
     }
     return buffer.toString();

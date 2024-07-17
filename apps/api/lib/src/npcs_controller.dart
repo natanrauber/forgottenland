@@ -24,7 +24,7 @@ class NPCsController implements INPCsController {
         for (dynamic e in response.dataAsMap['tree']) {
           if (e is Map<String, dynamic>) {
             if (e['path'] is String) {
-              if ((e['path'] as String).contains('npc/Rookgaard/')) {
+              if ((e['path'] as String).contains('data/npcs/text/Rookgaard/')) {
                 filteredList.add(e);
               }
             }
@@ -42,7 +42,7 @@ class NPCsController implements INPCsController {
   Future<Response> getTranscripts(Request request, String name) async {
     try {
       MyHttpResponse response = await httpClient.get(
-        'https://raw.githubusercontent.com/s2ward/tibia/main/npc/Rookgaard/$name.txt',
+        'https://raw.githubusercontent.com/s2ward/tibia/main/data/npcs/text/Rookgaard/$name.txt',
       );
 
       return ApiResponse.success(data: response.data);

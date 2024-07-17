@@ -100,7 +100,7 @@ class _BookWidgetState extends State<BookWidget> {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: widget.book.sprites.length,
           itemBuilder: (_, int i) => _spriteItemBuilder(
-            'https://raw.githubusercontent.com/s2ward/tibia/main/img/book/${widget.book.sprites[i]}.png',
+            'https://raw.githubusercontent.com/s2ward/tibia/main/images/books/${widget.book.sprites[i]}.png',
           ),
         ),
       );

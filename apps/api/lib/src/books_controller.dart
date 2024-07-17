@@ -17,7 +17,7 @@ class BooksController implements IBooksController {
   Future<Response> getAll(Request request) async {
     try {
       MyHttpResponse response = await httpClient.get(
-        'https://raw.githubusercontent.com/s2ward/tibia/main/api/books.json',
+        'https://raw.githubusercontent.com/s2ward/tibia/main/data/books/book_database.json',
       );
       response.data = jsonDecode(response.data);
 
