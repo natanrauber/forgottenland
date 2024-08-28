@@ -63,6 +63,8 @@ class ETL implements IETL {
       bool loadNext = false;
 
       do {
+        await Future.delayed(Duration(seconds: 1));
+
         if (retry) {
           i++;
         } else {
@@ -70,7 +72,7 @@ class ETL implements IETL {
         }
 
         aux = null;
-        var response = await httpClient.get('${env['PATH_TIBIA_DATA']}/highscores/$world/experience/none/$page');
+        var response = await httpClient.get('${env['PATH_TIBIA_DATA_DEV']}/highscores/$world/experience/none/$page');
 
         if (response.success) {
           aux = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
@@ -81,6 +83,7 @@ class ETL implements IETL {
 
         retry = !response.success && i < 5;
         loadNext = aux?.list.isNotEmpty == true && (aux?.list.last.level ?? 0) > 30;
+        loadNext = false;
       } while (retry || loadNext);
     }
 

@@ -9,6 +9,7 @@ const Map<String, String?> _variables = <String, String?>{
   'DATABASE_URL': String.fromEnvironment('DATABASE_URL'),
   'PATH_ETL': String.fromEnvironment('PATH_ETL'),
   'PATH_TIBIA_DATA': String.fromEnvironment('PATH_TIBIA_DATA'),
+  'PATH_TIBIA_DATA_DEV': String.fromEnvironment('PATH_TIBIA_DATA_DEV'),
 };
 
 class Env {
