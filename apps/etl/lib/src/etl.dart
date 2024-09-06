@@ -487,6 +487,7 @@ class ETL implements IETL {
     bool loadNext = false;
 
     do {
+      await Future.delayed(Duration(seconds: 1));
       if (retry) {
         i++;
       } else {
@@ -494,7 +495,7 @@ class ETL implements IETL {
       }
 
       aux = null;
-      var response = await httpClient.get('${env['PATH_TIBIA_DATA']}/highscores/all/experience/none/$page');
+      var response = await httpClient.get('${env['PATH_TIBIA_DATA_SELFHOSTED']}/highscores/all/experience/none/$page');
 
       if (response.success) {
         aux = Record.fromJsonExpanded(response.dataAsMap['highscores'] as Map<String, dynamic>);
@@ -527,6 +528,7 @@ class ETL implements IETL {
     bool loadNext = false;
 
     do {
+      await Future.delayed(Duration(seconds: 1));
       if (retry) {
         i++;
       } else {
@@ -534,7 +536,7 @@ class ETL implements IETL {
       }
 
       aux = null;
-      var response = await httpClient.get('${env['PATH_TIBIA_DATA']}/highscores/all/$skill/none/$page');
+      var response = await httpClient.get('${env['PATH_TIBIA_DATA_SELFHOSTED']}/highscores/all/$skill/none/$page');
 
       if (response.success) {
         aux = Record.fromJson(response.dataAsMap['highscores'] as Map<String, dynamic>);
