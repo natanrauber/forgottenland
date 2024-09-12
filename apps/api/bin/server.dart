@@ -18,7 +18,7 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:utils/utils.dart';
 
-final List<String> _requiredVar = <String>['PATH_TIBIA_DATA'];
+final List<String> _requiredVar = <String>['PATH_TIBIA_DATA', 'PATH_TIBIA_DATA_SELFHOSTED'];
 final Env _env = Env();
 final IDatabaseClient _databaseClient = MySupabaseClient(databaseKey: _env['DATABASE_KEY'] ?? defaultDatabasePKey);
 final IHttpClient _httpClient = MyDioClient();
