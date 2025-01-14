@@ -44,6 +44,7 @@ class ETL implements IETL {
   Future<Response> _getCurrentExp(String table, String operation) async {
     try {
       Record record = await _loadCurrentExp();
+      if (record.list.isEmpty) return ApiResponse.noContent();
       await _saveCurrentExp(record, table, operation);
       return ApiResponse.success();
     } catch (e) {
@@ -130,6 +131,7 @@ class ETL implements IETL {
     try {
       Record result = await _calcExpGainToday();
       _recordAddMissingRank(result);
+      if (result.list.isEmpty) return ApiResponse.noContent();
       await _saveExpGain('exp-gain-today', DT.tibia.today(), result, deleteOlder: true, canUpdate: true);
       return ApiResponse.success();
     } catch (e) {
@@ -156,6 +158,7 @@ class ETL implements IETL {
     try {
       Record result = await _getExpGainRange(DT.tibia.yesterday(), DT.tibia.today());
       _recordAddMissingRank(result);
+      if (result.list.isEmpty) return ApiResponse.noContent();
       await _saveExpGain('exp-gain-last-day', DT.tibia.yesterday(), result, deleteOlder: false);
       return ApiResponse.success();
     } catch (e) {
@@ -174,6 +177,7 @@ class ETL implements IETL {
     try {
       Record result = await _getExpGainRange(DT.tibia.aWeekAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
+      if (result.list.isEmpty) return ApiResponse.noContent();
       await _saveExpGainPeriod('7days', DT.tibia.yesterday(), result);
       return ApiResponse.success();
     } catch (e) {
@@ -192,6 +196,7 @@ class ETL implements IETL {
     try {
       Record result = await _getExpGainRange(DT.tibia.aMonthAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
+      if (result.list.isEmpty) return ApiResponse.noContent();
       await _saveExpGainPeriod('30days', DT.tibia.yesterday(), result);
       return ApiResponse.success();
     } catch (e) {
@@ -210,6 +215,7 @@ class ETL implements IETL {
     try {
       Record result = await _getExpGainRange(DT.tibia.aYearAgo(), DT.tibia.today());
       _recordAddMissingRank(result);
+      if (result.list.isEmpty) return ApiResponse.noContent();
       await _saveExpGainPeriod('365days', DT.tibia.yesterday(), result);
       return ApiResponse.success();
     } catch (e) {
@@ -299,7 +305,7 @@ class ETL implements IETL {
       databaseClient.setup(request.headers['supabaseUrl'], request.headers['supabaseKey']);
 
       Online onlineNow = await _getOnlineNow();
-      if (onlineNow.list.isEmpty) return ApiResponse.error('');
+      if (onlineNow.list.isEmpty) return ApiResponse.noContent();
 
       await _saveOnlineNow(onlineNow);
       await _saveOnlineTimeToday(await _getOnlineTimeToday(onlineNow));
@@ -441,6 +447,7 @@ class ETL implements IETL {
     try {
       Record record = await _calcRookMaster();
       _recordAddMissingRank(record);
+      if (record.list.isEmpty) return ApiResponse.noContent();
       await _saveCurrentExp(record, table, operation);
       return ApiResponse.success();
     } catch (e) {
