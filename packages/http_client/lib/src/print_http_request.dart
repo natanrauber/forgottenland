@@ -29,5 +29,6 @@ String _getRelativePath(String? path) {
   if (path == null) return 'null';
   String a = path.split('://').last;
   String b = a.split('/').first;
-  return a.replaceAll(b, '');
+  if (b.length <= 9) return a;
+  return a.replaceAll(b, '${b.substring(0, 9)}...');
 }
